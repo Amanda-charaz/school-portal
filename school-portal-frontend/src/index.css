@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Fullscreen Layout */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: Inter, sans-serif;
+}
+
+/* Light Mode */
+body {
+  background-color: white;
+  color: #111827;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Dark Mode */
+.dark body {
+  background-color: #020617;
+  color: white;
+}
+
+/* Mobile-friendly scrollbar hiding */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Improved overflow handling for mobile */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure font sizes are readable on mobile */
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px;
+  }
+}
+
+/* Safe area insets for devices with notches */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
