@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  // 🔥 FIXED: Appended /api to match your backend controller routers
+  baseURL: "https://school-portal-xqp8.onrender.com/api",
 });
 
 api.interceptors.request.use((config) => {
