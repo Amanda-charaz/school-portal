@@ -48,60 +48,6 @@ const StudentResultsView = ({ theme }) => {
 
   return (
     <div className="w-full space-y-6" style={{ color: theme.text }}>
-      {/* Student Profile Card */}
-      <div className="p-6 rounded-xl shadow-md border flex gap-6" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-        <div className="flex-shrink-0">
-          <div className="w-32 h-40 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center" style={{ backgroundColor: theme.inputBg }}>
-            <div style={{ fontSize: "60px" }}>📷</div>
-          </div>
-        </div>
-        <div className="flex-grow space-y-3">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="font-bold" style={{ color: theme.subText }}>Registration #:</span>
-              <span className="ml-2">R241566B</span>
-            </div>
-            <div>
-              <span className="font-bold" style={{ color: theme.subText }}>Surname:</span>
-              <span className="ml-2">STUDENT</span>
-            </div>
-            <div>
-              <span className="font-bold" style={{ color: theme.subText }}>First Names:</span>
-              <span className="ml-2">NAME</span>
-            </div>
-            <div>
-              <span className="font-bold" style={{ color: theme.subText }}>Programme Code:</span>
-              <span className="ml-2">SCITECH17</span>
-            </div>
-            <div className="col-span-2">
-              <span className="font-bold" style={{ color: theme.subText }}>Programme Name:</span>
-              <span className="ml-2">BACHELOR OF SCIENCE HONOURS DEGREE IN COMPUTER SCIENCE</span>
-            </div>
-            <div>
-              <span className="font-bold" style={{ color: theme.subText }}>Attendance Type:</span>
-              <span className="ml-2">Conventional</span>
-            </div>
-            <div>
-              <span className="font-bold" style={{ color: theme.subText }}>Status:</span>
-              <span className="ml-2">Not Completed</span>
-            </div>
-            <div>
-              <span className="font-bold" style={{ color: theme.subText }}>Awards:</span>
-              <span className="ml-2">-</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Period and Results Info */}
-      <div className="space-y-4">
-        <div>
-          <p className="font-bold text-lg mb-2">Period: February 2024 - June 2024 (First Quarter)</p>
-          <p className="text-sm" style={{ color: theme.subText }}>Academic Year: 1 Semester: 1</p>
-          <p className="font-bold text-sm mt-2">Decision:</p>
-        </div>
-      </div>
-
       {/* Results Table */}
       <div className="p-6 rounded-xl shadow-md border" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
         <div className="flex items-center justify-between mb-6">
