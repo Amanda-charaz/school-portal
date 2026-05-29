@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import { BookOpen, Award, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { Award, AlertTriangle } from 'lucide-react';
 
 const StudentResultsView = ({ theme }) => {
   const [results, setResults] = useState([]);
@@ -10,7 +10,6 @@ const StudentResultsView = ({ theme }) => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        // Fetches from router.get('/results', protect, studentOnly, getMyResults) in studentRoutes.js
         const response = await api.get('/student/results');
         setResults(Array.isArray(response.data) ? response.data : []);
       } catch (err) {
@@ -22,8 +21,18 @@ const StudentResultsView = ({ theme }) => {
     fetchResults();
   }, []);
 
-  const getGradeColor = (gradeLetter) => {
-    const letter = gradeLetter.split(':')[0].trim();
+  // Determines the Grade Letter based on the score percentage
+  const calculateGradeLetter = (score) => {
+    if (score >= 75) return 'A';
+    if (score >= 65) return 'B';
+    if (score >= 60) return 'C';
+    if (score >= 50) return 'D';
+    if (score >= 45) return 'E';
+    return 'F';
+  };
+
+  // Assigns your exact hex code theme colors to the grade letters
+  const getGradeColor = (letter) => {
     if (letter === 'A') return '#10b981'; // Green
     if (letter === 'B') return '#3b82f6'; // Blue
     if (letter === 'C') return '#8b5cf6'; // Violet
@@ -64,7 +73,7 @@ const StudentResultsView = ({ theme }) => {
                 <th className="p-4 text-xs font-bold uppercase" style={{ color: theme.subText }}>Module Code</th>
                 <th className="p-4 text-xs font-bold uppercase" style={{ color: theme.subText }}>Module Name</th>
                 <th className="p-4 text-xs font-bold uppercase text-center" style={{ color: theme.subText }}>Class</th>
-                <th className="p-4 text-xs font-bold uppercase text-right" style={{ color: theme.subText }}>Decision</th>
+                <th className="p-4 text-xs font-bold uppercase text-right" style={{ color: theme.subText }}>Grade</th>
               </tr>
             </thead>
             <tbody>
@@ -75,27 +84,34 @@ const StudentResultsView = ({ theme }) => {
                   </td>
                 </tr>
               ) : (
-                results.map((res) => (
-                  <tr key={res._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
-                    <td className="p-4 font-bold">{res.subject}</td>
-                    <td className="p-4 text-sm">{res.subject}</td>
-                    <td className="p-4 text-center font-bold">{res.score}%</td>
-                    <td className="p-4 text-right">
-                      <div style={{ 
-                        backgroundColor: `#10b98115`,
-                        color: "#10b981",
-                        padding: '6px 12px',
-                        borderRadius: '6px',
-                        fontWeight: 'bold',
-                        fontSize: '12px',
-                        border: '1px solid #10b98130',
-                        display: 'inline-block'
-                      }}>
-                        ✓ P
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                results.map((res) => {
+                  const gradeLetter = calculateGradeLetter(res.score);
+                  const gradeColor = getGradeColor(gradeLetter);
+
+                  return (
+                    <tr key={res._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
+                      <td className="p-4 font-bold">{res.subject}</td>
+                      <td className="p-4 text-sm">{res.subject}</td>
+                      <td className="p-4 text-center font-bold">{res.score}%</td>
+                      <td className="p-4 text-right">
+                        <div style={{ 
+                          backgroundColor: `${gradeColor}15`,
+                          color: gradeColor,
+                          padding: '6px 16px',
+                          borderRadius: '6px',
+                          fontWeight: 'bold',
+                          fontSize: '13px',
+                          border: `1px solid ${gradeColor}30`,
+                          display: 'inline-block',
+                          textAlign: 'center',
+                          minWidth: '45px'
+                        }}>
+                          {gradeLetter}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
