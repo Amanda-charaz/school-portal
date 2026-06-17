@@ -35,7 +35,7 @@ const TeacherPortal = ({ setOpen, theme }) => {
       icon: <TrendingUp size={24} />,
       color: "text-amber-500",
       bgColor: "bg-amber-50 dark:bg-amber-900/20",
-      action: () => setOpen && setOpen("attendance")
+      action: () => setOpen && setOpen("results")
     }
   ];
 

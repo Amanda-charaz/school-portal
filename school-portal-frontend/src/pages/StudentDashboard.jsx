@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Sun, Moon, BookOpen, Award, CalendarDays, LayoutDashboard, DollarSign } from 'lucide-react';
+import { LogOut, Sun, Moon, BookOpen, Award, CalendarDays, LayoutDashboard, DollarSign, Settings } from 'lucide-react';
 import { getUserInfo, logout } from '../utils/authUtils';
 import api from '../api/axios';
 import StudentResultsView from '../components/StudentResultsView';
@@ -7,6 +7,7 @@ import StudentResultsView from '../components/StudentResultsView';
 import StudentOverview from '../components/StudentOverview'; 
 import StudentAttendanceLog from '../components/StudentAttendanceLog';
 import StudentFeesView from '../components/StudentFeesView';
+import ProfileSettings from '../components/ProfileSettings';
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -68,7 +69,7 @@ const StudentDashboard = () => {
       alignItems: "center", 
       gap: "8px", 
       fontWeight: "700",
-      fontSize: "14px",
+      fontSize: "16px",
       transition: "0.2s",
       flexShrink: 0,
       whiteSpace: "nowrap"
@@ -76,11 +77,11 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden">
+    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden text-[19px] lg:text-[17px]">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto gap-4 mb-10 no-print">
-        <h1 className="flex items-center gap-3 text-2xl font-black tracking-tighter text-gray-900 dark:text-white">
+        <h1 className="flex items-center gap-3 text-3xl font-black tracking-tighter text-gray-900 dark:text-white">
           <BookOpen size={28} className="text-indigo-600 dark:text-indigo-400" /> 
           Student Portal
         </h1>
@@ -151,6 +152,17 @@ const StudentDashboard = () => {
         >
           <DollarSign size={18} /> My Fees
         </button>
+        <button
+          onClick={() => setActiveTab("settings")}
+          style={{
+            ...styles.tabButton,
+            color: activeTab === "settings" ? theme.accent : theme.subText,
+            borderBottom: activeTab === "settings" ? `3px solid ${theme.accent}` : "none",
+            transform: activeTab === "settings" ? 'translateY(1px)' : 'none'
+          }}
+        >
+          <Settings size={18} /> Settings
+        </button>
       </div>
 
       <main className="max-w-6xl mx-auto w-full min-w-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -164,6 +176,7 @@ const StudentDashboard = () => {
             {activeTab === "results" && <StudentResultsView theme={theme} />}
             {activeTab === "attendance" && <StudentAttendanceLog theme={theme} />}
             {activeTab === "fees" && <StudentFeesView theme={theme} />}
+            {activeTab === "settings" && <ProfileSettings theme={theme} />}
           </div>
         )}
       </main>

@@ -3,7 +3,8 @@ import User from '../models/User.js';
 import Student from '../models/Student.js';
 import Class from '../models/Class.js';
 import AuditLog from '../models/AuditLog.js'; // Import the new AuditLog model
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs'; // Keep bcrypt for hashing
+import { validatePasswordComplexity } from '../utils/index.js';
 
 // Get all audit logs
 export const getAuditLogs = async (req, res) => {
@@ -85,6 +86,14 @@ export const createUser = async (req, res) => {
     const school_id = `${prefix}${nextIdNumber}`;
     const email = `${school_id.toLowerCase()}@s.com`;
     const defaultPassword = "1234"; // Default as discussed previously
+
+    // Validate default password complexity (even if it's a default, it should meet minimums)
+    const complexityError = validatePasswordComplexity(defaultPassword);
+    if (complexityError) {
+      // This indicates a problem with the hardcoded default password, or the complexity rules are too strict for it.
+      console.warn(`Default password "1234" does not meet complexity requirements: ${complexityError}`);
+      // You might want to return an error or use a stronger default password here.
+    }
 
     // Ensure assigned_subjects is handled as an array
     let subjectsArray = [];
@@ -199,8 +208,13 @@ export const resetUserPassword = async (req, res) => {
       return res.status(400).json({ message: "New password is required" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
+    // Validate new password complexity
+    const complexityError = validatePasswordComplexity(newPassword);
+    if (complexityError) {
+      return res.status(400).json({ message: complexityError });
+    }
+
+    user.password = newPassword; // Rely on pre-save hook for hashing
     user.mustResetPassword = true;
 
     await user.save();

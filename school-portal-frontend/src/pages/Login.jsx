@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import { Lock, Mail, ArrowLeft, Shield } from "lucide-react";
+import { Lock, Mail, ArrowLeft, Shield, Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [identifier, setIdentifier] = useState("");
@@ -11,10 +11,17 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [isForgotMode, setIsForgotMode] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false); // New state for "Remember Me"
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const savedIdentifier = localStorage.getItem("rememberedIdentifier");
+    if (savedIdentifier) {
+      setIdentifier(savedIdentifier);
+      setRememberMe(true);
+    }
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") setDarkMode(true);
 
@@ -44,6 +51,12 @@ const Login = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       
+      // Handle "Remember Me"
+      if (rememberMe) {
+        localStorage.setItem("rememberedIdentifier", identifier);
+      } else {
+        localStorage.removeItem("rememberedIdentifier");
+      }
       // Determine Role (Prioritize 'role' over 'role_id' to fix the identity crisis)
       const userRole = String(user.role || user.role_id || "").toLowerCase().trim();
 
@@ -119,14 +132,24 @@ const Login = () => {
 
         {!isForgotMode && (
           <>
-            <input
-              type="password"
-              placeholder="Password"
-              style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div style={{ position: 'relative', marginBottom: '16px' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder, paddingRight: '40px' }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: theme.subText }}
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             <div style={{ textAlign: 'right', width: '100%', marginBottom: '16px', marginTop: '-8px' }}>
               <button
                 type="button"
@@ -138,6 +161,22 @@ const Login = () => {
             </div>
           </>
         )}
+        
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%', marginBottom: '20px' }}>
+          <input
+            type="checkbox"
+            id="rememberMe"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            style={{ marginRight: '8px', width: '16px', height: '16px', cursor: 'pointer' }}
+          />
+          <label
+            htmlFor="rememberMe"
+            style={{ fontSize: '13px', color: theme.subText, cursor: 'pointer' }}
+          >
+            Remember Me
+          </label>
+        </div>
 
         <button type="submit" style={{ ...styles.button, backgroundColor: theme.accent }} disabled={loading}>
           {loading ? "Please wait..." : (isForgotMode ? "Send Reset Link" : "Sign In")}
@@ -169,6 +208,7 @@ const getResponsiveStyles = (width) => {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      fontSize: isMobile ? "19px" : "17px",
       backgroundColor: "#f3f4f6",
       padding: isMobile ? "16px" : "0"
     },
@@ -201,10 +241,18 @@ const getResponsiveStyles = (width) => {
       fontSize: isMobile ? "20px" : "24px"
     },
     logoText: { textAlign: "center" },
-    universityName: { fontSize: isMobile ? "14px" : "16px", fontWeight: "bold", color: "#111827", lineHeight: "1.2" },
-    universitySubtext: { fontSize: isMobile ? "10px" : "11px", color: "#6b7280", lineHeight: "1.2" },
-    title: { fontSize: isMobile ? "18px" : "22px", fontWeight: "700", color: "#111827", marginBottom: "24px" },
-    input: { width: "100%", padding: "12px 14px", marginBottom: "16px", borderRadius: "6px", border: "1px solid #d1d5db", boxSizing: "border-box", fontSize: "16px", backgroundColor: "#f9fafb" },
+    universityName: { fontSize: isMobile ? "16px" : "18px", fontWeight: "bold", color: "#111827", lineHeight: "1.2" },
+    universitySubtext: { fontSize: isMobile ? "12px" : "13px", color: "#6b7280", lineHeight: "1.2" },
+    title: { fontSize: isMobile ? "22px" : "26px", fontWeight: "700", color: "#111827", marginBottom: "24px" },
+    input: { 
+      width: "100%", 
+      padding: "12px 14px", 
+      borderRadius: "6px", 
+      border: "1px solid #d1d5db", 
+      boxSizing: "border-box", 
+      fontSize: isMobile ? "19px" : "17px", 
+      backgroundColor: "#f9fafb" 
+    },
     button: { width: "100%", padding: "12px", backgroundColor: "#003DA5", color: "white", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer", fontSize: "15px" },
     error: { color: "#ef4444", marginBottom: "16px", fontSize: "13px", fontWeight: "500" },
     success: { color: "#10b981", marginBottom: "16px", fontSize: "13px", fontWeight: "500" },

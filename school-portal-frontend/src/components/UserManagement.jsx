@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../api/axios";
+import { subjectOptions } from "../utils/academicUtils";
 import { UserPlus, RefreshCw, BookOpen, Sparkles, X, UserX } from "lucide-react";
 
 const UserManagement = ({ theme }) => {
@@ -14,13 +15,6 @@ const UserManagement = ({ theme }) => {
     assigned_class: "",
     assigned_subjects: []
   });
-
-  // Strict Zimbabwean O-Level Curriculum Subject Options
-  const subjectOptions = [
-    "English Language", "Mathematics", "Shona", "Ndebele", "Heritage Studies",
-    "Agriculture", "Combined Science", "Computer Science", "Commerce",
-    "Principles of Accounts", "Business Studies", "Geography", "History"
-  ];
 
   useEffect(() => {
     fetchUsers();

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Attendance from '../components/Attendance'; // ✅ Bound to the Active Refined Component
 import Result from '../components/Result';
 import TeacherPortal from './TeacherPortal';
-import { LogOut, Sun, Moon, BookOpen, ClipboardCheck, PlusCircle, LayoutDashboard } from "lucide-react";
+import ProfileSettings from '../components/ProfileSettings';
+import { LogOut, Sun, Moon, BookOpen, ClipboardCheck, PlusCircle, LayoutDashboard, Settings } from "lucide-react";
 import { getUserInfo, logout } from "../utils/authUtils";
 import api from '../api/axios';
 
@@ -75,7 +76,7 @@ const TeacherDashboard = () => {
       alignItems: "center", 
       gap: "8px", 
       fontWeight: "700",
-      fontSize: "14px",
+      fontSize: "16px",
       transition: "0.2s",
       flexShrink: 0,
       whiteSpace: "nowrap"
@@ -83,11 +84,11 @@ const TeacherDashboard = () => {
   };
 
   return (
-    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden">
+    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden text-[19px] lg:text-[17px]">
       
       {/* Header Container */}
       <div className="flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto gap-4 mb-10">
-        <h1 className="flex items-center gap-3 text-2xl font-black tracking-tighter text-gray-900 dark:text-white">
+        <h1 className="flex items-center gap-3 text-3xl font-black tracking-tighter text-gray-900 dark:text-white">
           <BookOpen size={28} className="text-indigo-600 dark:text-indigo-400" /> 
           Teacher Hub
         </h1>
@@ -154,6 +155,19 @@ const TeacherDashboard = () => {
           <PlusCircle size={18} /> 
           Manage Results
         </button>
+
+        <button
+          onClick={() => setActiveTab("settings")}
+          style={{
+            ...styles.tabButton,
+            color: activeTab === "settings" ? theme.accent : theme.subText,
+            borderBottom: activeTab === "settings" ? `3px solid ${theme.accent}` : "none",
+            transform: activeTab === "settings" ? 'translateY(1px)' : 'none'
+          }}
+        >
+          <Settings size={18} /> 
+          Settings
+        </button>
       </div>
 
       {/* Main Viewport Routing Frame - Transitions applied for a sleek feel */}
@@ -164,6 +178,8 @@ const TeacherDashboard = () => {
           <Result theme={theme} userInfo={userInfo} />
         ) : activeTab === "overview" ? (
           <TeacherPortal setOpen={setActiveTab} theme={theme} />
+        ) : activeTab === "settings" ? (
+          <ProfileSettings theme={theme} />
         ) : null}
       </main>
     </div>

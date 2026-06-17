@@ -4,6 +4,8 @@ import TeacherSubjectManagement from "../components/TeacherSubjectManagement";
 import ClassManagement from "../components/ClassManagement";
 import AdminAttendanceView from "../components/AdminAttendanceView";
 import AccountManagement from "../components/AccountManagement";
+import Result from "../components/Result";
+import { getGradeColor } from "../utils/academicUtils";
 import api from "../api/axios";
 import {
   PlusCircle,
@@ -33,27 +35,9 @@ const AdminDashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
-  const [formData, setFormData] = useState({
-    student_id: "",
-    subject: "English Language",
-    score: "",
-    grade: "",
-    term: "1",
-    year: new Date().getFullYear().toString() // Default to current year
-  });
-  const [results, setResults] = useState([]);
-  const [students, setStudents] = useState([]);
-  const [message, setMessage] = useState("");
   const [selectedLog, setSelectedLog] = useState(null);
   const [systemLogSearchTerm, setSystemLogSearchTerm] = useState(""); // New state for search term
   const [deleteConfirm, setDeleteConfirm] = useState(null); // Stores ID of item to delete
-
-  // Standardized Zimbabwean O-Level Curriculum Subject Options
-  const subjectOptions = [
-    "English Language", "Mathematics", "Shona", "Ndebele", "Heritage Studies",
-    "Agriculture", "Combined Science", "Computer Science", "Commerce",
-    "Principles of Accounts", "Business Studies", "Geography", "History"
-  ];
 
   // Toggle function with persistence
   const toggleTheme = () => {
@@ -74,15 +58,6 @@ const AdminDashboard = () => {
     accent: "#003DA5" // Shifted to Brand Blue
   };
 
-  const fetchResults = async () => {
-    try {
-      const response = await api.get("/result/all");
-      setResults(response.data);
-    } catch (err) {
-      console.error("Fetch failed");
-    }
-  };
-
   const fetchAuditLogs = async () => {
     try {
       const response = await api.get("/admin/logs");
@@ -101,22 +76,11 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchStudents = async () => {
-    try {
-      const response = await api.get("/student/teacher/students");
-      setStudents(Array.isArray(response.data) ? response.data : []);
-    } catch (err) {
-      console.error("Failed to load students list for selection");
-    }
-  };
-
   useEffect(() => {
     const user = getUserInfo();
     setUserInfo(user);
-    fetchResults();
     fetchAuditLogs();
     fetchSystemLogs();
-    fetchStudents();
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") setDarkMode(true);
 
@@ -132,39 +96,6 @@ const AdminDashboard = () => {
     return log.actionType.toLowerCase().includes(searchTermLower) ||
            (log.performedBy?.full_name || '').toLowerCase().includes(searchTermLower);
   });
-
-  const calculateGrade = (score) => {
-    const num = Number(score);
-    if (!score) return "";
-    if (num >= 80) return "A";
-    if (num >= 70) return "B";
-    if (num >= 60) return "C";
-    if (num >= 50) return "D";
-    if (num >= 40) return "E";
-    return "U";
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await api.post("/result/add", formData);
-      setMessage("🎉 Result uploaded successfully!");
-      setFormData({ student_id: "", subject: "English Language", score: "", grade: "", term: "1", year: new Date().getFullYear().toString() }); // Reset year too
-      fetchResults();
-    } catch (err) {
-      setMessage("❌ " + (err.response?.data?.message || "Failed to submit result"));
-    }
-  };
-
-  const handleDeleteResult = async () => {
-    try {
-      await api.delete(`/result/${deleteConfirm}`);
-      setDeleteConfirm(null);
-      fetchResults();
-    } catch (err) {
-      alert("Failed to delete result");
-    }
-  };
 
   const handleLogout = () => {
     logout();
@@ -285,129 +216,9 @@ const AdminDashboard = () => {
 
       <div style={styles.mainLayout}>
         {activeTab === "results" ? (
-          <>
-            {/* Form Card */}
-            <div style={{ ...styles.card, backgroundColor: theme.card, flex: "0 1 100%", minWidth: 0 }}>
-              <h2 style={{ ...styles.subtitle, color: theme.text }}>Upload Grade</h2>
-              <form onSubmit={handleSubmit}>
-                <div style={styles.inputGroup}>
-                  <label style={{ ...styles.label, color: theme.text }}>Select Student</label>
-                  <select
-                    style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
-                    value={formData.student_id}
-                    onChange={(e) => setFormData({ ...formData, student_id: e.target.value })}
-                    required
-                  >
-                    <option value="">-- Choose Student --</option>
-                    {students.map(s => (
-                      <option key={s._id} value={s.school_id}>{s.full_name} ({s.school_id})</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={styles.inputGroup}>
-                  <label style={{ ...styles.label, color: theme.text }}>O-Level Subject</label>
-                  <select
-                    style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  >
-                    {subjectOptions.map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={styles.inputGroup}>
-                  <label style={{ ...styles.label, color: theme.text }}>Academic Term</label>
-                  <select
-                    style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
-                    value={formData.term}
-                    onChange={(e) => setFormData({ ...formData, term: e.target.value })}
-                  >
-                    <option value="1">Term 1</option>
-                    <option value="2">Term 2</option>
-                    <option value="3">Term 3</option>
-                  </select>
-                </div>
-                <div style={styles.inputGroup}>
-                  <label style={{ ...styles.label, color: theme.text }}>Year</label>
-                  <input
-                    type="number"
-                    min="2000" // Assuming school started after 2000
-                    max={new Date().getFullYear() + 5} // Allow for future entries
-                    placeholder="e.g., 2024"
-                    style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
-                    value={formData.year}
-                    onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                    required
-                  />
-                </div>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <input
-                    type="number"
-                    placeholder="Score"
-                    style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder, flex: 2 }}
-                    value={formData.score}
-                    onChange={(e) => setFormData({ ...formData, score: e.target.value, grade: calculateGrade(e.target.value) })}
-                    required
-                  />
-                  <input
-                    value={formData.grade}
-                    readOnly
-                    placeholder="Grade"
-                    style={{ ...styles.input, backgroundColor: darkMode ? "#111827" : "#f3f4f6", color: theme.text, flex: 1, borderColor: theme.inputBorder }}
-                  />
-                </div>
-                <button type="submit" style={styles.button}>Submit Result</button>
-              </form>
-              {message && <p style={{ textAlign: 'center', marginTop: '10px' }}>{message}</p>}
-            </div>
-
-            {/* Table Card */}
-            <div style={{ ...styles.card, backgroundColor: theme.card, flex: "1 1 100%", minWidth: 0 }}>
-              <h2 style={{ ...styles.subtitle, color: theme.text }}>Recent Entries</h2>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ backgroundColor: theme.tableHeader }}>
-                      <th style={{ ...styles.th, color: theme.subText }}>Student</th>
-                      <th style={{ ...styles.th, color: theme.subText }}>Subject / Term</th>
-                      <th style={{ ...styles.th, color: theme.subText }}>Grade</th>
-                      <th style={{ ...styles.th, color: theme.subText }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.length > 0 ? (
-                      results.map((res) => (
-                        <tr key={res._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
-                          <td style={{ ...styles.td, color: theme.text }}>{res.student?.full_name || "N/A"}</td>
-                          <td style={{ ...styles.td, color: theme.text }}>
-                            <div className="font-bold">{res.subject}</div>
-                            <div style={{ fontSize: '11px', opacity: 0.6 }}>Term {res.term}, {res.year}</div>
-                          </td>
-                          <td style={{ ...styles.td, color: res.score >= 50 ? "#10b981" : "#B22222", fontWeight: "bold" }}>{res.grade}</td>
-                          <td style={styles.td}>
-                            <button 
-                              onClick={() => setDeleteConfirm(res._id)}
-                              className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-school-red transition-all"
-                              title="Delete Entry"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="3" style={{ ...styles.td, textAlign: "center", color: theme.subText, padding: "40px" }}>
-                          No results found. Start by adding a grade!
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
+          <div style={{ width: '100%' }}>
+            <Result theme={theme} userInfo={userInfo} />
+          </div>
         ) : activeTab === "users" ? (
           <div style={{ width: '100%' }}>
             <UserManagement theme={theme} />
@@ -449,7 +260,15 @@ const AdminDashboard = () => {
                         <td style={{ ...styles.td, color: theme.text }}>{log.student?.full_name || "N/A"}</td>
                         <td style={{ ...styles.td, color: theme.text }}>{log.subject}</td>
                         <td style={{ ...styles.td, color: theme.text }}>{log.score}</td>
-                        <td style={{ ...styles.td, color: log.score >= 50 ? "#10b981" : "#B22222", fontWeight: "bold" }}>{log.grade}</td>
+                        <td style={{ ...styles.td }}>
+                          <span style={{ 
+                            color: getGradeColor(log.grade), 
+                            fontWeight: "bold",
+                            backgroundColor: `${getGradeColor(log.grade)}15`,
+                            padding: '2px 8px',
+                            borderRadius: '4px'
+                          }}>{log.grade}</span>
+                        </td>
                         <td style={{ ...styles.td, color: theme.subText, fontSize: "12px" }}>
                           {new Date(log.updatedAt).toLocaleDateString('en-GB', { 
                             day: '2-digit', 
@@ -581,23 +400,6 @@ const AdminDashboard = () => {
             </pre>
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
               <button onClick={() => setSelectedLog(null)} style={{ ...styles.button, width: 'auto', padding: '8px 20px' }}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {deleteConfirm && (
-        <div style={styles.overlay}>
-          <div style={{ ...styles.modal, backgroundColor: theme.card, width: '100%', maxWidth: '400px', textAlign: 'center' }}>
-            <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-school-red rounded-full flex items-center justify-center mx-auto mb-4">
-              <Trash2 size={32} />
-            </div>
-            <h3 style={{ color: theme.text, fontWeight: '900', fontSize: '20px', marginBottom: '10px' }}>Confirm Deletion</h3>
-            <p style={{ color: theme.subText, fontSize: '14px', marginBottom: '25px', lineHeight: '1.6' }}>Are you sure you want to permanently remove this record? This action cannot be undone and will be logged.</p>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button onClick={() => setDeleteConfirm(null)} style={{ ...styles.button, backgroundColor: theme.inputBg, color: theme.text, marginTop: 0 }}>Cancel</button>
-              <button onClick={handleDeleteResult} style={{ ...styles.button, backgroundColor: '#B22222', color: 'white', marginTop: 0 }}>Delete Record</button>
             </div>
           </div>
         </div>

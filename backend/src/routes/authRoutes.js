@@ -1,12 +1,19 @@
-import express from "express";
-const router = express.Router();
-import * as authController from "../controllers/authController.js";
-import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import express from 'express';
+import { changePassword, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
-router.post("/register", authController.register);
-router.post("/login", authController.login);
-router.post("/forgot-password", authController.forgotPassword);
-router.get('/users', protect, adminOnly, authController.getUsers);
-router.delete('/users/:id', protect, adminOnly, authController.deleteUser);
+const router = express.Router();
+
+// @route   PUT /api/auth/change-password
+// @desc    Allows any authenticated user to update their own password
+router.put('/change-password', protect, changePassword);
+
+// @route   POST /api/auth/forgot-password
+// @desc    Public endpoint to request a reset token
+router.post('/forgot-password', forgotPassword);
+
+// @route   POST /api/auth/reset-password
+// @desc    Public endpoint to submit new password with token
+router.post('/reset-password', resetPassword);
 
 export default router;

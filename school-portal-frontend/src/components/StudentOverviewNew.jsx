@@ -1,4 +1,5 @@
 import React from 'react';
+import { termLabels } from '../utils/academicUtils';
 
 const StudentOverview = ({ theme, data, onNavigateToTab }) => {
   if (!data) return null;
@@ -56,7 +57,7 @@ const StudentOverview = ({ theme, data, onNavigateToTab }) => {
                 <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px", backgroundColor: theme.inputBg, borderRadius: "8px" }}>
                   <div>
                     <div style={{ fontSize: "13px", fontWeight: "700", color: theme.text }}>{res.subject}</div>
-                    <div style={{ fontSize: "11px", color: theme.subText, marginTop: "2px" }}>Term {res.term}, {res.year}</div>
+                    <div style={{ fontSize: "11px", color: theme.subText, marginTop: "2px" }}>{termLabels[res.term] || `Term ${res.term}`}, {res.year}</div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <span style={{ fontSize: "12px", fontWeight: "700", color: theme.text }}>{res.score}%</span>

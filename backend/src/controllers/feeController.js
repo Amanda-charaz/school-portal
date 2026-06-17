@@ -43,6 +43,63 @@ export const addFee = async (req, res) => {
 };
 
 /**
+ * Generates a specific term-based invoice for a student.
+ * Handles base fees, discounts, and fines as requested by the admin.
+ */
+export const generateInvoice = async (req, res) => {
+  try {
+    const { student_id, base_amount, discount, fines, term, year } = req.body;
+
+    // Find student by their internal ID (sent from select menu) or School ID
+    let student;
+    if (mongoose.Types.ObjectId.isValid(student_id)) {
+        student = await User.findById(student_id);
+    } else {
+        student = await User.findOne({ school_id: student_id, role: 'student' });
+    }
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found.' });
+    }
+
+    // 🛡️ Prevent duplicate invoices for the same student, term, and year
+    const existingInvoice = await Fee.findOne({ student_id: student._id, term, year });
+    if (existingInvoice) {
+      return res.status(400).json({ message: `A fee invoice already exists for Term ${term}, ${year} for this student.` });
+    }
+
+    const base = Number(base_amount) || 0;
+    const disc = Number(discount) || 0;
+    const fine = Number(fines) || 0;
+    const total = base + fine - disc;
+    
+    // Default due date: 30 days from invoice generation
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 30);
+
+    const newFee = new Fee({
+      student_id: student._id,
+      base_amount: base,
+      discount: disc,
+      fines: fine,
+      total_amount: total,
+      paid_amount: 0,
+      balance: total,
+      status: total <= 0 ? 'Paid' : 'Pending',
+      term,
+      year,
+      due_date: dueDate,
+      received_by: req.user.id
+    });
+
+    await newFee.save();
+    res.status(201).json({ message: 'Fee invoice generated successfully!', fee: newFee });
+  } catch (error) {
+    res.status(500).json({ message: 'Error generating fee invoice', error: error.message });
+  }
+};
+
+/**
  * Retrieves all fee records with populated student and staff names.
  */
 export const getAllFees = async (req, res) => {
@@ -146,11 +203,17 @@ export const generateInvoicePDF = async (req, res) => {
     // Main Content
     doc.text(`Billed To: ${fee.student_id?.full_name || 'N/A'}`);
     doc.text(`Student ID: ${fee.student_id?.school_id || 'N/A'}`);
-    doc.text(`Description: Term ${fee.term} Tuition Fees`);
+    doc.text(`Description: Term ${fee.term}, ${fee.year || new Date().getFullYear()} Tuition Fees`);
     doc.text(`Due Date: ${new Date(fee.due_date).toLocaleDateString('en-GB')}`);
     doc.moveDown();
     
-    doc.fontSize(14).text(`Total Amount: $${fee.total_amount.toLocaleString()}`);
+    // Detailed Breakdown
+    doc.fontSize(12).text(`Base Tuition: $${fee.base_amount?.toLocaleString() || '0'}`);
+    doc.text(`Fines/Charges: +$${fee.fines?.toLocaleString() || '0'}`);
+    doc.fillColor('green').text(`Discounts Applied: -$${fee.discount?.toLocaleString() || '0'}`);
+    doc.moveDown(0.5);
+    doc.fillColor('black').fontSize(14).text(`Total Amount: $${fee.total_amount.toLocaleString()}`);
+
     doc.fillColor('green').text(`Paid Amount: $${fee.paid_amount.toLocaleString()}`);
     doc.moveDown(0.5);
     doc.fontSize(16).fillColor(fee.balance > 0 ? 'red' : 'black').text(`BALANCE DUE: $${fee.balance.toLocaleString()}`, { underline: true });

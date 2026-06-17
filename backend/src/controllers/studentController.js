@@ -170,17 +170,9 @@ export const getStudentsByTeacher = async (req, res) => {
     try {
         let query;
 
-        if (userRole === 'admin') {
-            // Admins see all students
+        if (userRole === 'admin' || userRole === 'teacher') {
+            // Admins and Teachers now see all students for comprehensive selection and reporting
             query = User.find({ role: 'student' }).select('-password');
-        } else if (userRole === 'teacher') {
-            // Teachers see only students in their assigned class
-            const teacher = await User.findById(teacherId);
-            if (!teacher?.assigned_class) {
-                return res.json([]); // Return empty list instead of error
-            }
-            const classList = teacher.assigned_class.split(',').map(c => c.trim());
-            query = User.find({ role: 'student', assigned_class: { $in: classList } }).select('-password');
         } else {
             return res.status(403).json({ message: "Not authorized to view students" });
         }

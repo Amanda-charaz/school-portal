@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
+import { termLabels } from '../utils/academicUtils';
 import { 
   CalendarDays, 
   User, 
@@ -23,6 +24,8 @@ const AdminAttendanceView = ({ theme }) => {
   const [error, setError] = useState(null);
   const [filterDate, setFilterDate] = useState('');
   const [filterClass, setFilterClass] = useState('');
+  const [selectedTerm, setSelectedTerm] = useState('all');
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
 
   const fetchAttendance = useCallback(async () => {
     setLoading(true);
@@ -92,9 +95,35 @@ const AdminAttendanceView = ({ theme }) => {
     }
   };
 
+  const handleDownloadTermReport = async () => {
+    try {
+      const response = await api.get(`/attendance/term-report`, {
+        params: { 
+          term: selectedTerm, 
+          year: selectedYear, 
+          class_name: filterClass 
+        },
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const termLabel = selectedTerm === 'all' ? 'Annual_Attendance' : `Attendance_Term_${selectedTerm}`;
+      link.setAttribute('download', `${termLabel}_${selectedYear}_${filterClass || 'All_Classes'}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Failed to download term attendance report.');
+    }
+  };
+
   const handleClearFilters = () => {
     setFilterDate('');
     setFilterClass('');
+    setSelectedTerm('all');
+    setSelectedYear(new Date().getFullYear().toString());
   };
 
   const handlePrint = () => {
@@ -241,6 +270,34 @@ const AdminAttendanceView = ({ theme }) => {
       {/* Filter Options */}
       <div className="flex flex-wrap items-end gap-4 mb-6 p-4 rounded-xl shadow-sm no-print" style={{ backgroundColor: theme?.inputBg || '#f9f9f9' }}>
         <div>
+          <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+            Year:
+          </label>
+          <input
+            type="number"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="p-2.5 rounded-xl border font-bold text-sm outline-none w-24"
+            style={{ backgroundColor: theme?.card, borderColor: theme?.inputBorder, color: theme?.text }}
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+            Term Window:
+          </label>
+          <select
+            value={selectedTerm}
+            onChange={(e) => setSelectedTerm(e.target.value)}
+            className="p-2.5 rounded-xl border font-bold text-sm outline-none"
+            style={{ backgroundColor: theme?.card, borderColor: theme?.inputBorder, color: theme?.text }}
+          >
+            <option value="all">Full Academic Year</option>
+            {Object.entries(termLabels).map(([key, label]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
           <label htmlFor="filterDate" className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
             Filter by Date:
           </label>
@@ -271,6 +328,13 @@ const AdminAttendanceView = ({ theme }) => {
           </select>
         </div>
         <div className="ml-auto flex gap-2">
+          <button
+            onClick={handleDownloadTermReport}
+            className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-widest"
+            title="Download Term Report (PDF)"
+          >
+            <Download size={18} /> {selectedTerm === 'all' ? 'Annual' : 'Term'} PDF
+          </button>
           <button
             onClick={handlePrint}
             className="p-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-widest"

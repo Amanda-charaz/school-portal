@@ -7,6 +7,7 @@ import { protect, adminOnly, studentOnly } from '../middleware/authMiddleware.js
 router.post('/add', protect, adminOnly, feeController.addFee);
 router.get('/all', protect, adminOnly, feeController.getAllFees);
 router.get('/student/:studentId', protect, adminOnly, feeController.getStudentFees);
+router.post('/invoice', protect, adminOnly, feeController.generateInvoice);
 
 // Student self-service route
 router.get('/my-fees', protect, studentOnly, feeController.getMyFees);

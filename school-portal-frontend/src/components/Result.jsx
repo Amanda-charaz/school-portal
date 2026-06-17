@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api/axios';
-import { getUserInfo } from "../utils/authUtils";
+import api from '../api/axios'
+import { 
+  getUserInfo, 
+  termLabels, 
+  calculateGrade, 
+  subjectOptions, 
+  getGradeColor 
+} from '../utils/index.js';
 import { 
   PlusCircle, 
   BookOpen, 
@@ -11,7 +17,8 @@ import {
   AlertCircle,
   Edit2,
   X,
-  Trash2
+  Trash2,
+  Eye
 } from 'lucide-react';
 
 const Result = ({ theme, userInfo }) => {
@@ -24,6 +31,9 @@ const Result = ({ theme, userInfo }) => {
   const [teacherInfo, setTeacherSubjects] = useState({ subjects: [], role: '' });
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [transcriptSearchTerm, setTranscriptSearchTerm] = useState(''); // New state for modal search
+  const transcriptModalRef = React.useRef(null); // Ref for the scrollable modal content
+  const [viewReportStudent, setViewReportStudent] = useState(null);
   
   const [formData, setFormData] = useState({
     student_id: "",
@@ -32,25 +42,6 @@ const Result = ({ theme, userInfo }) => {
     term: "1",
     year: new Date().getFullYear().toString() // Default to current year
   });
-
-  // Aligned with UserManagement.jsx for consistency
-  const subjectOptions = [
-    "English Language", "Mathematics", "Shona", "Ndebele", "Heritage Studies",
-    "Agriculture", "Combined Science", "Computer Science", "Commerce",
-    "Principles of Accounts", "Business Studies", "Geography", "History"
-  ];
-
-  // Local helper to preview grade before submission
-  const calculateGradePreview = (score) => {
-    const num = Number(score);
-    if (!score || isNaN(num)) return "-";
-    if (num >= 80) return "A";
-    if (num >= 70) return "B";
-    if (num >= 60) return "C";
-    if (num >= 50) return "D";
-    if (num >= 40) return "E";
-    return "U";
-  };
 
   useEffect(() => {
     // Use passed userInfo prop if available, otherwise fallback to storage
@@ -158,6 +149,34 @@ const Result = ({ theme, userInfo }) => {
     }
   };
 
+  const handleDownloadTranscript = async (studentId, studentName) => {
+    try {
+      setMessage({ type: 'info', text: `Generating transcript for ${studentName}...` });
+      const response = await api.get(`/result/transcript-report/${studentId}`, {
+        responseType: 'blob' // Important for downloading files
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${studentName.replace(/\s/g, '_')}_Transcript_${new Date().getFullYear()}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      setMessage({ type: 'success', text: `Transcript for ${studentName} downloaded successfully!` });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.response?.data?.message || `Failed to download transcript for ${studentName}.` });
+    } finally {
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+    }
+  };
+
+  const handleScrollToTop = () => {
+    if (transcriptModalRef.current) {
+      transcriptModalRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const filteredResults = results.filter(res => 
     res.student?.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     res.student?.school_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -255,9 +274,9 @@ const Result = ({ theme, userInfo }) => {
                   className="w-full p-3 rounded-xl border outline-none text-sm font-bold"
                   style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
                 >
-                  <option value="1">Term 1</option>
-                  <option value="2">Term 2</option>
-                  <option value="3">Term 3</option>
+                  <option value="1">First Term (January – April)</option>
+                  <option value="2">Second Term (May – August)</option>
+                  <option value="3">Third Term (September – December)</option>
                 </select>
               </div>
               <div className="space-y-1">
@@ -278,7 +297,7 @@ const Result = ({ theme, userInfo }) => {
               <div className="flex justify-between items-center">
                 <label className="text-xs font-bold uppercase opacity-60">Score (%)</label>
                 <span className="text-[10px] font-black px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
-                  Grade Preview: {calculateGradePreview(formData.score)}
+                  Grade Preview: {calculateGrade(formData.score)}
                 </span>
               </div>
               <input 
@@ -342,7 +361,7 @@ const Result = ({ theme, userInfo }) => {
                     </td>
                     <td className="p-3">
                       <div className="text-sm font-medium">{res.subject}</div>
-                      <div className="text-[10px] opacity-50">Term {res.term}</div>
+                      <div className="text-[10px] opacity-50">{termLabels[res.term] || `Term ${res.term}`}</div>
                     </td>
                     <td className="p-3 text-center font-mono font-bold text-lg">{res.score}%</td>
                     <td className="p-3 text-center">
@@ -352,6 +371,13 @@ const Result = ({ theme, userInfo }) => {
                     </td>
                     <td className="p-3 text-right">
                       <div className="flex justify-end gap-1">
+                        <button 
+                          onClick={() => setViewReportStudent(res.student)}
+                          className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 transition-colors"
+                          title="View Full Report"
+                        >
+                          <Eye size={16} className="opacity-60" />
+                        </button>
                         <button 
                           onClick={() => handleEdit(res)}
                           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -401,6 +427,123 @@ const Result = ({ theme, userInfo }) => {
                 style={{ backgroundColor: '#dc2626' }}
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Student Transcript Modal */}
+      {viewReportStudent && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] p-4"
+             ref={transcriptModalRef}>
+          <div className="p-8 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border animate-in zoom-in-95 duration-200" 
+               style={{ backgroundColor: theme.card, borderColor: theme.inputBorder, color: theme.text }}>
+            
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600">
+                  <BookOpen size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black tracking-tight">{viewReportStudent.full_name}'s Transcript</h3>
+                  <p className="text-sm opacity-60 font-bold uppercase tracking-widest">{viewReportStudent.school_id} • {viewReportStudent.assigned_class || 'Unassigned'}</p>
+                </div>
+              </div>
+              <button onClick={() => { setViewReportStudent(null); setTranscriptSearchTerm(''); }} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-2.5 opacity-40" size={16} />
+              <input 
+                type="text"
+                placeholder="Search subjects in transcript..."
+                value={transcriptSearchTerm}
+                onChange={(e) => setTranscriptSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-xl border outline-none text-sm" 
+                style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
+              />
+            </div>
+
+            <div className="space-y-8">
+            {(() => {
+              const matchingResults = results.filter(r => 
+                r.student?._id === viewReportStudent._id &&
+                (!transcriptSearchTerm || 
+                 r.subject.toLowerCase().includes(transcriptSearchTerm.toLowerCase()) ||
+                 String(r.year).includes(transcriptSearchTerm))
+              );
+
+              if (matchingResults.length === 0 && transcriptSearchTerm) {
+                return (
+                  <div className="py-20 text-center opacity-40 italic font-bold">
+                    No subjects or years matching "{transcriptSearchTerm}" found in this transcript.
+                  </div>
+                );
+              }
+
+              return Object.keys(termLabels).map(termKey => {
+                const termResults = matchingResults.filter(r => String(r.term) === termKey);
+                if (termResults.length === 0) return null;
+
+                return (
+                  <div key={termKey} className="space-y-4">
+                    <h4 className="text-xs font-black uppercase tracking-[0.2em] opacity-40 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.accent }}></div>
+                      {termLabels[termKey]}
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {termResults.map(res => {
+                        const gradeColor = getGradeColor(res.grade);
+                        return (
+                          <div key={res._id} className="p-4 rounded-2xl border flex items-center justify-between" style={{ borderColor: theme.inputBorder, backgroundColor: theme.inputBg }}>
+                            <div>
+                              <div className="text-sm font-black">{res.subject}</div>
+                              <div className="text-[10px] opacity-50 font-bold uppercase">Year: {res.year}</div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <div className="text-right">
+                                <div className="text-xs font-black">{res.score}%</div>
+                              </div>
+                              <div 
+                                className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black"
+                                style={{ backgroundColor: `${gradeColor}15`, color: gradeColor, border: `1px solid ${gradeColor}30` }}
+                              >
+                                {res.grade}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+            </div>
+            
+            <div className="mt-8 pt-6 border-t flex justify-end" style={{ borderColor: theme.inputBorder }}>
+              {transcriptModalRef.current && transcriptModalRef.current.scrollHeight > transcriptModalRef.current.clientHeight && (
+                <button
+                  onClick={handleScrollToTop}
+                  className="px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm flex items-center gap-2 mr-3"
+                >
+                  <ArrowUpCircle size={16} /> Scroll to Top
+                </button>
+              )}
+              <button
+                onClick={() => handleDownloadTranscript(viewReportStudent._id, viewReportStudent.full_name)}
+                className="px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-2 mr-3"
+              >
+                <Download size={16} /> Download PDF
+              </button>
+              <button
+                onClick={() => { setViewReportStudent(null); setTranscriptSearchTerm(''); }}
+                className="px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm"
+              >
+                Close Transcript
               </button>
             </div>
           </div>

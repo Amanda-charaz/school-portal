@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../api/axios";
+import { subjectOptions } from "../utils/academicUtils";
 import { Edit, Trash2, BookOpen, X } from "lucide-react";
 
 const TeacherSubjectManagement = ({ theme }) => {
@@ -8,22 +9,6 @@ const TeacherSubjectManagement = ({ theme }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [editFormData, setEditFormData] = useState({ assigned_subjects: [] });
-
-  const subjectOptions = [
-    "English Language",
-    "Mathematics",
-    "Shona",
-    "Ndebele",
-    "Heritage Studies",
-    "Agriculture",
-    "Combined Science",
-    "Computer Science",
-    "Commerce",
-    "Principles of Accounts",
-    "Business Studies",
-    "Geography",
-    "History"
-  ];
 
   useEffect(() => {
     fetchTeachers();

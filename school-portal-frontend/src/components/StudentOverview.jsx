@@ -1,4 +1,5 @@
 import React from 'react';
+import { termLabels } from '../utils/academicUtils';
 
 const StudentOverview = ({ theme, data, onNavigateToTab }) => {
   if (!data) return null;
@@ -75,7 +76,7 @@ const StudentOverview = ({ theme, data, onNavigateToTab }) => {
                 >
                   <div className="min-w-0">
                     <div className="text-sm font-bold text-gray-900 dark:text-white truncate">{res.subject}</div>
-                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Term {res.term}, {res.year}</div>
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{termLabels[res.term] || `Term ${res.term}`}, {res.year}</div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="text-sm font-black text-gray-700 dark:text-gray-300">{res.score}%</span>
@@ -133,6 +134,11 @@ const StudentOverview = ({ theme, data, onNavigateToTab }) => {
             }`}>
               ${data.financial_status?.total_balance?.toLocaleString() || "0"}
             </div>
+            {data.financial_status?.total_balance > 0 && (
+              <div className="text-[8px] font-black text-school-red uppercase tracking-tighter bg-red-50 dark:bg-red-900/20 px-1 rounded inline-block">
+                Outstanding
+              </div>
+            )}
           </div>
         </div>
 

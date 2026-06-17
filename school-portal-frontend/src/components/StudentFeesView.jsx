@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import { CreditCard, DollarSign, Clock, AlertCircle, ExternalLink, Download, History } from 'lucide-react';
+import { termLabels } from '../utils/academicUtils';
+import { CreditCard, DollarSign, Clock, AlertCircle, ExternalLink, Download, History, Filter } from 'lucide-react';
 
 const StudentFeesView = ({ theme }) => {
   const [fees, setFees] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTerm, setSelectedTerm] = useState('all');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,12 +81,31 @@ const StudentFeesView = ({ theme }) => {
     }
   };
 
-  const totalBalance = fees.reduce((sum, record) => sum + record.balance, 0);
+  const filteredFees = fees.filter(f => selectedTerm === 'all' || String(f.term) === selectedTerm);
+  const totalBalance = filteredFees.reduce((sum, record) => sum + record.balance, 0);
 
   if (loading) return <div className="p-10 text-center animate-pulse font-black text-gray-400 uppercase tracking-widest text-xs">Syncing Financial Ledger...</div>;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Filter Header */}
+      <div className="flex justify-end mb-2">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <Filter size={18} className="opacity-40" style={{ color: theme.text }} />
+          <select 
+            value={selectedTerm}
+            onChange={(e) => setSelectedTerm(e.target.value)}
+            className="flex-1 sm:w-64 p-2.5 rounded-xl border text-[10px] font-black uppercase tracking-widest outline-none transition-all cursor-pointer"
+            style={{ backgroundColor: theme.card, borderColor: theme.inputBorder, color: theme.text }}
+          >
+            <option value="all">All Academic Terms</option>
+            {Object.entries(termLabels).map(([key, label]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {/* Summary Card */}
       <div className="p-8 rounded-3xl border shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
         <div className="flex items-center gap-5">
@@ -96,6 +117,11 @@ const StudentFeesView = ({ theme }) => {
              <div className="text-4xl font-black tracking-tighter" style={{ color: totalBalance > 0 ? '#B22222' : theme.text }}>
                 ${totalBalance.toLocaleString()}
              </div>
+             {totalBalance > 0 && (
+               <div className="mt-2 text-xs font-black text-school-red uppercase tracking-widest animate-pulse">
+                 ⚠️ Outstanding Fees Detected
+               </div>
+             )}
            </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
@@ -120,7 +146,7 @@ const StudentFeesView = ({ theme }) => {
         <h3 className="text-sm font-black uppercase tracking-[0.1em] mb-6 flex items-center gap-2" style={{ color: theme.subText }}>
           <Clock className="text-indigo-500" size={18} /> Invoices & Fees
         </h3>
-        {fees.length === 0 ? (
+        {filteredFees.length === 0 ? (
           <div className="p-10 text-center text-gray-400 font-bold italic border-2 border-dashed rounded-xl" style={{ borderColor: theme.inputBorder }}>No financial records found.</div>
         ) : (
           <div className="overflow-x-auto">
@@ -128,7 +154,7 @@ const StudentFeesView = ({ theme }) => {
               <thead>
                 <tr className="border-b" style={{ borderColor: theme.inputBorder }}>
                   <th className="py-3 text-[10px] font-black uppercase text-gray-400">Process Date</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Details</th>
+                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Term / Breakdown</th>
                   <th className="py-3 text-[10px] font-black uppercase text-gray-400">Status</th>
                   <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Invoiced</th>
                   <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Paid</th>
@@ -137,11 +163,16 @@ const StudentFeesView = ({ theme }) => {
                 </tr>
               </thead>
               <tbody>
-                {fees.map(f => (
+                {filteredFees.map(f => (
                   <tr key={f._id} className="border-b hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" style={{ borderColor: theme.inputBorder }}>
                     <td className="py-4 text-xs font-bold text-gray-500">{new Date(f.createdAt).toLocaleDateString()}</td>
                     <td className="py-4">
-                      <div className="text-xs font-black" style={{ color: theme.text }}>Term {f.term} Tuition</div>
+                      <div className="text-xs font-black" style={{ color: theme.text }}>{termLabels[f.term] || `Term ${f.term}`} Tuition</div>
+                      <div className="text-[9px] text-gray-400 font-bold">
+                        Base: ${f.base_amount?.toLocaleString() || '0'} | 
+                        <span className="text-emerald-500"> Disc: -${f.discount?.toLocaleString() || '0'}</span> | 
+                        <span className="text-school-red"> Fine: +${f.fines?.toLocaleString() || '0'}</span>
+                      </div>
                       <div className="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Due: {new Date(f.due_date).toLocaleDateString()}</div>
                     </td>
                     <td className="py-4">

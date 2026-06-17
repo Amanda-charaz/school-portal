@@ -1,161 +1,121 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import User from '../models/User.js';
+import AuditLog from '../models/AuditLog.js';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import { validatePasswordComplexity } from '../utils/index.js';
 
-export const register = async (req, res) => {
+/**
+ * @desc    Change logged-in user password
+ * @route   PUT /api/auth/change-password
+ * @access  Private (All Roles)
+ */
+export const changePassword = async (req, res) => {
   try {
-    const { full_name, role, assigned_class, assigned_subjects } =
-      req.body;
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
 
-    // 1. Determine the Prefix based on the role
-    let prefix = "A"; // Default for Admin
-    if (role === "student") prefix = "S";
-    if (role === "teacher") prefix = "T";
-
-    // 2. Count how many users already have this role to get the next sequential number
-    const count = await User.countDocuments({ role });
-
-    // 3. Generate the ID (S1, T1, etc.)
-    const school_id = `${prefix}${count + 1}`;
-
-    // 4. Generate the automatic email
-    const email = `${school_id.toLowerCase()}@s.com`;
-
-    // 5. Set the Default Password
-    const defaultPassword = "1234";
-    const hashedPassword = await bcrypt.hash(defaultPassword, 10);
-
-    // 5. Create the User
-    const newUser = await User.create({
-      full_name,
-      email,
-      password: hashedPassword,
-      role,
-      school_id, // Save the generated ID
-      assigned_class: role === "student" ? assigned_class : null,
-      assigned_subjects: role === "teacher" ? assigned_subjects : [],
-    });
-
-    res.status(201).json({
-      message: "User created successfully",
-      user: newUser
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error during registration" });
-  }
-};
-
-export const login = async (req, res) => {
-  try {
-    // 1. Accept both 'email' or 'identifier' from the request body
-    const { identifier, email, password } = req.body;
-
-    // Determine which login field to use
-    const loginValue = identifier || email;
-
-    if (!loginValue || !password) {
-      return res.status(400).json({ message: "Please provide all fields" });
-    }
-
-    // 2. Find user by email OR school_id (if you use school IDs)
-    const user = await User.findOne({
-      $or: [{ email: loginValue }, { school_id: loginValue }],
-    });
-
+    // 1. Find user and explicitly select password field
+    // (Assuming the model has select: false for the password field by default)
+    const user = await User.findById(userId).select('+password');
     if (!user) {
-      // 💡 If you see this in your browser, it means the search failed
-      return res
-        .status(400)
-        .json({ message: "Invalid credentials: User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // 3. Compare Password
-    const isMatch = await bcrypt.compare(password, user.password);
+    // 2.1. Validate new password complexity
+    const complexityError = validatePasswordComplexity(newPassword);
+    if (complexityError) {
+      return res.status(400).json({ message: complexityError });
+    }
+
+    // 2. Verify the current password matches what's in the database
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
-      // 💡 If you see this, the email was found but the password hash didn't match
-      return res
-        .status(400)
-        .json({ message: "Invalid credentials: Password mismatch" });
+      return res.status(401).json({ message: "Incorrect current password. Authentication failed." });
     }
 
-    // 4. Generate Token
-    // Inside your login function
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role, // String: "admin"
-        role_id: user.role_id, // String: "admin" (to support old code)
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" },
-    );
-    res.status(200).json({
-      token,
-      user: {
-        id: user._id,
-        full_name: user.full_name,
-        email: user.email,
-        role: user.role,
-        role_id: user.role_id,
-        assigned_class: user.assigned_class,
-        assigned_subjects: user.assigned_subjects,
-      },
+    // 3. Update the password field. The User model's pre-save hook will handle hashing automatically.
+    user.password = newPassword;
+    
+    await user.save();
+
+    // 4. Create an audit log for security tracking
+    await AuditLog.create({
+      actionType: 'PASSWORD_CHANGED',
+      performedBy: userId,
+      targetUser: userId,
+      details: { info: "Self-service password update performed by user" },
+      timestamp: new Date()
     });
+
+    res.json({ message: "Password updated successfully" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Failed to update password", error: err.message });
   }
 };
 
+/**
+ * @desc    Request password reset token
+ * @route   POST /api/auth/forgot-password
+ * @access  Public
+ */
 export const forgotPassword = async (req, res) => {
   try {
     const { identifier } = req.body;
-
-    // Find user by email OR school_id
-    const user = await User.findOne({
-      $or: [{ email: identifier }, { school_id: identifier }],
+    const user = await User.findOne({ 
+      $or: [{ email: identifier }, { school_id: identifier }] 
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found with that identifier" });
+      return res.status(404).json({ message: "No account found with that email or ID." });
     }
 
-    // 💡 Institutional Note: In a production environment, we would generate a 
-    // cryptographically secure token, save it to the DB with an expiry, 
-    // and send a localized email via NodeMailer or SendGrid.
-    
-    res.status(200).json({ 
-      message: `Success! Password reset instructions have been sent to ${user.email}` 
+    // Generate and hash password reset token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.resetPasswordExpires = Date.now() + 3600000; // Token valid for 1 hour
+
+    await user.save();
+
+    // In a real production app, you would use Nodemailer here to send the email.
+    // For now, we return it in the message so you can test the flow.
+    res.json({ 
+      message: "An email with reset instructions has been sent.",
+      debug_token: resetToken // REMOVE THIS IN PRODUCTION
     });
   } catch (err) {
-    res.status(500).json({ message: "Server error during password reset request" });
+    res.status(500).json({ message: "Error processing request", error: err.message });
   }
 };
 
-export const getAllStudents = async (req, res) => {
+/**
+ * @desc    Reset password using token
+ * @route   POST /api/auth/reset-password
+ * @access  Public
+ */
+export const resetPassword = async (req, res) => {
   try {
-    const students = await User.find({ role: 'student' }).select("full_name _id school_id");
-    res.json(students);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch students" });
-  }
-};
+    const { token, newPassword } = req.body;
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-export const getUsers = async (req, res) => {
-  try {
-    const users = await User.find().select("-password"); // Never send passwords back!
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-};
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
 
-export const deleteUser = async (req, res) => {
-  try {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ message: "User deleted successfully" });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+    }
+
+    const complexityError = validatePasswordComplexity(newPassword);
+    if (complexityError) return res.status(400).json({ message: complexityError });
+
+    user.password = newPassword; // Hashed automatically by User model pre-save hook
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: "Password has been reset. you can now sign in." });
   } catch (err) {
-    res.status(500).json({ error: "Delete failed" });
+    res.status(500).json({ message: "Error resetting password", error: err.message });
   }
 };

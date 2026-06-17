@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { termLabels } from '../utils/academicUtils';
 import { useParams } from 'react-router-dom'; // Assuming react-router-dom for routing
 
 const FeeHistory = ({ studentId: propStudentId, isStudentSelfService = false }) => {
@@ -80,7 +81,7 @@ const FeeHistory = ({ studentId: propStudentId, isStudentSelfService = false }) 
           <tbody>
             {fees.map((fee) => (
               <tr key={fee._id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b">{fee.term || 'N/A'}</td>
+                <td className="py-2 px-4 border-b">{termLabels[fee.term] || fee.term || 'N/A'}</td>
                 <td className="py-2 px-4 border-b">${fee.total_amount.toFixed(2)}</td>
                 <td className="py-2 px-4 border-b">${fee.paid_amount.toFixed(2)}</td>
                 <td className="py-2 px-4 border-b">${fee.balance.toFixed(2)}</td>

@@ -171,18 +171,7 @@ export const getAllResults = async (req, res) => {
     try {
         const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
         let query = {};
-
-        // Teachers can only see results for their class
-        if (userRole === 'teacher') {
-          const teacher = await User.findById(req.user.id);
-          if (teacher?.assigned_class) {
-            const classList = teacher.assigned_class.split(',').filter(Boolean).map(c => c.trim());
-            const classStudents = await User.find({ role: 'student', assigned_class: { $in: classList } });
-            const studentIds = classStudents.map(s => s._id.toString());
-            query = { student: { $in: studentIds } };
-          }
-        }
-        // Admins see all results
+        // Teachers and Admins can now see all institutional results
 
         const results = await Result.find(query).populate('student', 'full_name school_id assigned_class');
         res.json(results);
