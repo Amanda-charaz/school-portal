@@ -3,7 +3,7 @@ import api from '../api/axios';
 import { Lock, Save, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const ProfileSettings = ({ theme }) => {
+const ProfileSettings = () => {
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
