@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, CheckCircle, XCircle, Clock, Info, FileDown, Filter, XCircle as XIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { downloadBlob } from '../utils/downloadUtils';
+import { getAttendanceStatusClass } from '../utils/formatUtils';
 
 const StudentAttendanceView = () => {
   const [records, setRecords] = useState([]);
@@ -66,13 +68,7 @@ const StudentAttendanceView = () => {
       }
 
       const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.setAttribute('download', `Attendance_Report_${new Date().toISOString().split('T')[0]}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+      downloadBlob(blob, `Attendance_Report_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (err) {
       console.error("Export error:", err);
       alert("Could not export report: " + err.message);
@@ -90,18 +86,16 @@ const StudentAttendanceView = () => {
     });
   };
 
-  const getStatusStyles = (status) => {
-    switch (status) {
-      case 'Present':
-        return { badge: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300', icon: <CheckCircle size={16} className="text-green-600" /> };
-      case 'Absent':
-        return { badge: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300', icon: <XCircle size={16} className="text-red-600" /> };
-      case 'Late':
-        return { badge: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300', icon: <Clock size={16} className="text-yellow-600" /> };
-      default:
-        return { badge: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300', icon: <Info size={16} /> };
-    }
+  const statusIcons = {
+    Present: <CheckCircle size={16} className="text-green-600" />,
+    Absent: <XCircle size={16} className="text-red-600" />,
+    Late: <Clock size={16} className="text-yellow-600" />,
   };
+
+  const getStatusStyles = (status) => ({
+    badge: getAttendanceStatusClass(status),
+    icon: statusIcons[status] || <Info size={16} />,
+  });
 
   const stats = {
     total: records.length,

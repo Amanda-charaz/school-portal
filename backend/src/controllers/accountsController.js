@@ -1,7 +1,7 @@
 import Transaction from '../models/Transaction.js';
 import Fee from '../models/Fee.js';
 import PDFDocument from 'pdfkit';
-import mongoose from 'mongoose';
+import { toObjectId } from '../utils/index.js';
 
 /**
  * @desc    Get transactions for the authenticated student
@@ -11,9 +11,7 @@ import mongoose from 'mongoose';
 export const getMyTransactions = async (req, res) => {
   try {
     // Ensure ID is treated as a valid ObjectId for the query
-    const userId = mongoose.Types.ObjectId.isValid(req.user.id) 
-      ? new mongoose.Types.ObjectId(req.user.id) 
-      : req.user.id;
+    const userId = toObjectId(req.user.id);
 
     const transactions = await Transaction.find({ user: userId })
       .sort({ date: -1 });
@@ -107,9 +105,7 @@ export const addTransaction = async (req, res) => {
   const { user, amount, category, type, description } = req.body;
   try {
     // Normalize user ID: convert empty strings to null or ensure it's a valid ObjectId
-    const targetUserId = user && mongoose.Types.ObjectId.isValid(user) 
-      ? new mongoose.Types.ObjectId(user) 
-      : null;
+    const targetUserId = user ? toObjectId(user) : null;
 
     const newTransaction = new Transaction({
       user: targetUserId,

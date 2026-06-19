@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { termLabels } from '../utils/academicUtils';
+import { downloadBlob } from '../utils/downloadUtils';
 import { DollarSign, PlusCircle, History, TrendingUp, User, CreditCard, Download, Trash2, Filter } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -94,14 +95,7 @@ const AccountManagement = ({ theme }) => {
       const response = await api.get(`/accounts/receipt/${transactionId}`, {
         responseType: 'blob'
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `Receipt_${transactionId.slice(-6)}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(response.data, `Receipt_${transactionId.slice(-6)}.pdf`);
     } catch (err) {
       alert('Failed to download receipt');
     }
@@ -113,15 +107,8 @@ const AccountManagement = ({ theme }) => {
         params: { term: selectedTerm },
         responseType: 'blob'
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
       const termLabel = selectedTerm === 'all' ? 'Full_Financial_Summary' : `Financial_Summary_Term_${selectedTerm}`;
-      link.setAttribute('download', `${termLabel}_${new Date().toISOString().split('T')[0]}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(response.data, `${termLabel}_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (err) {
       alert('Failed to download financial summary report.');
     }

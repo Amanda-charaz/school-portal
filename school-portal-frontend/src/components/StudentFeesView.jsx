@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { termLabels } from '../utils/academicUtils';
+import { downloadBlob } from '../utils/downloadUtils';
 import { CreditCard, DollarSign, Clock, AlertCircle, ExternalLink, Download, History, Filter } from 'lucide-react';
 
 const StudentFeesView = ({ theme }) => {
@@ -50,14 +51,7 @@ const StudentFeesView = ({ theme }) => {
       const response = await api.get(`/fees/invoice/${feeId}`, {
         responseType: 'blob'
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `Invoice_${feeId.slice(-6)}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(response.data, `Invoice_${feeId.slice(-6)}.pdf`);
     } catch (err) {
       alert('Failed to download invoice');
     }
@@ -68,14 +62,7 @@ const StudentFeesView = ({ theme }) => {
       const response = await api.get(`/accounts/receipt/${transactionId}`, {
         responseType: 'blob'
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `Receipt_${transactionId.slice(-6)}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(response.data, `Receipt_${transactionId.slice(-6)}.pdf`);
     } catch (err) {
       alert('Failed to download receipt');
     }

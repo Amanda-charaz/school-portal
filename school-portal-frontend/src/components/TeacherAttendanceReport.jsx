@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { formatDate as formatDateUtil } from '../utils/formatUtils';
 
 const TeacherAttendanceReport = () => {
   const [trends, setTrends] = useState([]);
@@ -33,12 +34,7 @@ const TeacherAttendanceReport = () => {
     fetchAttendanceTrends();
   }, []);
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-ZW', {
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  const formatDate = (dateString) => formatDateUtil(dateString, { month: 'short', day: 'numeric' });
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50 overflow-hidden transition-all">

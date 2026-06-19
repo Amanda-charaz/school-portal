@@ -1,8 +1,7 @@
 import User from '../models/User.js';
-import AuditLog from '../models/AuditLog.js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { validatePasswordComplexity } from '../utils/index.js';
+import { validatePasswordComplexity, createAuditLog } from '../utils/index.js';
 
 /**
  * @desc    Change logged-in user password
@@ -39,12 +38,11 @@ export const changePassword = async (req, res) => {
     await user.save();
 
     // 4. Create an audit log for security tracking
-    await AuditLog.create({
+    await createAuditLog({
       actionType: 'PASSWORD_CHANGED',
       performedBy: userId,
       targetUser: userId,
       details: { info: "Self-service password update performed by user" },
-      timestamp: new Date()
     });
 
     res.json({ message: "Password updated successfully" });

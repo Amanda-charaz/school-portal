@@ -2,16 +2,7 @@ import User from '../models/User.js';
 import Result from '../models/Result.js';
 import Attendance from '../models/Attendance.js';
 import Fee from '../models/Fee.js';
-import mongoose from 'mongoose';
-
-const calculateGrade = (score) => {
-    if (score >= 80) return "A";
-    if (score >= 70) return "B";
-    if (score >= 60) return "C";
-    if (score >= 50) return "D";
-    if (score >= 40) return "E";
-    return "U";
-};
+import { toObjectId, calculateGrade, getUserRole } from '../utils/index.js';
 
 // Get student's own profile (read-only)
 export const getStudentProfile = async (req, res) => {
@@ -38,9 +29,7 @@ export const getStudentProfile = async (req, res) => {
 };
 
 export const getStudentDashboard = async (req, res) => {
-    const studentId = mongoose.Types.ObjectId.isValid(req.user.id) 
-      ? new mongoose.Types.ObjectId(req.user.id) 
-      : req.user.id;
+    const studentId = toObjectId(req.user.id);
 
     try {
         const student = await User.findById(studentId);
@@ -165,7 +154,7 @@ export const getMyResults = async (req, res) => {
 // Teachers can view their assigned students, admins can view all
 export const getStudentsByTeacher = async (req, res) => {
     const teacherId = req.user.id;
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
+    const userRole = getUserRole(req);
 
     try {
         let query;
