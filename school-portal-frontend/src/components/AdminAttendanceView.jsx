@@ -14,8 +14,10 @@ import {
   Printer
  } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useTheme } from '../context/ThemeContext';
 
-const AdminAttendanceView = ({ theme }) => {
+const AdminAttendanceView = () => {
+  const { theme } = useTheme();
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [classes, setClasses] = useState([]);
   const [trends, setTrends] = useState([]);

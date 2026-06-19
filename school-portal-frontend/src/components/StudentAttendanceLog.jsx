@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { CalendarDays, FileText, Filter, Download, AlertCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-const StudentAttendanceLog = ({ theme }) => {
+const StudentAttendanceLog = () => {
+  const { theme } = useTheme();
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
