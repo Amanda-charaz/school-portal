@@ -2,6 +2,7 @@
   "name": "school-portal",
   "version": "1.0.0",
   "description": "School Portal - Backend & Frontend",
+  "type": "module",
   "main": "backend/server.js",
   "scripts": {
     "dev": "cd backend && node server.js",
