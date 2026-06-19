@@ -1,9 +1,16 @@
 import Attendance from '../models/Attendance.js';
 import User from '../models/User.js';
-import AuditLog from '../models/AuditLog.js';
 import mongoose from 'mongoose';
 import { startOfDay, subDays } from 'date-fns';
 import PDFDocument from 'pdfkit';
+import {
+  getUserRole,
+  normalizeDateUTC,
+  buildDateRangeFilter,
+  parseClassList,
+  createAuditLog,
+  getVisibleStudentIds,
+} from '../utils/index.js';
 
 /**
  * @desc    Mark bulk attendance for a specific date
@@ -19,8 +26,7 @@ export const addAttendance = async (req, res) => {
 
   try {
     // Normalize date to YYYY-MM-DD (Midnight UTC) to avoid time-zone overlap issues
-    const normalizedDate = new Date(date);
-    normalizedDate.setUTCHours(0, 0, 0, 0);
+    const normalizedDate = normalizeDateUTC(date);
 
     const ops = students.map(record => ({
       updateOne: {
@@ -39,15 +45,15 @@ export const addAttendance = async (req, res) => {
 
     await Attendance.bulkWrite(ops);
 
-    // 🛡️ Audit Logging: Record who marked attendance and for which class
-    await AuditLog.create({
+    // Audit Logging: Record who marked attendance and for which class
+    await createAuditLog({
       actionType: 'ATTENDANCE_MARKED',
       performedBy: req.user.id,
       details: { 
         date: normalizedDate, 
         class_name: class_name || "General", 
         studentCount: students.length 
-      }
+      },
     });
 
     res.status(200).json({ message: `Attendance for ${class_name || 'class'} recorded successfully.` });
@@ -64,21 +70,18 @@ export const addAttendance = async (req, res) => {
 export const getAllAttendance = async (req, res) => {
   try {
     const { date, class_name } = req.query;
-    const userRole = String(req.user.role || "").toLowerCase();
+    const userRole = getUserRole(req);
     let filter = {};
 
     if (date) {
-      const qDate = new Date(date);
-      qDate.setUTCHours(0, 0, 0, 0);
-      filter.date = qDate;
+      filter.date = normalizeDateUTC(date);
     }
 
-    // 🛡️ Security: Teachers can only view attendance for their own assigned classes
+    // Security: Teachers can only view attendance for their own assigned classes
     if (userRole === 'teacher') {
       const teacher = await User.findById(req.user.id);
       if (!teacher?.assigned_class) return res.json([]);
-      const classList = teacher.assigned_class.split(',').map(c => c.trim());
-      filter.class_name = { $in: classList };
+      filter.class_name = { $in: parseClassList(teacher.assigned_class) };
     } else if (class_name) {
       filter.class_name = class_name;
     }
@@ -105,16 +108,9 @@ export const getMyAttendance = async (req, res) => {
     const { startDate, endDate } = req.query;
     let filter = { student_id: studentId };
 
-    if (startDate || endDate) {
-      filter.date = {};
-      if (startDate) {
-        const start = startOfDay(new Date(startDate));
-        filter.date.$gte = start;
-      }
-      if (endDate) {
-        const end = new Date(new Date(endDate).setUTCHours(23, 59, 59, 999));
-        filter.date.$lte = end;
-      }
+    const dateRange = buildDateRangeFilter(startDate, endDate);
+    if (dateRange) {
+      filter.date = dateRange;
     }
 
     const records = await Attendance.find(filter)
@@ -141,16 +137,9 @@ export const exportAttendancePDF = async (req, res) => {
     }
 
     let matchFilter = { student_id: student._id };
-    if (startDate || endDate) {
-      matchFilter.date = {};
-      if (startDate) {
-        const start = startOfDay(new Date(startDate));
-        matchFilter.date.$gte = start;
-      }
-      if (endDate) {
-        const end = new Date(new Date(endDate).setUTCHours(23, 59, 59, 999));
-        matchFilter.date.$lte = end;
-      }
+    const dateRange = buildDateRangeFilter(startDate, endDate);
+    if (dateRange) {
+      matchFilter.date = dateRange;
     }
 
     // Fetch attendance trends grouped by month (last 12 months)
@@ -210,28 +199,13 @@ export const exportAttendancePDF = async (req, res) => {
  */
 export const getTeacherAttendanceTrends = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const userRole = String(req.user.role || "").toLowerCase();
-
-    let studentIds = [];
-
-    if (userRole === 'admin') {
-      const allStudents = await User.find({ role: 'student' }).select('_id');
-      studentIds = allStudents.map(s => s._id);
-    } else {
-      const teacher = await User.findById(userId);
-      if (!teacher || !teacher.assigned_class) return res.json([]);
-      const classList = teacher.assigned_class.split(',').map(c => c.trim());
-      const students = await User.find({ role: 'student', assigned_class: { $in: classList } }).select('_id');
-      studentIds = students.map(s => s._id);
-    }
+    const studentIds = await getVisibleStudentIds(req);
 
     if (studentIds.length === 0) {
-      return res.json([]); // No students in assigned classes
+      return res.json([]);
     }
 
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    const today = normalizeDateUTC(new Date());
     const thirtyDaysAgo = subDays(today, 30);
 
     const trends = await Attendance.aggregate([
@@ -274,24 +248,8 @@ export const getTeacherAttendanceTrends = async (req, res) => {
  */
 export const getClassSummary = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const userRole = String(req.user.role || "").toLowerCase();
-
-    let totalStudents = 0;
-    let studentIds = [];
-
-    if (userRole === 'admin') {
-      totalStudents = await User.countDocuments({ role: 'student' });
-      const students = await User.find({ role: 'student' }).select('_id');
-      studentIds = students.map(s => s._id);
-    } else {
-      const teacher = await User.findById(userId);
-      if (!teacher || !teacher.assigned_class) return res.json({ totalStudents: 0, attendanceRate: 0 });
-      const classList = teacher.assigned_class.split(',').map(c => c.trim());
-      totalStudents = await User.countDocuments({ role: 'student', assigned_class: { $in: classList } });
-      const students = await User.find({ role: 'student', assigned_class: { $in: classList } }).select('_id');
-      studentIds = students.map(s => s._id);
-    }
+    const studentIds = await getVisibleStudentIds(req);
+    const totalStudents = studentIds.length;
 
     if (totalStudents === 0) {
       return res.json({ totalStudents: 0, attendanceRate: 0 });
@@ -326,9 +284,7 @@ export const exportAttendanceCSV = async (req, res) => {
     let filter = {};
 
     if (date) {
-      const qDate = new Date(date);
-      qDate.setUTCHours(0, 0, 0, 0);
-      filter.date = qDate;
+      filter.date = normalizeDateUTC(date);
     }
 
     if (class_name) {

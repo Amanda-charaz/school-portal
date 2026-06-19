@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OutstandingBalanceWidget from './OutstandingBalanceWidget';
 import { PlusCircle, Receipt, ArrowUpRight, ArrowDownRight, User, AlertCircle, WifiOff, RefreshCw, X } from 'lucide-react';
+import { formatDate as formatDateUtil, formatCurrency as formatCurrencyUtil } from '../utils/formatUtils';
 
 const AccountsTab = () => {
   const [transactions, setTransactions] = useState([]);
@@ -125,20 +126,9 @@ const AccountsTab = () => {
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-ZW', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
+  const formatCurrency = formatCurrencyUtil;
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-ZW', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  const formatDate = formatDateUtil;
 
   const getCategoryColor = (type) => {
     return type === 'Income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';

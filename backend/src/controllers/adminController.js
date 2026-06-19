@@ -2,9 +2,9 @@ import Result from '../models/Result.js';
 import User from '../models/User.js';
 import Student from '../models/Student.js';
 import Class from '../models/Class.js';
-import AuditLog from '../models/AuditLog.js'; // Import the new AuditLog model
-import bcrypt from 'bcryptjs'; // Keep bcrypt for hashing
-import { validatePasswordComplexity } from '../utils/index.js';
+import AuditLog from '../models/AuditLog.js';
+import bcrypt from 'bcryptjs';
+import { validatePasswordComplexity, parseSubjectsList, createAuditLog } from '../utils/index.js';
 
 // Get all audit logs
 export const getAuditLogs = async (req, res) => {
@@ -96,12 +96,7 @@ export const createUser = async (req, res) => {
     }
 
     // Ensure assigned_subjects is handled as an array
-    let subjectsArray = [];
-    if (assigned_subjects) {
-      subjectsArray = Array.isArray(assigned_subjects) 
-        ? assigned_subjects 
-        : assigned_subjects.split(',').map(s => s.trim()).filter(Boolean);
-    }
+    const subjectsArray = assigned_subjects ? parseSubjectsList(assigned_subjects) : [];
 
     // 3. Teachers are assigned to subjects, not classes
     // Note: Students link to classes via the Student profile model, not the User model.
@@ -159,9 +154,7 @@ export const updateUser = async (req, res) => {
     }
     
     if (assigned_subjects !== undefined) {
-      user.assigned_subjects = Array.isArray(assigned_subjects) 
-        ? assigned_subjects 
-        : assigned_subjects.split(',').map(s => s.trim()).filter(Boolean);
+      user.assigned_subjects = parseSubjectsList(assigned_subjects);
     }
 
     await user.save();
@@ -274,11 +267,10 @@ export const createClass = async (req, res) => {
 
     const newClass = await Class.create({ name, description, formTeacher });
 
-    await AuditLog.create({
+    await createAuditLog({
       actionType: 'CLASS_CREATED',
       performedBy: req.user.id,
       details: { classId: newClass._id, className: newClass.name, description: newClass.description, formTeacher: newClass.formTeacher },
-      timestamp: new Date()
     });
 
     // 🔄 Sync the teacher's assigned_class property
@@ -353,7 +345,7 @@ export const updateClass = async (req, res) => {
         await User.findByIdAndUpdate(existingClass.formTeacher, { assigned_class: null });
       }
 
-      await AuditLog.create({
+      await createAuditLog({
         actionType: 'CLASS_UPDATED',
         performedBy: req.user.id,
         details: {
@@ -361,9 +353,8 @@ export const updateClass = async (req, res) => {
           className: updatedClass.name,
           description: updatedClass.description,
           formTeacher: updatedClass.formTeacher,
-          changes: req.body // Log what was sent in the request body
+          changes: req.body,
         },
-        timestamp: new Date()
       });
     }
 
@@ -388,11 +379,10 @@ export const deleteClass = async (req, res) => {
     await User.updateMany({ assigned_class: cls.name }, { assigned_class: "" });
     await Student.updateMany({ current_class: cls.name }, { current_class: "Unassigned" });
 
-    await AuditLog.create({
+    await createAuditLog({
       actionType: 'CLASS_DELETED',
       performedBy: req.user.id,
       details: { classId: cls._id, className: cls.name, description: cls.description },
-      timestamp: new Date()
     });
     await Class.findByIdAndDelete(req.params.id);
     res.json({ message: "Class deleted successfully" });
@@ -464,11 +454,10 @@ export const promoteClass = async (req, res) => {
     // Log the error for debugging purposes
     console.error(`Error during class promotion: ${err.message}`);
     // Optionally, log this failed attempt to AuditLog as well
-    await AuditLog.create({
+    await createAuditLog({
       actionType: 'CLASS_PROMOTION',
       performedBy: req.user.id,
       details: { fromClassName, toClassName, status: 'FAILED', error: err.message },
-      timestamp: new Date()
     });
 
     res.status(400).json({ message: err.message });

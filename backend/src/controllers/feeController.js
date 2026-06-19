@@ -2,6 +2,7 @@ import Fee from '../models/Fee.js';
 import User from '../models/User.js';
 import mongoose from 'mongoose';
 import PDFDocument from 'pdfkit';
+import { toObjectId, findStudentBySchoolId } from '../utils/index.js';
 
 /**
  * Records a new fee for a student.
@@ -12,7 +13,7 @@ export const addFee = async (req, res) => {
     const { student_id, total_amount, paid_amount, term, due_date } = req.body;
 
     // Find student by their automated school_id (e.g., S1)
-    const student = await User.findOne({ school_id: student_id, role: 'student' });
+    const student = await findStudentBySchoolId(student_id);
     if (!student) {
       return res.status(404).json({ message: 'Student not found.' });
     }
@@ -120,7 +121,7 @@ export const getStudentFees = async (req, res) => {
   try {
     const { studentId } = req.params;
 
-    const student = await User.findOne({ school_id: studentId, role: 'student' });
+    const student = await findStudentBySchoolId(studentId);
     if (!student) {
       return res.status(404).json({ message: 'Student not found.' });
     }
@@ -140,9 +141,7 @@ export const getStudentFees = async (req, res) => {
 export const getMyFees = async (req, res) => {
   try {
     // Normalize ID to ensure it matches the ObjectId stored in the database
-    const studentId = mongoose.Types.ObjectId.isValid(req.user.id) 
-      ? new mongoose.Types.ObjectId(req.user.id) 
-      : req.user.id;
+    const studentId = toObjectId(req.user.id);
 
     const fees = await Fee.find({ student_id: studentId })
       .populate('received_by', 'full_name school_id')

@@ -7,6 +7,7 @@ import {
   subjectOptions, 
   getGradeColor 
 } from '../utils/index.js';
+import { downloadBlob } from '../utils/downloadUtils';
 import { 
   PlusCircle, 
   BookOpen, 
@@ -157,14 +158,7 @@ const Result = ({ userInfo }) => {
       const response = await api.get(`/result/transcript-report/${studentId}`, {
         responseType: 'blob' // Important for downloading files
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${studentName.replace(/\s/g, '_')}_Transcript_${new Date().getFullYear()}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(response.data, `${studentName.replace(/\s/g, '_')}_Transcript_${new Date().getFullYear()}.pdf`);
       setMessage({ type: 'success', text: `Transcript for ${studentName} downloaded successfully!` });
     } catch (err) {
       setMessage({ type: 'error', text: err.response?.data?.message || `Failed to download transcript for ${studentName}.` });

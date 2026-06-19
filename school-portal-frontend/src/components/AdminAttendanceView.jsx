@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { termLabels } from '../utils/academicUtils';
+import { downloadBlob } from '../utils/downloadUtils';
+import { formatDate as formatDateUtil, getAttendanceStatusClass } from '../utils/formatUtils';
 import { 
   CalendarDays, 
   User, 
@@ -83,13 +85,7 @@ const AdminAttendanceView = ({ theme }) => {
         responseType: 'blob' 
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `Attendance_Report_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      downloadBlob(response.data, `Attendance_Report_${new Date().toISOString().split('T')[0]}.csv`);
     } catch (err) {
       setError("Export failed: " + err.message);
     }
@@ -105,15 +101,8 @@ const AdminAttendanceView = ({ theme }) => {
         },
         responseType: 'blob'
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
       const termLabel = selectedTerm === 'all' ? 'Annual_Attendance' : `Attendance_Term_${selectedTerm}`;
-      link.setAttribute('download', `${termLabel}_${selectedYear}_${filterClass || 'All_Classes'}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(response.data, `${termLabel}_${selectedYear}_${filterClass || 'All_Classes'}.pdf`);
     } catch (err) {
       alert('Failed to download term attendance report.');
     }
@@ -130,26 +119,7 @@ const AdminAttendanceView = ({ theme }) => {
     window.print();
   };
 
-  const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case 'Present': return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
-      case 'Absent': return 'bg-red-50 text-school-red dark:bg-school-red-dark/20 dark:text-school-red-light';
-      case 'Late': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-    }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    // Split the date string to prevent timezone shifts (Midnight UTC to Local)
-    const [year, month, day] = dateString.split('T')[0].split('-');
-    const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString('en-ZW', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  const formatDate = formatDateUtil;
 
   return (
     <div className="p-6 rounded-2xl shadow-xl border" style={{ backgroundColor: theme?.card || '#fff', borderColor: theme?.inputBorder || '#eee' }}>
@@ -402,7 +372,7 @@ const AdminAttendanceView = ({ theme }) => {
                     {record.class_name || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(record.status)}`}>
+                    <span className={`px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getAttendanceStatusClass(record.status)}`}>
                       {record.status}
                     </span>
                   </td>

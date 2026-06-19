@@ -1,21 +1,18 @@
 import Result from '../models/Result.js';
 import User from '../models/User.js';
-import AuditLog from '../models/AuditLog.js';
-
-// Helper function to auto-calculate grade
-const calculateGrade = (score) => {
-  const num = Number(score);
-  if (num >= 80) return "A";
-  if (num >= 70) return "B";
-  if (num >= 60) return "C";
-  if (num >= 50) return "D";
-  if (num >= 40) return "E";
-  return "U";
-};
+import {
+  getUserRole,
+  calculateGrade,
+  parseSubjectsList,
+  isTeacherAssignedToSubject,
+  validateScore,
+  createAuditLog,
+  sendError,
+} from '../utils/index.js';
 
 export const addResult = async (req, res) => {
   try {
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
+    const userRole = getUserRole(req);
 
     // Only teachers and admins can add results
     if (!['teacher', 'admin'].includes(userRole)) {
@@ -25,10 +22,11 @@ export const addResult = async (req, res) => {
     const { student_id, subject, score, grade, term, year } = req.body;
 
     // Validate score range
-    const numericScore = Number(score);
-    if (isNaN(numericScore) || numericScore < 0 || numericScore > 100) {
-      return res.status(400).json({ message: "Invalid score. Must be between 0 and 100." });
+    const scoreError = validateScore(score);
+    if (scoreError) {
+      return res.status(400).json({ message: scoreError });
     }
+    const numericScore = Number(score);
 
     // Find the user in the database using their School ID
     const user = await User.findOne({ school_id: student_id });
@@ -40,16 +38,7 @@ export const addResult = async (req, res) => {
     // Teachers can only submit results for subjects they are assigned to
     if (userRole === 'teacher') {
       const teacher = await User.findById(req.user.id);
-      // Case-insensitive check for assigned subjects
-      const teacherSubjects = Array.isArray(teacher.assigned_subjects) 
-        ? teacher.assigned_subjects 
-        : (typeof teacher.assigned_subjects === 'string' 
-            ? teacher.assigned_subjects.split(',').map(s => s.trim()) 
-            : []);
-
-      const normalizedSubject = (subject || "").trim().toLowerCase();
-      const isAssigned = teacherSubjects.some(s => s.trim().toLowerCase() === normalizedSubject);
-      if (!isAssigned) {
+      if (!isTeacherAssignedToSubject(teacher.assigned_subjects, subject)) {
         return res.status(403).json({ message: `Access denied. You are not assigned to teach ${subject || 'this subject'}.` });
       }
     }
@@ -85,12 +74,11 @@ export const addResult = async (req, res) => {
     await newResult.save();
 
     // Create an audit log for the new result
-    await AuditLog.create({
+    await createAuditLog({
       actionType: 'RESULT_CREATED',
       performedBy: req.user.id,
       targetUser: user._id,
       details: { subject, score, grade: finalGrade, term: finalTerm, year: finalYear },
-      timestamp: new Date()
     });
 
     res.status(201).json(newResult);
@@ -108,7 +96,7 @@ export const updateResult = async (req, res) => {
   try {
     const { id } = req.params;
     const { score, subject, term, year } = req.body;
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
+    const userRole = getUserRole(req);
 
     const result = await Result.findById(id);
     if (!result) return res.status(404).json({ message: "Result not found" });
@@ -118,24 +106,18 @@ export const updateResult = async (req, res) => {
     // Permission Check
     if (userRole === 'teacher') {
       const teacher = await User.findById(req.user.id);
-      const teacherSubjects = Array.isArray(teacher.assigned_subjects) 
-        ? teacher.assigned_subjects 
-        : (typeof teacher.assigned_subjects === 'string' 
-            ? teacher.assigned_subjects.split(',').map(s => s.trim()) 
-            : []);
-
-      const isAssigned = teacherSubjects.some(s => s.trim().toLowerCase() === result.subject.toLowerCase());
-      if (!isAssigned) {
+      if (!isTeacherAssignedToSubject(teacher.assigned_subjects, result.subject)) {
         return res.status(403).json({ message: "You are not authorized to edit this subject's results." });
       }
     }
 
     // Validate score if provided
     if (score !== undefined) {
-      const numericScore = Number(score);
-      if (isNaN(numericScore) || numericScore < 0 || numericScore > 100) {
-        return res.status(400).json({ message: "Invalid score. Must be between 0 and 100." });
+      const scoreError = validateScore(score);
+      if (scoreError) {
+        return res.status(400).json({ message: scoreError });
       }
+      const numericScore = Number(score);
       result.score = numericScore;
       result.grade = calculateGrade(numericScore);
     }
@@ -148,7 +130,7 @@ export const updateResult = async (req, res) => {
     await result.save();
 
     // Create an audit log for the update
-    await AuditLog.create({
+    await createAuditLog({
       actionType: 'RESULT_UPDATED',
       performedBy: req.user.id,
       targetUser: result.student,
@@ -158,7 +140,6 @@ export const updateResult = async (req, res) => {
         newScore: result.score, 
         grade: result.grade 
       },
-      timestamp: new Date()
     });
 
     res.json({ message: "Result updated successfully", result });
@@ -169,7 +150,7 @@ export const updateResult = async (req, res) => {
 
 export const getAllResults = async (req, res) => {
     try {
-        const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
+        const userRole = getUserRole(req);
         let query = {};
         // Teachers and Admins can now see all institutional results
 
@@ -182,7 +163,7 @@ export const getAllResults = async (req, res) => {
 
 export const getMyResults = async (req, res) => {
     try {
-        const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
+        const userRole = getUserRole(req);
 
         // Only students can use this endpoint to view their own results
         if (userRole === 'student') {
@@ -205,7 +186,7 @@ export const getMyResults = async (req, res) => {
 
 export const getLeaderboard = async (req, res) => {
     try {
-        const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
+        const userRole = getUserRole(req);
         let query = {};
 
         // Students only see leaderboard for their class
@@ -221,7 +202,7 @@ export const getLeaderboard = async (req, res) => {
         else if (userRole === 'teacher') {
           const teacher = await User.findById(req.user.id);
           if (teacher?.assigned_class) {
-            const classList = teacher.assigned_class.split(',').filter(Boolean).map(c => c.trim());
+            const classList = parseSubjectsList(teacher.assigned_class);
             const classStudents = await User.find({ role: 'student', assigned_class: { $in: classList } });
             const studentIds = classStudents.map(s => s._id.toString());
             query = { student: { $in: studentIds } };
@@ -247,7 +228,7 @@ export const getLeaderboard = async (req, res) => {
 export const deleteResult = async (req, res) => {
   try {
     const { id } = req.params;
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
+    const userRole = getUserRole(req);
 
     const result = await Result.findById(id).populate('student', 'full_name school_id');
     if (!result) return res.status(404).json({ message: "Result not found" });
@@ -255,14 +236,7 @@ export const deleteResult = async (req, res) => {
     // Permission Check
     if (userRole === 'teacher') {
       const teacher = await User.findById(req.user.id);
-      const teacherSubjects = Array.isArray(teacher.assigned_subjects) 
-        ? teacher.assigned_subjects 
-        : (typeof teacher.assigned_subjects === 'string' 
-            ? teacher.assigned_subjects.split(',').map(s => s.trim()) 
-            : []);
-
-      const isAssigned = teacherSubjects.some(s => s.trim().toLowerCase() === result.subject.toLowerCase());
-      if (!isAssigned) {
+      if (!isTeacherAssignedToSubject(teacher.assigned_subjects, result.subject)) {
         return res.status(403).json({ message: "You are not authorized to delete results for this subject." });
       }
     } else if (userRole !== 'admin') {
@@ -284,12 +258,11 @@ export const deleteResult = async (req, res) => {
     await Result.findByIdAndDelete(id);
 
     // Create an audit log entry for the deletion
-    await AuditLog.create({
+    await createAuditLog({
       actionType: 'RESULT_DELETED',
       performedBy: req.user.id,
       targetUser: result.student?._id,
       details: auditDetails,
-      timestamp: new Date()
     });
 
     res.json({ message: "Result deleted successfully" });

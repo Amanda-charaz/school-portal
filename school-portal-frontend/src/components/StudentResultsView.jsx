@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { getUserInfo } from "../utils/authUtils";
 import { termLabels, calculateGrade, getGradeColor } from '../utils/academicUtils';
+import { downloadBlob } from '../utils/downloadUtils';
 import { Award, AlertTriangle, Filter, Search, Download, Printer } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -42,14 +43,7 @@ const StudentResultsView = () => {
         responseType: 'blob'
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${studentName.replace(/\s/g, '_')}_Transcript_${new Date().getFullYear()}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(response.data, `${studentName.replace(/\s/g, '_')}_Transcript_${new Date().getFullYear()}.pdf`);
     } catch (err) {
       console.error("PDF generation failed:", err);
       alert("Failed to generate your academic transcript PDF.");
