@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
   school_id: { type: String, unique: true }, // Auto-generated (e.g., S1, T1)
     assigned_class: { type: String },          // For students and form teachers
   assigned_subjects: [{ type: String }],     // For teachers
-    raw_password_view: { type: String },        // Temporary password view for admin
+    mustResetPassword: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
   resetPasswordToken: String,
   resetPasswordExpires: Date
 }, {

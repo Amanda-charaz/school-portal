@@ -19,7 +19,7 @@ export const getMyTransactions = async (req, res) => {
       .sort({ date: -1 });
     res.json(transactions);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching transactions', error: err.message });
+    res.status(500).json({ message: 'Error fetching transactions' });
   }
 };
 
@@ -35,7 +35,7 @@ export const getAccountsSummary = async (req, res) => {
       .sort({ date: -1 });
     res.json(transactions);
   } catch (err) {
-    res.status(500).json({ message: 'Server error while fetching accounts summary', error: err.message });
+    res.status(500).json({ message: 'Server error while fetching accounts summary' });
   }
 };
 
@@ -94,7 +94,7 @@ export const generateReceiptPDF = async (req, res) => {
 
     doc.end();
   } catch (err) {
-    res.status(500).json({ message: 'Error generating receipt', error: err.message });
+    res.status(500).json({ message: 'Error generating receipt' });
   }
 };
 
@@ -141,7 +141,7 @@ export const addTransaction = async (req, res) => {
 
     res.status(201).json(newTransaction);
   } catch (err) {
-    res.status(400).json({ message: 'Error processing financial record', error: err.message });
+    res.status(400).json({ message: 'Error processing financial record' });
   }
 };
 
@@ -160,7 +160,7 @@ export const getOutstandingBalance = async (req, res) => {
     const total = result.length > 0 ? result[0].totalOutstanding : 0;
     res.json({ totalOutstanding: total });
   } catch (err) {
-    res.status(500).json({ message: 'Error calculating outstanding balance', error: err.message });
+    res.status(500).json({ message: 'Error calculating outstanding balance' });
   }
 };
 
@@ -175,6 +175,6 @@ export const deleteTransaction = async (req, res) => {
     if (!transaction) return res.status(404).json({ message: "Transaction not found" });
     res.json({ message: "Transaction deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Error deleting transaction", error: err.message });
+    res.status(500).json({ message: "Error deleting transaction" });
   }
 };

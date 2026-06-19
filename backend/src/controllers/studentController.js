@@ -33,7 +33,7 @@ export const getStudentProfile = async (req, res) => {
             assigned_subjects: student.assigned_subjects || []
         });
     } catch (err) {
-        res.status(500).json({ message: "Failed to fetch profile", error: err.message });
+        res.status(500).json({ message: "Failed to fetch profile" });
     }
 };
 
@@ -126,7 +126,7 @@ export const getStudentDashboard = async (req, res) => {
 
     } catch (err) {
         console.error("Dashboard Error:", err.message);
-        res.status(500).json({ message: "Server Error loading dashboard", error: err.message });
+        res.status(500).json({ message: "Server Error loading dashboard" });
     }
 };
 
@@ -158,7 +158,7 @@ export const getMyResults = async (req, res) => {
         res.json(gradedResults);
     } catch (err) {
         console.error("Results Error:", err.message);
-        res.status(500).json({ message: "Server Error fetching results", error: err.message });
+        res.status(500).json({ message: "Server Error fetching results" });
     }
 };
 
@@ -181,6 +181,6 @@ export const getStudentsByTeacher = async (req, res) => {
         res.json(students);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error fetching assigned students", error: err.message });
+        res.status(500).json({ message: "Server Error fetching assigned students" });
     }
 };
