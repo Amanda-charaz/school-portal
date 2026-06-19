@@ -3,7 +3,7 @@ import api from '../api/axios';
 import { PlusCircle, Edit, Trash2, Users, BookOpen, X, AlertCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const ClassManagement = ({ theme }) => {
+const ClassManagement = () => {
   const [classes, setClasses] = useState([]);
   const [teachers, setTeachers] = useState([]); // For formTeacher dropdown
   const [isModalOpen, setIsModalOpen] = useState(false);

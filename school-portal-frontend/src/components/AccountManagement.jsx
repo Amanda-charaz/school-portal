@@ -4,7 +4,7 @@ import { termLabels } from '../utils/academicUtils';
 import { DollarSign, PlusCircle, History, TrendingUp, User, CreditCard, Download, Trash2, Filter } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const AccountManagement = ({ theme }) => {
+const AccountManagement = () => {
   const [transactions, setTransactions] = useState([]);
   const [outstandingBalance, setOutstandingBalance] = useState(0);
   const [users, setUsers] = useState([]);

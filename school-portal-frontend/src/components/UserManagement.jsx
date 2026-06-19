@@ -16,7 +16,6 @@ const UserManagement = ({ theme }) => {
     assigned_class: "",
     assigned_subjects: []
   });
-  });
 
   useEffect(() => {
     fetchUsers();
