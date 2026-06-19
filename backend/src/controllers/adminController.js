@@ -20,7 +20,7 @@ export const getAuditLogs = async (req, res) => {
     res.json(logs);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error fetching logs");
+    res.status(500).json({ message: "Error fetching audit logs", error: err.message });
   }
 };
 
@@ -50,7 +50,7 @@ export const getAllUsers = async (req, res) => {
       .sort({ createdAt: -1 });
     res.status(200).json(users);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch users" });
+    res.status(500).json({ message: "Failed to fetch users", error: err.message });
   }
 };
 
@@ -63,7 +63,7 @@ export const getUserById = async (req, res) => {
     }
     res.json(user);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch user" });
+    res.status(500).json({ message: "Failed to fetch user", error: err.message });
   }
 };
 
@@ -85,14 +85,14 @@ export const createUser = async (req, res) => {
     // 2. Auto-generate school_id and shorthand email
     const school_id = `${prefix}${nextIdNumber}`;
     const email = `${school_id.toLowerCase()}@s.com`;
-    const defaultPassword = "1234"; // Default as discussed previously
+    const defaultPassword = "school1234"; // Default password that meets complexity requirements
 
-    // Validate default password complexity (even if it's a default, it should meet minimums)
+    // Validate default password complexity
     const complexityError = validatePasswordComplexity(defaultPassword);
     if (complexityError) {
-      // This indicates a problem with the hardcoded default password, or the complexity rules are too strict for it.
-      console.warn(`Default password "1234" does not meet complexity requirements: ${complexityError}`);
-      // You might want to return an error or use a stronger default password here.
+      return res.status(400).json({
+        message: `Cannot create user: default password does not meet complexity requirements. ${complexityError}`
+      });
     }
 
     // Ensure assigned_subjects is handled as an array
@@ -260,6 +260,10 @@ export const createClass = async (req, res) => {
   try {
     const { name, description, formTeacher } = req.body;
 
+    if (!name) {
+      return res.status(400).json({ message: "Class name is required." });
+    }
+
     if (formTeacher) {
       const teacher = await User.findById(formTeacher);
       if (!teacher || teacher.role !== 'teacher') {
@@ -299,7 +303,7 @@ export const getAllClasses = async (req, res) => {
       .sort({ name: 1 });
     res.json(classes);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch classes" });
+    res.status(500).json({ message: "Failed to fetch classes", error: err.message });
   }
 };
 
@@ -407,14 +411,18 @@ export const getClassMembers = async (req, res) => {
     const members = await User.find({ assigned_class: name }).select('full_name school_id role email');
     res.json(members);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch class members" });
+    res.status(500).json({ message: "Failed to fetch class members", error: err.message });
   }
 };
 
 export const assignUsersToClass = async (req, res) => {
   try {
     const { className, userIds } = req.body;
-    
+
+    if (!className || !Array.isArray(userIds)) {
+      return res.status(400).json({ message: "className and userIds array are required." });
+    }
+
     // 1. Unassign all users currently in this class to ensure a clean sync
     await User.updateMany({ assigned_class: className }, { assigned_class: "" });
     await Student.updateMany({ current_class: className }, { current_class: "Unassigned" });
@@ -461,16 +469,19 @@ export const promoteClass = async (req, res) => {
       count: userUpdate.modifiedCount
     });
   } catch (err) {
-    // Log the error for debugging purposes
     console.error(`Error during class promotion: ${err.message}`);
-    // Optionally, log this failed attempt to AuditLog as well
-    await AuditLog.create({
-      actionType: 'CLASS_PROMOTION',
-      performedBy: req.user.id,
-      details: { fromClassName, toClassName, status: 'FAILED', error: err.message },
-      timestamp: new Date()
-    });
 
-    res.status(400).json({ message: err.message });
+    try {
+      await AuditLog.create({
+        actionType: 'CLASS_PROMOTION',
+        performedBy: req.user.id,
+        details: { fromClassName: req.body.fromClassName, toClassName: req.body.toClassName, status: 'FAILED', error: err.message },
+        timestamp: new Date()
+      });
+    } catch (auditErr) {
+      console.error('Failed to write promotion audit log:', auditErr.message);
+    }
+
+    res.status(500).json({ message: "Error during class promotion", error: err.message });
   }
 };

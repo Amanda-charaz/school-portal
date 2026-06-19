@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OutstandingBalanceWidget from './OutstandingBalanceWidget';
+import api from '../api/axios';
 import { PlusCircle, Receipt, ArrowUpRight, ArrowDownRight, User, AlertCircle, WifiOff, RefreshCw, X } from 'lucide-react';
 
 const AccountsTab = () => {
@@ -19,37 +20,30 @@ const AccountsTab = () => {
     description: ''
   });
 
-  const token = localStorage.getItem('token');
-
   // Unified data gathering
   const fetchData = async () => {
     try {
       setLoading(true);
       
-      // Fetch both endpoints concurrently
-      const [resTransactions, resUsers] = await Promise.all([
-        fetch('/api/accounts/summary', {
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-        }),
-        fetch('/api/admin/users', {
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-        })
+      const [transRes, usersRes] = await Promise.allSettled([
+        api.get('/accounts/summary'),
+        api.get('/admin/users')
       ]);
 
-      if (!resTransactions.ok) throw new Error('Failed to fetch transaction history.');
-      
-      const transactionsData = await resTransactions.json();
-      setTransactions(transactionsData);
+      if (transRes.status === 'fulfilled') {
+        setTransactions(transRes.value.data);
+      } else {
+        throw new Error(transRes.reason?.response?.data?.message || 'Failed to fetch transaction history.');
+      }
 
-      if (resUsers.ok) {
-        const usersData = await resUsers.json();
-        setSystemUsers(usersData);
+      if (usersRes.status === 'fulfilled') {
+        setSystemUsers(usersRes.value.data);
       }
     } catch (err) {
       if (err.message === 'Failed to fetch') {
         setError('Connection Error: The accounting service is currently unreachable. Please check your internet connection or contact the administrator.');
       } else {
-        setError(err.message);
+        setError(err.response?.data?.message || err.message);
       }
     } finally {
       setLoading(false);
@@ -84,19 +78,7 @@ const AccountsTab = () => {
     if (!payload.user) delete payload.user;
 
     try {
-      const response = await fetch('/api/accounts/transaction', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error executing ledger write operation.');
-      }
+      await api.post('/accounts/transaction', payload);
 
       setFormMessage({ type: 'success', text: '💸 Transaction successfully committed to ledger!' });
       
@@ -110,16 +92,13 @@ const AccountsTab = () => {
       });
 
       // Instantly trigger live datatable redraws
-      const freshTransactionsRes = await fetch('/api/accounts/summary', {
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-      });
-      if (freshTransactionsRes.ok) {
-        const freshData = await freshTransactionsRes.json();
-        setTransactions(freshData);
-      }
+      try {
+        const freshRes = await api.get('/accounts/summary');
+        setTransactions(freshRes.data);
+      } catch (_) { /* non-critical refresh failure */ }
 
     } catch (err) {
-      setFormMessage({ type: 'error', text: err.message });
+      setFormMessage({ type: 'error', text: err.response?.data?.message || 'Error executing ledger write operation.' });
     } finally {
       setSubmitting(false);
     }

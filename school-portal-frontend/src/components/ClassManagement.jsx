@@ -41,6 +41,7 @@ const ClassManagement = () => {
       setTeachers(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error("Failed to fetch teachers:", err);
+      setMessage({ type: 'error', text: 'Failed to load teacher list.' });
     }
   };
 
@@ -85,7 +86,7 @@ const ClassManagement = () => {
       setClassMembers(response.data);
       setIsMemberModalOpen(true);
     } catch (err) {
-      alert("Failed to load class roster.");
+      alert("Failed to load class roster: " + (err.response?.data?.message || err.message));
     }
   };
 

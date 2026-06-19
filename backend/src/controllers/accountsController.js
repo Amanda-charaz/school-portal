@@ -105,6 +105,11 @@ export const generateReceiptPDF = async (req, res) => {
  */
 export const addTransaction = async (req, res) => {
   const { user, amount, category, type, description } = req.body;
+
+  if (!amount || !category || !type) {
+    return res.status(400).json({ message: 'amount, category, and type are required.' });
+  }
+
   try {
     // Normalize user ID: convert empty strings to null or ensure it's a valid ObjectId
     const targetUserId = user && mongoose.Types.ObjectId.isValid(user) 

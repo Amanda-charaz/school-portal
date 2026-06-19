@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import { termLabels } from '../utils/academicUtils';
 import { useParams } from 'react-router-dom'; // Assuming react-router-dom for routing
 
@@ -16,29 +16,22 @@ const FeeHistory = ({ studentId: propStudentId, isStudentSelfService = false }) 
       try {
         setLoading(true);
         setError(null);
-        const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
         let endpoint = '';
         if (isStudentSelfService) {
-          endpoint = `/api/fees/my-fees`; // Endpoint for student to view their own fees
+          endpoint = `/fees/my-fees`;
         } else if (studentId) {
-          endpoint = `/api/fees/student/${studentId}`; // Endpoint for admin/teacher to view specific student fees
+          endpoint = `/fees/student/${studentId}`;
         } else {
           setError('Student ID is missing.');
           setLoading(false);
           return;
         }
 
-        const response = await axios.get(endpoint, config);
+        const response = await api.get(endpoint);
         setFees(response.data);
       } catch (err) {
         console.error('Error fetching fee history:', err);
-        setError('Failed to load fee history. Please try again later.');
+        setError(err.response?.data?.message || 'Failed to load fee history. Please try again later.');
       } finally {
         setLoading(false);
       }

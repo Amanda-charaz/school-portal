@@ -33,6 +33,14 @@ app.get("/", (req, res) => {
   res.send("School Portal API Running...");
 });
 
+// Global error-handling middleware for uncaught route/middleware errors
+app.use((err, req, res, _next) => {
+  console.error("Unhandled error:", err.message);
+  res.status(err.status || 500).json({
+    message: err.message || "Internal server error"
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -61,10 +69,13 @@ connectToDatabase(MONGO_URI).then(async () => {
     }
     console.log("🔑 Admin Login → admin@test.com / admin123");
   } catch (err) {
-    console.log("❌ Admin repair failed:", err.message);
+    console.error("❌ Admin repair failed:", err.message);
   }
 
   app.listen(PORT, () => {
     console.log(`🚀 Server is flying high on port ${PORT}`);
   });
+}).catch((err) => {
+  console.error("❌ Failed to start server:", err.message);
+  process.exit(1);
 });

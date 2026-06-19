@@ -49,7 +49,8 @@ const AccountManagement = () => {
       setOutstandingBalance(balanceRes.data.totalOutstanding);
       setUsers(usersRes.data);
     } catch (err) {
-      console.error("Failed to fetch accounting data");
+      console.error("Failed to fetch accounting data:", err);
+      setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to load financial data.' });
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,7 @@ const AccountManagement = () => {
       setFormData({ ...formData, user: '', amount: '', description: '' });
       fetchData();
     } catch (err) {
-      setMessage({ type: 'error', text: 'Failed to record transaction' });
+      setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to record transaction' });
     }
   };
 
@@ -85,7 +86,7 @@ const AccountManagement = () => {
       setDeleteConfirm(null);
       fetchData();
     } catch (err) {
-      setMessage({ type: 'error', text: 'Failed to delete transaction' });
+      setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to delete transaction' });
     }
   };
 
@@ -103,7 +104,7 @@ const AccountManagement = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Failed to download receipt');
+      alert('Failed to download receipt: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -123,7 +124,7 @@ const AccountManagement = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Failed to download financial summary report.');
+      alert('Failed to download financial summary report: ' + (err.response?.data?.message || err.message));
     }
   };
 

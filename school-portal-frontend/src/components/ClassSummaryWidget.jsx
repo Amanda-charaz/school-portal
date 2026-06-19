@@ -5,6 +5,7 @@ import { Users, CheckCircle } from 'lucide-react';
 const ClassSummaryWidget = ({ theme }) => {
   const [summary, setSummary] = useState({ totalStudents: 0, attendanceRate: 0 });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -13,6 +14,7 @@ const ClassSummaryWidget = ({ theme }) => {
         setSummary(response.data);
       } catch (err) {
         console.error("Failed to fetch class summary", err);
+        setError(err.response?.data?.message || 'Failed to load class summary.');
       } finally {
         setLoading(false);
       }
@@ -32,6 +34,14 @@ const ClassSummaryWidget = ({ theme }) => {
     transition: 'all 0.3s ease',
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
   };
+
+  if (error) {
+    return (
+      <div style={{ padding: '12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', color: '#b91c1c', fontSize: '14px', marginBottom: '20px' }}>
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', width: '100%', marginBottom: '20px' }}>

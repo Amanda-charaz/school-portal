@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { subjectOptions } from "../utils/academicUtils";
 import { UserPlus, RefreshCw, BookOpen, Sparkles, Trash2 } from "lucide-react";
 
@@ -21,14 +21,12 @@ const AdminUserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const endpoint = filterRole === "all" ? "/api/admin/users" : `/api/admin/users/role/${filterRole}`;
-      const response = await axios.get(endpoint, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const endpoint = filterRole === "all" ? "/admin/users" : `/admin/users/role/${filterRole}`;
+      const response = await api.get(endpoint);
       setUsers(response.data);
     } catch (err) {
       console.error("Error pulling system accounts:", err);
+      setMessage("Failed to load users: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -45,11 +43,7 @@ const AdminUserManagement = () => {
     e.preventDefault();
     setMessage("");
     try {
-      const token = localStorage.getItem('token');
-      // Hits the backend automated creation logic (generates S1, T1, etc.)
-      const response = await axios.post("/api/admin/users", formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.post("/admin/users", formData);
       setMessage(`🎉 Successfully created ${response.data.user.full_name}! ID assigned: ${response.data.user.school_id}`);
       setFormData({ full_name: "", role: "student", assigned_subjects: [] });
       fetchUsers();
@@ -65,23 +59,17 @@ const AdminUserManagement = () => {
   const resetPassword = async (userId) => {
     if (!window.confirm("Are you sure you want to revert this user's password to '1234'?")) return;
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(`/api/admin/users/${userId}/reset-password`, { newPassword: "1234" }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post(`/admin/users/${userId}/reset-password`, { newPassword: "1234" });
       alert("🔄 Password successfully reset to the factory default: 1234");
     } catch (err) {
-      alert("Error issuing credential adjustment.");
+      alert("Error resetting password: " + (err.response?.data?.message || err.message));
     }
   };
 
   const handleDelete = async (userId) => {
     if (!window.confirm("Are you sure you want to permanently delete this account? This action cannot be undone.")) return;
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`/api/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/admin/users/${userId}`);
       alert("🗑️ User account deleted successfully.");
       fetchUsers(); // Refresh the list
     } catch (err) {

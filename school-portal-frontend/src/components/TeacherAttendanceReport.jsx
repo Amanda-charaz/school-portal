@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, CheckCircle, XCircle, Clock } from 'lucide-react';
+import api from '../api/axios';
 
 const TeacherAttendanceReport = () => {
   const [trends, setTrends] = useState([]);
@@ -9,22 +10,10 @@ const TeacherAttendanceReport = () => {
   useEffect(() => {
     const fetchAttendanceTrends = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/attendance/teacher-trends', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch attendance trends.');
-        }
-
-        const data = await response.json();
-        setTrends(data);
+        const response = await api.get('/attendance/teacher-trends');
+        setTrends(Array.isArray(response.data) ? response.data : []);
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || 'Failed to fetch attendance trends.');
       } finally {
         setLoading(false);
       }
