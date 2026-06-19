@@ -38,7 +38,7 @@ export const getSystemLogs = async (req, res) => {
 
     res.json(logs);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching system logs", error: err.message });
+    res.status(500).json({ message: "Error fetching system logs" });
   }
 };
 
@@ -46,7 +46,7 @@ export const getSystemLogs = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
-      .select('-password -raw_password_view') // Keep hashed keys secure
+      .select('-password') // Keep hashed keys secure
       .sort({ createdAt: -1 });
     res.status(200).json(users);
   } catch (err) {
@@ -85,15 +85,7 @@ export const createUser = async (req, res) => {
     // 2. Auto-generate school_id and shorthand email
     const school_id = `${prefix}${nextIdNumber}`;
     const email = `${school_id.toLowerCase()}@s.com`;
-    const defaultPassword = "1234"; // Default as discussed previously
-
-    // Validate default password complexity (even if it's a default, it should meet minimums)
-    const complexityError = validatePasswordComplexity(defaultPassword);
-    if (complexityError) {
-      // This indicates a problem with the hardcoded default password, or the complexity rules are too strict for it.
-      console.warn(`Default password "1234" does not meet complexity requirements: ${complexityError}`);
-      // You might want to return an error or use a stronger default password here.
-    }
+    const defaultPassword = process.env.DEFAULT_USER_PASSWORD || "Temp@1234";
 
     // Ensure assigned_subjects is handled as an array
     let subjectsArray = [];
@@ -114,7 +106,6 @@ export const createUser = async (req, res) => {
       school_id,
       assigned_class: assigned_class || null,
       assigned_subjects: role === 'teacher' ? subjectsArray : [],
-      raw_password_view: defaultPassword,
       mustResetPassword: true
     });
 
@@ -129,7 +120,9 @@ export const createUser = async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: "User created successfully", user: savedUser });
+    const safeUser = savedUser.toObject();
+    delete safeUser.password;
+    res.status(201).json({ message: "User created successfully", user: safeUser });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -229,11 +222,11 @@ export const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
     const users = await User.find({ role: role.toLowerCase() }) // Query MongoDB using the string enum role values
-      .select('-password -raw_password_view') // Keep hashed keys secure
+      .select('-password') // Keep hashed keys secure
       .sort({ createdAt: -1 });
     res.status(200).json(users);
   } catch (err) {
-    res.status(500).json({ message: "Error filtering user records", error: err.message });
+    res.status(500).json({ message: "Error filtering user records" });
   }
 };
 

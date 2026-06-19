@@ -17,8 +17,31 @@ import accountsRoutes from './src/routes/accounts.js';
 dotenv.config();
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',')
+  : ['http://localhost:5173'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+app.use(express.json({ limit: '1mb' }));
+
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '0');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.removeHeader('X-Powered-By');
+  next();
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/result", resultRoutes);
@@ -40,26 +63,20 @@ const MONGO_URI = process.env.MONGO_URI;
 connectToDatabase(MONGO_URI).then(async () => {
   // Admin account repair/initialization
   try {
-    const hashedPassword = await bcrypt.hash("admin123", 10);
-    const existingAdmin = await User.findOne({ email: "admin@test.com" });
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@school.local";
+    const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD || "ChangeMe!2024";
+    const existingAdmin = await User.findOne({ email: adminEmail });
 
     if (!existingAdmin) {
       await User.create({
         full_name: "System Admin",
-        email: "admin@test.com",
-        password: hashedPassword,
+        email: adminEmail,
+        password: adminPassword,
         role: "admin",
         role_id: "admin"
       });
-      console.log("🚀 Admin account CREATED");
-    } else {
-      existingAdmin.password = hashedPassword;
-      existingAdmin.role = "admin";
-      existingAdmin.role_id = "admin";
-      await existingAdmin.save();
-      console.log("🛠️ Admin account UPDATED");
+      console.log("Admin account created. Change the default password immediately.");
     }
-    console.log("🔑 Admin Login → admin@test.com / admin123");
   } catch (err) {
     console.log("❌ Admin repair failed:", err.message);
   }

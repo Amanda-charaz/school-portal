@@ -52,7 +52,7 @@ export const addAttendance = async (req, res) => {
 
     res.status(200).json({ message: `Attendance for ${class_name || 'class'} recorded successfully.` });
   } catch (err) {
-    res.status(500).json({ message: "Failed to record attendance", error: err.message });
+    res.status(500).json({ message: "Failed to record attendance" });
   }
 };
 
@@ -90,7 +90,7 @@ export const getAllAttendance = async (req, res) => {
 
     res.json(data);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching attendance logs", error: err.message });
+    res.status(500).json({ message: "Error fetching attendance logs" });
   }
 };
 
@@ -121,7 +121,7 @@ export const getMyAttendance = async (req, res) => {
       .sort({ date: -1 });
     res.json(records);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching your attendance history", error: err.message });
+    res.status(500).json({ message: "Error fetching your attendance history" });
   }
 };
 
@@ -199,7 +199,7 @@ export const exportAttendancePDF = async (req, res) => {
 
     doc.end();
   } catch (err) {
-    res.status(500).json({ message: "Error generating PDF report", error: err.message });
+    res.status(500).json({ message: "Error generating PDF report" });
   }
 };
 
@@ -263,7 +263,7 @@ export const getTeacherAttendanceTrends = async (req, res) => {
 
     res.json(trends);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching teacher attendance trends", error: err.message });
+    res.status(500).json({ message: "Error fetching teacher attendance trends" });
   }
 };
 
@@ -311,7 +311,7 @@ export const getClassSummary = async (req, res) => {
 
     res.json({ totalStudents, attendanceRate });
   } catch (err) {
-    res.status(500).json({ message: "Error fetching class summary", error: err.message });
+    res.status(500).json({ message: "Error fetching class summary" });
   }
 };
 
@@ -362,6 +362,6 @@ export const exportAttendanceCSV = async (req, res) => {
     res.attachment(`Attendance_Export_${new Date().toISOString().split('T')[0]}.csv`);
     res.status(200).send(csv);
   } catch (err) {
-    res.status(500).json({ message: "Error exporting CSV", error: err.message });
+    res.status(500).json({ message: "Error exporting CSV" });
   }
 };

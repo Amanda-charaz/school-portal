@@ -44,11 +44,7 @@ school-portal/
 - ✅ Added missing routes to `server.js`
 
 ### 4. Admin Account
-**Default Admin Credentials:**
-- Email: `admin@test.com`
-- Password: `admin123`
-
-The admin account will be auto-created on first server startup.
+The admin account is auto-created on first startup using credentials from environment variables `ADMIN_EMAIL` and `ADMIN_DEFAULT_PASSWORD`. See `.env.example` for configuration.
 
 ## Running the Project
 
@@ -72,10 +68,13 @@ npm run install-all
 ```
 
 ## Environment Variables
-The `.env` file is located in `backend/.env` with:
+Copy `backend/.env.example` to `backend/.env` and fill in your values:
 - `MONGO_URI` - MongoDB connection string
-- `JWT_SECRET` - Secret key for JWT tokens
+- `JWT_SECRET` - A strong random secret for JWT tokens
 - `PORT` - Server port (default: 3000)
+- `CORS_ORIGINS` - Comma-separated allowed frontend origins
+- `ADMIN_EMAIL` - Admin account email
+- `ADMIN_DEFAULT_PASSWORD` - Initial admin password
 
 ## API Endpoints
 
@@ -111,7 +110,7 @@ If login fails with "Invalid credentials":
 1. Ensure MongoDB is running
 2. Check that admin account was created (check server logs)
 3. Verify `.env` file has correct `MONGO_URI`
-4. Try admin credentials: `admin@test.com` / `admin123`
+4. Use the admin credentials you configured in your `.env` file
 
 ### Database Connection Issues
 - Ensure MongoDB connection string in `.env` is correct

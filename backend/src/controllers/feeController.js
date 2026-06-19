@@ -38,7 +38,7 @@ export const addFee = async (req, res) => {
     await newFee.save();
     res.status(201).json({ message: 'Fee record added successfully!', fee: newFee });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding fee record', error: error.message });
+    res.status(500).json({ message: 'Error adding fee record' });
   }
 };
 
@@ -95,7 +95,7 @@ export const generateInvoice = async (req, res) => {
     await newFee.save();
     res.status(201).json({ message: 'Fee invoice generated successfully!', fee: newFee });
   } catch (error) {
-    res.status(500).json({ message: 'Error generating fee invoice', error: error.message });
+    res.status(500).json({ message: 'Error generating fee invoice' });
   }
 };
 
@@ -109,7 +109,7 @@ export const getAllFees = async (req, res) => {
       .populate('received_by', 'full_name school_id');
     res.status(200).json(fees);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching fees', error: error.message });
+    res.status(500).json({ message: 'Error fetching fees' });
   }
 };
 
@@ -130,7 +130,7 @@ export const getStudentFees = async (req, res) => {
       
     res.status(200).json(fees);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching student fees', error: error.message });
+    res.status(500).json({ message: 'Error fetching student fees' });
   }
 };
 
@@ -154,7 +154,7 @@ export const getMyFees = async (req, res) => {
 
     res.status(200).json(fees);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching your fee records', error: error.message });
+    res.status(500).json({ message: 'Error fetching your fee records' });
   }
 };
 
@@ -223,6 +223,6 @@ export const generateInvoicePDF = async (req, res) => {
 
     doc.end();
   } catch (err) {
-    res.status(500).json({ message: 'Error generating invoice', error: err.message });
+    res.status(500).json({ message: 'Error generating invoice' });
   }
 };

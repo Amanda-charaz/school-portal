@@ -49,7 +49,7 @@ export const changePassword = async (req, res) => {
 
     res.json({ message: "Password updated successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Failed to update password", error: err.message });
+    res.status(500).json({ message: "Failed to update password" });
   }
 };
 
@@ -66,7 +66,8 @@ export const forgotPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "No account found with that email or ID." });
+      // Return generic message to prevent user enumeration
+      return res.json({ message: "If an account exists with that email/ID, reset instructions have been sent." });
     }
 
     // Generate and hash password reset token
@@ -76,14 +77,10 @@ export const forgotPassword = async (req, res) => {
 
     await user.save();
 
-    // In a real production app, you would use Nodemailer here to send the email.
-    // For now, we return it in the message so you can test the flow.
-    res.json({ 
-      message: "An email with reset instructions has been sent.",
-      debug_token: resetToken // REMOVE THIS IN PRODUCTION
-    });
+    // TODO: Integrate an email service (e.g. Nodemailer) to send resetToken to user
+    res.json({ message: "If an account exists with that email/ID, reset instructions have been sent." });
   } catch (err) {
-    res.status(500).json({ message: "Error processing request", error: err.message });
+    res.status(500).json({ message: "Error processing request" });
   }
 };
 
@@ -116,6 +113,6 @@ export const resetPassword = async (req, res) => {
 
     res.json({ message: "Password has been reset. you can now sign in." });
   } catch (err) {
-    res.status(500).json({ message: "Error resetting password", error: err.message });
+    res.status(500).json({ message: "Error resetting password" });
   }
 };

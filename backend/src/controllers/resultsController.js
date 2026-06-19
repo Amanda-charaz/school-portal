@@ -176,7 +176,7 @@ export const getAllResults = async (req, res) => {
         const results = await Result.find(query).populate('student', 'full_name school_id assigned_class');
         res.json(results);
     } catch (err) {
-        res.status(500).json({ message: "Failed to fetch results", error: err.message });
+        res.status(500).json({ message: "Failed to fetch results" });
     }
 };
 
@@ -199,7 +199,7 @@ export const getMyResults = async (req, res) => {
         return res.status(403).json({ message: "This endpoint is for students only" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server error fetching your results", error: err.message });
+        res.status(500).json({ message: "Server error fetching your results" });
     }
 };
 
@@ -235,7 +235,7 @@ export const getLeaderboard = async (req, res) => {
             .limit(10);
         res.json(topResults);
     } catch (err) {
-        res.status(500).json({ message: "Error fetching leaderboard", error: err.message });
+        res.status(500).json({ message: "Error fetching leaderboard" });
     }
 };
 
@@ -294,6 +294,6 @@ export const deleteResult = async (req, res) => {
 
     res.json({ message: "Result deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Error deleting result", error: err.message });
+    res.status(500).json({ message: "Error deleting result" });
   }
 };
