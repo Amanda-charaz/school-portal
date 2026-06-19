@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { termLabels } from '../utils/academicUtils';
 import { CreditCard, DollarSign, Clock, AlertCircle, ExternalLink, Download, History, Filter } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-const StudentFeesView = ({ theme }) => {
+const StudentFeesView = () => {
+  const { theme } = useTheme();
   const [fees, setFees] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);

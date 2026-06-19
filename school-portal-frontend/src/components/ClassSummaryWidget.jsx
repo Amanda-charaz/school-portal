@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Users, CheckCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-const ClassSummaryWidget = ({ theme }) => {
+const ClassSummaryWidget = () => {
+  const { theme } = useTheme();
   const [summary, setSummary] = useState({ totalStudents: 0, attendanceRate: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

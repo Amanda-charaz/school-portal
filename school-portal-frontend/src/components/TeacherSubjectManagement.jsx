@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import api from "../api/axios";
 import { subjectOptions } from "../utils/academicUtils";
 import { Edit, Trash2, BookOpen, X } from "lucide-react";
+import { useTheme } from '../context/ThemeContext';
 
-const TeacherSubjectManagement = ({ theme }) => {
+const TeacherSubjectManagement = () => {
+  const { theme } = useTheme();
   const [teachers, setTeachers] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [loading, setLoading] = useState(false);
