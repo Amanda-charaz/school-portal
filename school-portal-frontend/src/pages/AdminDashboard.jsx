@@ -33,6 +33,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("results");
   const [auditLogs, setAuditLogs] = useState([]);
   const [systemLogs, setSystemLogs] = useState([]);
+  const [logError, setLogError] = useState("");
   const { theme, darkMode, toggleTheme } = useTheme();
   const [userInfo, setUserInfo] = useState({});
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -47,7 +48,8 @@ const AdminDashboard = () => {
       const response = await api.get("/admin/logs");
       setAuditLogs(response.data);
     } catch (err) {
-      console.error("Failed to fetch audit logs");
+      console.error("Failed to fetch audit logs:", err);
+      setLogError("Failed to load audit logs. " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -56,7 +58,8 @@ const AdminDashboard = () => {
       const response = await api.get("/admin/system-logs");
       setSystemLogs(response.data);
     } catch (err) {
-      console.error("Failed to fetch system logs");
+      console.error("Failed to fetch system logs:", err);
+      setLogError("Failed to load system logs. " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -101,6 +104,12 @@ const AdminDashboard = () => {
             </button>
           </div>
         </div>
+
+        {logError && (
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300 text-sm">
+            {logError}
+          </div>
+        )}
 
         {/* Tabs Switcher */}
         <div className="flex gap-2 w-full mb-10 border-b border-gray-200 dark:border-gray-800 overflow-x-auto no-scrollbar scroll-smooth no-print">

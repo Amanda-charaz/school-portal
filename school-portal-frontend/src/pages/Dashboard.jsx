@@ -7,6 +7,7 @@ import { getUserInfo, logout } from "../utils/authUtils";
 const Dashboard = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const Dashboard = () => {
         setResults(response.data);
       } catch (err) {
         console.error("Failed to fetch results", err.response?.data || err.message);
+        setError(err.response?.data?.message || "Failed to load results.");
       } finally {
         setLoading(false);
       }
@@ -53,7 +55,9 @@ const Dashboard = () => {
         <section className="mb-8">
           <h2 className="text-[22px] font-bold text-gray-900 dark:text-white mb-4">My Academic Results</h2>
           <div style={styles.grid}>
-            {loading ? (
+            {error ? (
+              <p className="text-red-500" style={{ fontSize: "14px" }}>{error}</p>
+            ) : loading ? (
               <p className="text-gray-500" style={{ fontSize: "14px" }}>Loading your results...</p>
             ) : results.length > 0 ? (
               results.map((result) => (

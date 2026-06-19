@@ -29,6 +29,7 @@ const UserManagement = ({ theme }) => {
       setUsers(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error("Error pulling system accounts:", err);
+      setMessage("Failed to load users: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -76,7 +77,7 @@ const UserManagement = ({ theme }) => {
       await api.post(`/admin/users/${userId}/reset-password`, { newPassword: "1234" });
       alert("🔄 Password successfully reset to the factory default: 1234");
     } catch (err) {
-      alert("Error issuing credential adjustment.");
+      alert("Error resetting password: " + (err.response?.data?.message || "Internal error"));
     }
   };
 

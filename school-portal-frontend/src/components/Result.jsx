@@ -75,7 +75,8 @@ const Result = ({ userInfo }) => {
       const response = await api.get('/student/teacher/students');
       setStudents(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
-      console.error("Failed to load students for your classes");
+      console.error("Failed to load students for your classes:", err);
+      setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to load students.' });
     }
   };
 
@@ -86,7 +87,8 @@ const Result = ({ userInfo }) => {
       const response = await api.get('/result/all');
       setResults(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
-      console.error("Failed to load records");
+      console.error("Failed to load records:", err);
+      setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to load results.' });
     } finally {
       setLoading(false);
     }

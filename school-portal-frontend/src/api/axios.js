@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const api = axios.create({
-  // 🔥 FIXED: Appended /api to match your backend controller routers
   baseURL: "https://school-portal-xqp8.onrender.com/api",
 });
 
@@ -14,5 +13,19 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;

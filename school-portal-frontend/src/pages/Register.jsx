@@ -19,7 +19,7 @@ const Register = () => {
             setMsg('Student created successfully! 🎉');
             setFormData({ full_name: '', email: '', password: '', role_id: 1 });
         } catch (err) {
-            setMsg('Error creating student.');
+            setMsg(err.response?.data?.message || 'Error creating student.');
         }
     };
 

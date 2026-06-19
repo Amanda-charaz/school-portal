@@ -79,7 +79,7 @@ const TeacherSubjectManagement = ({ theme }) => {
         fetchTeachers();
       }, 1500);
     } catch (err) {
-      setMessage("❌ Failed to delete teacher");
+      setMessage("❌ Failed to delete teacher: " + (err.response?.data?.message || err.message));
     }
   };
 

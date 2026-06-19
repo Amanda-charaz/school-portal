@@ -38,11 +38,10 @@ export const getStudentProfile = async (req, res) => {
 };
 
 export const getStudentDashboard = async (req, res) => {
-    const studentId = mongoose.Types.ObjectId.isValid(req.user.id) 
-      ? new mongoose.Types.ObjectId(req.user.id) 
-      : req.user.id;
-
     try {
+        const studentId = mongoose.Types.ObjectId.isValid(req.user.id) 
+          ? new mongoose.Types.ObjectId(req.user.id) 
+          : req.user.id;
         const student = await User.findById(studentId);
         if (!student || student.role !== 'student') {
             return res.status(404).json({ message: "Student record not found" });
