@@ -11,6 +11,10 @@ export const addFee = async (req, res) => {
   try {
     const { student_id, total_amount, paid_amount, term, due_date } = req.body;
 
+    if (!student_id || total_amount == null || !term) {
+      return res.status(400).json({ message: 'student_id, total_amount, and term are required.' });
+    }
+
     // Find student by their automated school_id (e.g., S1)
     const student = await User.findOne({ school_id: student_id, role: 'student' });
     if (!student) {
@@ -49,6 +53,10 @@ export const addFee = async (req, res) => {
 export const generateInvoice = async (req, res) => {
   try {
     const { student_id, base_amount, discount, fines, term, year } = req.body;
+
+    if (!student_id || base_amount == null || !term || !year) {
+      return res.status(400).json({ message: 'student_id, base_amount, term, and year are required.' });
+    }
 
     // Find student by their internal ID (sent from select menu) or School ID
     let student;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { WifiOff, AlertCircle, RefreshCw } from 'lucide-react';
+import api from '../api/axios';
 
 const OutstandingBalanceWidget = () => {
   const [balance, setBalance] = useState(0);
@@ -10,25 +11,14 @@ const OutstandingBalanceWidget = () => {
     try {
       setLoading(true);
       setError(null);
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/accounts/outstanding-balance', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch financial data');
-      }
-
-      const data = await response.json();
-      setBalance(data.totalOutstanding);
+      const response = await api.get('/accounts/outstanding-balance');
+      setBalance(response.data.totalOutstanding);
     } catch (err) {
-      if (err.message === 'Failed to fetch') {
+      const msg = err.response?.data?.message || err.message;
+      if (msg === 'Failed to fetch' || err.code === 'ERR_NETWORK') {
         setError('Connection Error: Accounting service unreachable.');
       } else {
-        setError(err.message);
+        setError(msg);
       }
     } finally {
       setLoading(false);

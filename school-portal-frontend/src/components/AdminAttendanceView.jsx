@@ -50,6 +50,7 @@ const AdminAttendanceView = ({ theme }) => {
       setClasses(response.data);
     } catch (err) {
       console.error('Error fetching classes:', err);
+      setError(err.response?.data?.message || 'Failed to load class list.');
     }
   }, []);
 
@@ -63,6 +64,7 @@ const AdminAttendanceView = ({ theme }) => {
       setTrends(trendsRes.data);
     } catch (err) {
       console.error('Error fetching trends:', err);
+      setError(err.response?.data?.message || 'Failed to load attendance trends.');
     }
   }, []);
 
@@ -115,7 +117,7 @@ const AdminAttendanceView = ({ theme }) => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Failed to download term attendance report.');
+      alert('Failed to download term attendance report: ' + (err.response?.data?.message || err.message));
     }
   };
 

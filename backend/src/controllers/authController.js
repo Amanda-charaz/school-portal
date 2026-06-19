@@ -12,6 +12,9 @@ import { validatePasswordComplexity } from '../utils/index.js';
 export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Current password and new password are required." });
+    }
     const userId = req.user.id;
 
     // 1. Find user and explicitly select password field
@@ -61,6 +64,9 @@ export const changePassword = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const { identifier } = req.body;
+    if (!identifier) {
+      return res.status(400).json({ message: "Email or school ID is required." });
+    }
     const user = await User.findOne({ 
       $or: [{ email: identifier }, { school_id: identifier }] 
     });
@@ -95,6 +101,9 @@ export const forgotPassword = async (req, res) => {
 export const resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ message: "Reset token and new password are required." });
+    }
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
     const user = await User.findOne({

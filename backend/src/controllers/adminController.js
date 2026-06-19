@@ -260,6 +260,10 @@ export const createClass = async (req, res) => {
   try {
     const { name, description, formTeacher } = req.body;
 
+    if (!name) {
+      return res.status(400).json({ message: "Class name is required." });
+    }
+
     if (formTeacher) {
       const teacher = await User.findById(formTeacher);
       if (!teacher || teacher.role !== 'teacher') {
@@ -414,7 +418,11 @@ export const getClassMembers = async (req, res) => {
 export const assignUsersToClass = async (req, res) => {
   try {
     const { className, userIds } = req.body;
-    
+
+    if (!className || !Array.isArray(userIds)) {
+      return res.status(400).json({ message: "className and userIds array are required." });
+    }
+
     // 1. Unassign all users currently in this class to ensure a clean sync
     await User.updateMany({ assigned_class: className }, { assigned_class: "" });
     await Student.updateMany({ current_class: className }, { current_class: "Unassigned" });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, CheckCircle, XCircle, Clock, Info, FileDown, Filter, XCircle as XIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import api from '../api/axios';
 
 const StudentAttendanceView = () => {
   const [records, setRecords] = useState([]);
@@ -15,28 +16,14 @@ const StudentAttendanceView = () => {
     const fetchMyAttendance = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
-        let url = '/api/attendance/my-attendance';
-        const params = new URLSearchParams();
-        if (filterStartDate) params.append('startDate', filterStartDate);
-        if (filterEndDate) params.append('endDate', filterEndDate);
-        if (params.toString()) url += `?${params.toString()}`;
+        const params = {};
+        if (filterStartDate) params.startDate = filterStartDate;
+        if (filterEndDate) params.endDate = filterEndDate;
 
-        const response = await fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch your attendance history.');
-        }
-
-        const data = await response.json();
-        setRecords(data);
+        const response = await api.get('/attendance/my-attendance', { params });
+        setRecords(Array.isArray(response.data) ? response.data : []);
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
@@ -48,25 +35,16 @@ const StudentAttendanceView = () => {
   const handleExportPDF = async () => {
     try {
       setExporting(true);
-      const token = localStorage.getItem('token');
-      let url = '/api/attendance/export-report';
-      const params = new URLSearchParams();
-      if (filterStartDate) params.append('startDate', filterStartDate);
-      if (filterEndDate) params.append('endDate', filterEndDate);
-      if (params.toString()) url += `?${params.toString()}`;
+      const params = {};
+      if (filterStartDate) params.startDate = filterStartDate;
+      if (filterEndDate) params.endDate = filterEndDate;
 
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        }
+      const response = await api.get('/attendance/export-report', {
+        params,
+        responseType: 'blob'
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to generate PDF report.');
-      }
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
+      const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = downloadUrl;
       link.setAttribute('download', `Attendance_Report_${new Date().toISOString().split('T')[0]}.pdf`);
@@ -75,7 +53,7 @@ const StudentAttendanceView = () => {
       link.parentNode.removeChild(link);
     } catch (err) {
       console.error("Export error:", err);
-      alert("Could not export report: " + err.message);
+      alert("Could not export report: " + (err.response?.data?.message || err.message));
     } finally {
       setExporting(false);
     }

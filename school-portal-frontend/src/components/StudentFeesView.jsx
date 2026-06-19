@@ -59,7 +59,7 @@ const StudentFeesView = ({ theme }) => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Failed to download invoice');
+      alert('Failed to download invoice: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -77,7 +77,7 @@ const StudentFeesView = ({ theme }) => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Failed to download receipt');
+      alert('Failed to download receipt: ' + (err.response?.data?.message || err.message));
     }
   };
 
