@@ -1,8 +1,10 @@
 import React from 'react';
 import { termLabels } from '../utils/academicUtils';
+import { useTheme } from '../context/ThemeContext';
 
-const StudentOverview = ({ theme, data, onNavigateToTab }) => {
+const StudentOverview = ({ data, onNavigateToTab }) => {
   if (!data) return null;
+  const { theme } = useTheme();
 
   const { profile, academic_summary } = data;
 

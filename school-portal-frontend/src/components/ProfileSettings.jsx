@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../api/axios';
 import { Lock, Save, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const ProfileSettings = ({ theme }) => {
   const [passwordData, setPasswordData] = useState({
@@ -14,6 +15,7 @@ const ProfileSettings = ({ theme }) => {
     confirm: false
   });
   const [message, setMessage] = useState({ type: '', text: '' });
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {

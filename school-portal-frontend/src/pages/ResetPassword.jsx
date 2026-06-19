@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 import { Lock, ArrowLeft, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -12,14 +13,11 @@ const ResetPassword = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, darkMode, toggleTheme } = useTheme();
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") setDarkMode(true);
-
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -54,16 +52,6 @@ const ResetPassword = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const theme = {
-    bg: darkMode ? "#111827" : "#f3f4f6",
-    card: darkMode ? "#1f2937" : "#ffffff",
-    text: darkMode ? "#f9fafb" : "#111827",
-    subText: darkMode ? "#9ca3af" : "#6b7280",
-    inputBg: darkMode ? "#374151" : "#ffffff",
-    inputBorder: darkMode ? "#4b5563" : "#d1d5db",
-    accent: "#6366f1"
   };
 
   const styles = getResponsiveStyles(windowWidth);
@@ -141,8 +129,7 @@ const getResponsiveStyles = (width) => {
       height: "100vh",
       display: "flex",
       alignItems: "center",
-      justifyContent: "center",
-      fontSize: isMobile ? "19px" : "17px",
+      justifyContent: "center", // Base font size should be handled by global CSS or specific elements
       padding: isMobile ? "16px" : "0"
     },
     card: {
@@ -173,13 +160,13 @@ const getResponsiveStyles = (width) => {
     universityName: { fontSize: "18px", fontWeight: "bold", lineHeight: "1.2" },
     universitySubtext: { fontSize: "13px", color: "#6b7280", lineHeight: "1.2" },
     title: { fontSize: isMobile ? "22px" : "26px", fontWeight: "700", marginBottom: "10px" },
-    input: { 
+    input: {
       width: "100%", 
       padding: "12px 14px", 
       borderRadius: "6px", 
       border: "1px solid #d1d5db", 
-      boxSizing: "border-box", 
-      fontSize: isMobile ? "19px" : "17px" 
+      boxSizing: "border-box",
+      fontSize: "16px" // Body Text & Data
     },
     button: { width: "100%", padding: "12px", color: "white", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer", fontSize: "15px" },
     error: { color: "#ef4444", marginBottom: "16px", fontSize: "13px", fontWeight: "500", backgroundColor: "#fee2e2", padding: "10px", borderRadius: "6px" },

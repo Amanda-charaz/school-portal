@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../api/axios";
 import { subjectOptions } from "../utils/academicUtils";
 import { UserPlus, RefreshCw, BookOpen, Sparkles, X, UserX } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 const UserManagement = ({ theme }) => {
   const [users, setUsers] = useState([]);
@@ -14,6 +15,7 @@ const UserManagement = ({ theme }) => {
     role: "student",
     assigned_class: "",
     assigned_subjects: []
+  });
   });
 
   useEffect(() => {

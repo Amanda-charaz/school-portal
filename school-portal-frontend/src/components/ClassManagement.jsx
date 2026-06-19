@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { PlusCircle, Edit, Trash2, Users, BookOpen, X, AlertCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const ClassManagement = ({ theme }) => {
   const [classes, setClasses] = useState([]);
@@ -10,6 +11,7 @@ const ClassManagement = ({ theme }) => {
   const [selectedClass, setSelectedClass] = useState(null); // For edit mode
   const [classMembers, setClassMembers] = useState([]);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const { theme } = useTheme();
 
   const [formData, setFormData] = useState({
     name: '',

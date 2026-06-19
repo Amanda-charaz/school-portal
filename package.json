@@ -4,7 +4,7 @@
   "description": "School Portal - Backend & Frontend",
   "main": "backend/server.js",
   "scripts": {
-    "dev": "cd backend && npm run dev",
+    "dev": "cd backend && node server.js",
     "start": "cd backend && node server.js",
     "frontend": "cd school-portal-frontend && npm run dev",
     "install-all": "npm install && cd backend && npm install && cd ../school-portal-frontend && npm install"

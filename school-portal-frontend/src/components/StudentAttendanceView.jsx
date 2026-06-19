@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, CheckCircle, XCircle, Clock, Info, FileDown, Filter, XCircle as XIcon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const StudentAttendanceView = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [exporting, setExporting] = useState(false);
+  const { theme } = useTheme();
   const [filterStartDate, setFilterStartDate] = useState('');
   const [filterEndDate, setFilterEndDate] = useState('');
 

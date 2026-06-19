@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LogOut, Sun, Moon, BookOpen, Award, CalendarDays, LayoutDashboard, DollarSign, Settings } from 'lucide-react';
 import { getUserInfo, logout } from '../utils/authUtils';
+import { useTheme } from '../context/ThemeContext';
 import api from '../api/axios';
 import StudentResultsView from '../components/StudentResultsView';
 // Assuming you'll create these components for other tabs
@@ -11,7 +12,7 @@ import ProfileSettings from '../components/ProfileSettings';
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, darkMode, toggleTheme } = useTheme();
   const [userInfo, setUserInfo] = useState({});
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,8 +21,6 @@ const StudentDashboard = () => {
   useEffect(() => {
     const user = getUserInfo();
     setUserInfo(user);
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") setDarkMode(true);
   }, []);
 
   useEffect(() => {
@@ -38,25 +37,8 @@ const StudentDashboard = () => {
     fetchData();
   }, []);
 
-  const toggleTheme = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem("theme", newMode ? "dark" : "light");
-  };
-
   const handleLogout = () => {
     logout();
-  };
-
-  const theme = {
-    bg: darkMode ? "#111827" : "#f3f4f6",
-    card: darkMode ? "#1f2937" : "#ffffff",
-    text: darkMode ? "#f9fafb" : "#111827",
-    subText: darkMode ? "#9ca3af" : "#6b7280",
-    inputBg: darkMode ? "#374151" : "#ffffff",
-    inputBorder: darkMode ? "#4b5563" : "#d1d5db",
-    tableHeader: darkMode ? "#111827" : "#f8fafc",
-    accent: "#003DA5" // Shifted to Brand Blue
   };
 
   const styles = {
@@ -81,7 +63,7 @@ const StudentDashboard = () => {
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto gap-4 mb-10 no-print">
-        <h1 className="flex items-center gap-3 text-3xl font-black tracking-tighter text-gray-900 dark:text-white">
+        <h1 className="flex items-center gap-3 text-[22px] font-black tracking-tighter text-gray-900 dark:text-white">
           <BookOpen size={28} className="text-indigo-600 dark:text-indigo-400" /> 
           Student Portal
         </h1>
@@ -173,10 +155,10 @@ const StudentDashboard = () => {
         ) : (
           <div className="flex flex-col gap-6 w-full">
             {activeTab === "overview" && <StudentOverview theme={theme} data={dashboardData} onNavigateToTab={setActiveTab} />}
-            {activeTab === "results" && <StudentResultsView theme={theme} />}
-            {activeTab === "attendance" && <StudentAttendanceLog theme={theme} />}
-            {activeTab === "fees" && <StudentFeesView theme={theme} />}
-            {activeTab === "settings" && <ProfileSettings theme={theme} />}
+            {activeTab === "results" && <StudentResultsView />}
+            {activeTab === "attendance" && <StudentAttendanceLog />}
+            {activeTab === "fees" && <StudentFeesView />}
+            {activeTab === "settings" && <ProfileSettings />}
           </div>
         )}
       </main>

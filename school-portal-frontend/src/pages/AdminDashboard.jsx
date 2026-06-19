@@ -27,12 +27,13 @@ import {
   Trash2
 } from "lucide-react";
 import { getUserInfo, logout } from "../utils/authUtils";
+import { useTheme } from "../context/ThemeContext";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("results");
   const [auditLogs, setAuditLogs] = useState([]);
   const [systemLogs, setSystemLogs] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, darkMode, toggleTheme } = useTheme();
   const [userInfo, setUserInfo] = useState({});
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const [selectedLog, setSelectedLog] = useState(null);
@@ -40,23 +41,6 @@ const AdminDashboard = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null); // Stores ID of item to delete
 
   // Toggle function with persistence
-  const toggleTheme = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem("theme", newMode ? "dark" : "light");
-  };
-
-  // Dynamic Theme Object
-  const theme = {
-    bg: darkMode ? "#111827" : "#f3f4f6",
-    card: darkMode ? "#1f2937" : "#ffffff",
-    text: darkMode ? "#f9fafb" : "#111827",
-    subText: darkMode ? "#9ca3af" : "#6b7280",
-    inputBg: darkMode ? "#374151" : "#ffffff",
-    inputBorder: darkMode ? "#4b5563" : "#d1d5db",
-    tableHeader: darkMode ? "#111827" : "#f8fafc",
-    accent: "#003DA5" // Shifted to Brand Blue
-  };
 
   const fetchAuditLogs = async () => {
     try {
@@ -81,8 +65,6 @@ const AdminDashboard = () => {
     setUserInfo(user);
     fetchAuditLogs();
     fetchSystemLogs();
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") setDarkMode(true);
 
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -106,7 +88,7 @@ const AdminDashboard = () => {
       <main className="flex-1 w-full p-4 sm:p-10 overflow-x-hidden flex flex-col">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center w-full gap-4 mb-10 no-print">
-          <h1 className="flex items-center gap-3 text-2xl font-black tracking-tighter text-gray-900 dark:text-white">
+          <h1 className="flex items-center gap-3 text-[22px] font-black tracking-tighter text-gray-900 dark:text-white">
             <Shield size={28} color={theme.accent} /> Admin Portal
           </h1>
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -217,31 +199,31 @@ const AdminDashboard = () => {
       <div style={styles.mainLayout}>
         {activeTab === "results" ? (
           <div style={{ width: '100%' }}>
-            <Result theme={theme} userInfo={userInfo} />
+            <Result userInfo={userInfo} />
           </div>
         ) : activeTab === "users" ? (
           <div style={{ width: '100%' }}>
-            <UserManagement theme={theme} />
+            <UserManagement />
           </div>
         ) : activeTab === "teachers" ? (
           <div style={{ width: '100%' }}>
-            <TeacherSubjectManagement theme={theme} />
+            <TeacherSubjectManagement />
           </div>
         ) : activeTab === "classes" ? (
           <div style={{ width: '100%' }}>
-            <ClassManagement theme={theme} />
+            <ClassManagement />
           </div>
         ) : activeTab === "attendance" ? (
           <div style={{ width: '100%' }}>
-            <AdminAttendanceView theme={theme} />
+            <AdminAttendanceView />
           </div>
         ) : activeTab === "accounts" ? (
           <div style={{ width: '100%' }}>
-            <AccountManagement theme={theme} />
+            <AccountManagement />
           </div>
         ) : activeTab === "audit" ? (
           <div style={{ ...styles.card, backgroundColor: theme.card, width: '100%' }}>
-            <h2 style={{ ...styles.subtitle, color: theme.text }}>User Actions Log</h2>
+            <h2 style={{ ...styles.subtitle, color: theme.text }}>User Actions Log</h2> {/* Section Heading */}
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
@@ -292,7 +274,7 @@ const AdminDashboard = () => {
           </div>
         ) : activeTab === "system-logs" ? (
           <div style={{ ...styles.card, backgroundColor: theme.card, width: '100%' }}>
-            <h2 style={{ ...styles.subtitle, color: theme.text }}>System Audit Logs</h2>
+            <h2 style={{ ...styles.subtitle, color: theme.text }}>System Audit Logs</h2> {/* Section Heading */}
             {/* Search Bar for System Logs */}
             <div style={{ position: 'relative', marginBottom: '20px' }}>
               <div style={{ position: 'absolute', insetY: 0, left: '12px', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
@@ -323,9 +305,9 @@ const AdminDashboard = () => {
                     filteredSystemLogs.map((log) => (
                       <tr key={log._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
                         <td style={{ ...styles.td, color: theme.text, fontWeight: "bold" }}>
-                          <span style={{ fontSize: "11px", padding: "4px 8px", borderRadius: "12px", backgroundColor: theme.inputBg }}>{log.actionType}</span>
+                          <span style={{ fontSize: "11px", textTransform: "uppercase", padding: "4px 8px", borderRadius: "12px", backgroundColor: theme.inputBg }}>{log.actionType}</span>
                         </td>
-                        <td style={{ ...styles.td, color: theme.text }}>{log.performedBy?.full_name} <span style={{fontSize: '11px', color: theme.subText}}>({log.performedBy?.school_id})</span></td>
+                        <td style={{ ...styles.td, color: theme.text }}>{log.performedBy?.full_name} <span style={{fontSize: '12px', color: theme.subText}}>({log.performedBy?.school_id})</span></td>
                         <td style={{ ...styles.td, color: theme.text }}>{log.targetUser ? `${log.targetUser.full_name} (${log.targetUser.school_id})` : "N/A"}</td>
                         <td 
                           onClick={() => setSelectedLog(log)}
@@ -367,7 +349,7 @@ const AdminDashboard = () => {
         ) : (
           <div style={{ ...styles.card, backgroundColor: theme.card, width: '100%' }}>
             <h2 style={{ ...styles.subtitle, color: theme.text }}>System Settings</h2>
-            <div style={{ color: theme.subText }}>
+            <div style={{ color: theme.subText, fontSize: "14px" }}>
               <p><strong>Database:</strong> MongoDB</p>
               <p><strong>API Server:</strong> http://localhost:3000</p>
               <p><strong>Theme:</strong> {darkMode ? 'Dark' : 'Light'}</p>
@@ -383,7 +365,7 @@ const AdminDashboard = () => {
         <div style={styles.overlay}>
           <div style={{ ...styles.modal, backgroundColor: theme.card, width: '100%', maxWidth: '600px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ margin: 0, color: theme.text }}>Action Details: {selectedLog.actionType}</h3>
+              <h3 style={{ margin: 0, color: theme.text, fontSize: "18px", fontWeight: "900" }}>Action Details: {selectedLog.actionType}</h3>
               <button onClick={() => setSelectedLog(null)} style={styles.iconBtn}><X size={20} color={theme.text} /></button>
             </div>
             <pre style={{ 
@@ -448,15 +430,15 @@ const getResponsiveStyles = (width) => {
       flexWrap: "wrap"
       },
       card: { padding: isMobile ? "16px" : "25px", borderRadius: "16px", boxShadow: "0 4px 6px rgba(0,0,0,0.1)", transition: "all 0.3s ease", flex: isTablet && !isMobile ? "1 1 calc(50% - 15px)" : "1" },
-    subtitle: { marginBottom: "20px", fontSize: isMobile ? "16px" : "18px" },
+    subtitle: { marginBottom: "20px", fontSize: "18px" },
     inputGroup: { marginBottom: "15px" },
     label: { display: "block", marginBottom: "5px", fontSize: "13px", fontWeight: "600" },
     input: { width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid", boxSizing: "border-box", fontSize: "16px" },
     button: { width: "100%", padding: "12px", backgroundColor: "#6366f1", color: "white", border: "none", borderRadius: "8px", fontWeight: "bold", cursor: "pointer", marginTop: "10px" },
     themeBtn: { padding: "10px", borderRadius: "8px", border: "1px solid", cursor: "pointer" },
     logoutBtn: { backgroundColor: "#fee2e2", color: "#B22222", border: "none", padding: "10px 16px", borderRadius: "8px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontWeight: "bold", fontSize: isMobile ? "12px" : "14px" },
-    th: { padding: isMobile ? "8px" : "12px", textAlign: "left", fontSize: isMobile ? "10px" : "11px", textTransform: "uppercase", letterSpacing: "0.05em" },
-    td: { padding: isMobile ? "8px" : "12px", fontSize: isMobile ? "12px" : "14px" },
+    th: { padding: isMobile ? "8px 12px" : "12px 16px", textAlign: "left", fontSize: isMobile ? "10px" : "11px", textTransform: "uppercase", letterSpacing: "0.05em" },
+    td: { padding: isMobile ? "12px 16px" : "16px 24px", fontSize: isMobile ? "12px" : "14px" },
     overlay: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "16px" },
     modal: { padding: isMobile ? "20px" : "30px", borderRadius: "16px", maxHeight: "90vh", overflowY: "auto" },
     iconBtn: { background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center" },

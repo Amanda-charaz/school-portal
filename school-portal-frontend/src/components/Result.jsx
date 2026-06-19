@@ -20,8 +20,9 @@ import {
   Trash2,
   Eye
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-const Result = ({ theme, userInfo }) => {
+const Result = ({ userInfo }) => {
   const [results, setResults] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +33,7 @@ const Result = ({ theme, userInfo }) => {
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [transcriptSearchTerm, setTranscriptSearchTerm] = useState(''); // New state for modal search
+  const { theme } = useTheme();
   const transcriptModalRef = React.useRef(null); // Ref for the scrollable modal content
   const [viewReportStudent, setViewReportStudent] = useState(null);
   

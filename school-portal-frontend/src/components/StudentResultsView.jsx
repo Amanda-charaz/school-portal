@@ -3,13 +3,15 @@ import api from '../api/axios';
 import { getUserInfo } from "../utils/authUtils";
 import { termLabels, calculateGrade, getGradeColor } from '../utils/academicUtils';
 import { Award, AlertTriangle, Filter, Search, Download, Printer } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-const StudentResultsView = ({ theme }) => {
+const StudentResultsView = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTerm, setSelectedTerm] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchResults = async () => {

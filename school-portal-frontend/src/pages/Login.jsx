@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { Lock, Mail, ArrowLeft, Shield, Eye, EyeOff } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 const Login = () => {
   const [identifier, setIdentifier] = useState("");
@@ -10,7 +11,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isForgotMode, setIsForgotMode] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, darkMode, toggleTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false); // New state for "Remember Me"
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -22,8 +23,6 @@ const Login = () => {
       setIdentifier(savedIdentifier);
       setRememberMe(true);
     }
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") setDarkMode(true);
 
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -90,16 +89,6 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const theme = {
-    bg: darkMode ? "#111827" : "#f3f4f6",
-    card: darkMode ? "#1f2937" : "#ffffff",
-    text: darkMode ? "#f9fafb" : "#111827",
-    subText: darkMode ? "#9ca3af" : "#6b7280",
-    inputBg: darkMode ? "#374151" : "#ffffff",
-    inputBorder: darkMode ? "#4b5563" : "#d1d5db",
-    accent: "#6366f1"
   };
 
   const styles = getResponsiveStyles(windowWidth);
@@ -207,8 +196,7 @@ const getResponsiveStyles = (width) => {
       height: "100vh",
       display: "flex",
       alignItems: "center",
-      justifyContent: "center",
-      fontSize: isMobile ? "19px" : "17px",
+      justifyContent: "center", // Base font size should be handled by global CSS or specific elements
       backgroundColor: "#f3f4f6",
       padding: isMobile ? "16px" : "0"
     },

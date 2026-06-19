@@ -45,16 +45,16 @@ const Dashboard = () => {
       </nav>
 
       <main style={styles.content}>
-        <header style={styles.header}>
-          <h1 style={{ color: "#1e293b", margin: 0 }}>Student Dashboard</h1>
-          <p style={{ color: "#64748b" }}>Welcome back, {userInfo.full_name}</p>
+        <header style={{ ...styles.header, fontSize: "22px" }}>
+          <h1 style={{ color: "#1e293b", margin: 0, fontSize: "22px" }}>Student Dashboard</h1>
+          <p style={{ color: "#64748b", fontSize: "14px" }}>Welcome back, {userInfo.full_name}</p>
         </header>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">My Academic Results</h2>
+          <h2 className="text-[22px] font-bold text-gray-900 dark:text-white mb-4">My Academic Results</h2>
           <div style={styles.grid}>
             {loading ? (
-              <p className="text-gray-500">Loading your results...</p>
+              <p className="text-gray-500" style={{ fontSize: "14px" }}>Loading your results...</p>
             ) : results.length > 0 ? (
               results.map((result) => (
                 <div key={result._id} style={styles.card}>
@@ -74,7 +74,7 @@ const Dashboard = () => {
                 </div>
               ))
             ) : (
-              <p style={{ color: "#64748b" }}>No results found for your account.</p>
+              <p style={{ color: "#64748b", fontSize: "14px" }}>No results found for your account.</p>
             )}
           </div>
         </section>
@@ -90,7 +90,7 @@ const Dashboard = () => {
 
 const styles = {
   container: { display: "flex", minHeight: "100vh", backgroundColor: "#f9fafb" },
-  sidebar: { width: "250px", backgroundColor: "#1e293b", color: "white", padding: "20px", display: "flex", flexDirection: "column" },
+  sidebar: { width: "250px", backgroundColor: "#1e293b", color: "white", padding: "20px", display: "flex", flexDirection: "column", fontSize: "14px" },
   logo: { fontSize: "24px", fontWeight: "bold", marginBottom: "20px", color: "#6366f1" },
   roleIndicator: { display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: "600", color: "#a5f3fc", marginBottom: "20px", padding: "8px", backgroundColor: "#0c4a6e", borderRadius: "6px" },
   navItem: { display: "flex", alignItems: "center", gap: "10px", padding: "12px", cursor: "pointer", borderRadius: "8px", marginBottom: "8px" },

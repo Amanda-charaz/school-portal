@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { termLabels } from '../utils/academicUtils';
 import { DollarSign, PlusCircle, History, TrendingUp, User, CreditCard, Download, Trash2, Filter } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const AccountManagement = ({ theme }) => {
   const [transactions, setTransactions] = useState([]);
@@ -26,6 +27,7 @@ const AccountManagement = ({ theme }) => {
     discount: '0',
     fines: '0',
   });
+  const { theme } = useTheme();
   const [message, setMessage] = useState({ type: '', text: '' });
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
