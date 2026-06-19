@@ -2,7 +2,68 @@ import User from '../models/User.js';
 import AuditLog from '../models/AuditLog.js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 import { validatePasswordComplexity } from '../utils/index.js';
+
+/**
+ * @desc    Login user
+ * @route   POST /api/auth/login
+ * @access  Public
+ */
+export const login = async (req, res) => {
+  try {
+    const { identifier, password } = req.body;
+    
+    if (!identifier || !password) {
+      return res.status(400).json({ message: "Identifier and password are required" });
+    }
+
+    // Find user by email or school_id
+    const user = await User.findOne({ 
+      $or: [{ email: identifier }, { school_id: identifier }] 
+    }).select('+password');
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Verify password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role, role_id: user.role_id },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // Create audit log
+    await AuditLog.create({
+      actionType: 'LOGIN',
+      performedBy: user._id,
+      targetUser: user._id,
+      details: { info: "User logged in" },
+      timestamp: new Date()
+    });
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        full_name: user.full_name,
+        email: user.email,
+        role: user.role,
+        role_id: user.role_id,
+        school_id: user.school_id
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Login failed", error: err.message });
+  }
+};
 
 /**
  * @desc    Change logged-in user password

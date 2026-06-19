@@ -1,8 +1,12 @@
 import express from 'express';
-import { changePassword, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { login, changePassword, forgotPassword, resetPassword } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
+
+// @route   POST /api/auth/login
+// @desc    Login user
+router.post('/login', login);
 
 // @route   PUT /api/auth/change-password
 // @desc    Allows any authenticated user to update their own password
