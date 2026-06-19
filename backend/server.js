@@ -48,20 +48,19 @@ const MONGO_URI = process.env.MONGO_URI;
 connectToDatabase(MONGO_URI).then(async () => {
   // Admin account repair/initialization
   try {
-    const hashedPassword = await bcrypt.hash("admin123", 10);
     const existingAdmin = await User.findOne({ email: "admin@test.com" });
 
     if (!existingAdmin) {
       await User.create({
         full_name: "System Admin",
         email: "admin@test.com",
-        password: hashedPassword,
+        password: "admin123",
         role: "admin",
         role_id: "admin"
       });
       console.log("🚀 Admin account CREATED");
     } else {
-      existingAdmin.password = hashedPassword;
+      existingAdmin.password = "admin123";
       existingAdmin.role = "admin";
       existingAdmin.role_id = "admin";
       await existingAdmin.save();

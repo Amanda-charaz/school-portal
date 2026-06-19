@@ -5,7 +5,7 @@ const auditLogSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      'CLASS_PROMOTION', 'USER_CREATED', 'USER_UPDATED', 'USER_DELETED',
+      'LOGIN', 'CLASS_PROMOTION', 'USER_CREATED', 'USER_UPDATED', 'USER_DELETED',
       'PASSWORD_RESET', 'CLASS_CREATED', 'CLASS_UPDATED', 'CLASS_DELETED',
       'CLASS_ASSIGNMENT_UPDATED',
       'ATTENDANCE_MARKED',
