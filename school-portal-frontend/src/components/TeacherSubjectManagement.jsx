@@ -98,7 +98,7 @@ const TeacherSubjectManagement = ({ theme }) => {
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",
-            fontSize: "12px",
+            fontSize: "0.75rem",
             fontWeight: "600"
           }}
         >
@@ -114,7 +114,6 @@ const TeacherSubjectManagement = ({ theme }) => {
             borderRadius: "6px",
             backgroundColor: message.includes("✅") ? "#ecfdf5" : "#fee2e2",
             color: message.includes("✅") ? "#065f46" : "#991b1b",
-            fontSize: "14px",
             fontWeight: "500",
             border: `1px solid ${message.includes("✅") ? "#10b981" : "#fca5a5"}`
           }}
@@ -145,7 +144,7 @@ const TeacherSubjectManagement = ({ theme }) => {
                   <tr key={teacher._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
                     <td style={{ ...styles.td, color: theme.text, fontWeight: "bold" }}>{teacher.school_id}</td>
                     <td style={{ ...styles.td, color: theme.text }}>{teacher.full_name}</td>
-                    <td style={{ ...styles.td, color: theme.text, fontSize: "12px" }}>{teacher.email}</td>
+                    <td style={{ ...styles.td, color: theme.text }}>{teacher.email}</td>
                     <td style={{ ...styles.td, color: theme.text }}>
                       {teacher.assigned_subjects && teacher.assigned_subjects.length > 0
                         ? teacher.assigned_subjects.join(", ")
@@ -202,7 +201,7 @@ const TeacherSubjectManagement = ({ theme }) => {
                   borderRadius: "6px",
                   backgroundColor: message.includes("✅") ? "#ecfdf5" : "#fee2e2",
                   color: message.includes("✅") ? "#065f46" : "#991b1b",
-                  fontSize: "13px",
+                  fontSize: "0.75rem",
                   fontWeight: "500"
                 }}
               >
@@ -277,15 +276,10 @@ const styles = {
     textAlign: "left"
   },
   th: {
-    padding: "12px",
-    fontSize: "11px",
-    fontWeight: "700",
-    textTransform: "uppercase",
-    letterSpacing: "0.05em"
+    padding: "12px"
   },
   td: {
-    padding: "12px",
-    fontSize: "14px"
+    padding: "12px"
   },
   iconBtn: {
     background: "none",
@@ -322,9 +316,7 @@ const styles = {
     marginBottom: "20px"
   },
   modalTitle: {
-    margin: 0,
-    fontSize: "18px",
-    fontWeight: "700"
+    margin: 0
   },
   closeBtn: {
     background: "none",
@@ -344,7 +336,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "6px",
-    fontSize: "13px",
+    fontSize: "0.75rem",
     fontWeight: "700",
     marginBottom: "12px"
   },
@@ -357,7 +349,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    fontSize: "13px",
+    fontSize: "0.75rem",
     cursor: "pointer"
   },
   checkbox: {
@@ -377,7 +369,6 @@ const styles = {
     borderRadius: "6px",
     cursor: "pointer",
     fontWeight: "600",
-    fontSize: "14px",
     transition: "all 0.2s"
   }
 };

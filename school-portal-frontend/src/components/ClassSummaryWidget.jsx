@@ -37,7 +37,7 @@ const ClassSummaryWidget = ({ theme }) => {
 
   if (error) {
     return (
-      <div style={{ padding: '12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', color: '#b91c1c', fontSize: '14px', marginBottom: '20px' }}>
+      <div style={{ padding: '12px', backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', color: '#b91c1c', marginBottom: '20px' }}>
         {error}
       </div>
     );
@@ -51,8 +51,8 @@ const ClassSummaryWidget = ({ theme }) => {
           <Users color="#6366f1" size={28} />
         </div>
         <div>
-          <p style={{ margin: 0, fontSize: '11px', color: theme.subText, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Students</p>
-          <h3 style={{ margin: '4px 0 0', fontSize: '28px', color: theme.text, fontWeight: '800' }}>{loading ? '...' : summary.totalStudents}</h3>
+          <p className="text-xs uppercase tracking-wide" style={{ margin: 0, color: theme.subText, fontWeight: 'bold' }}>Total Students</p>
+          <h3 style={{ margin: '4px 0 0', fontSize: '1.75rem', color: theme.text, fontWeight: '800' }}>{loading ? '...' : summary.totalStudents}</h3>
         </div>
       </div>
 
@@ -62,8 +62,8 @@ const ClassSummaryWidget = ({ theme }) => {
           <CheckCircle color="#10b981" size={28} />
         </div>
         <div>
-          <p style={{ margin: 0, fontSize: '11px', color: theme.subText, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Today's Rate</p>
-          <h3 style={{ margin: '4px 0 0', fontSize: '28px', color: theme.text, fontWeight: '800' }}>{loading ? '...' : `${summary.attendanceRate}%`}</h3>
+          <p className="text-xs uppercase tracking-wide" style={{ margin: 0, color: theme.subText, fontWeight: 'bold' }}>Today's Rate</p>
+          <h3 style={{ margin: '4px 0 0', fontSize: '1.75rem', color: theme.text, fontWeight: '800' }}>{loading ? '...' : `${summary.attendanceRate}%`}</h3>
         </div>
       </div>
     </div>

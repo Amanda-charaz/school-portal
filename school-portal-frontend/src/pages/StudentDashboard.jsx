@@ -50,8 +50,8 @@ const StudentDashboard = () => {
       display: "flex", 
       alignItems: "center", 
       gap: "8px", 
-      fontWeight: "700",
-      fontSize: "16px",
+      fontWeight: "600",
+      fontSize: "14px",
       transition: "0.2s",
       flexShrink: 0,
       whiteSpace: "nowrap"
@@ -59,7 +59,7 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden text-[19px] lg:text-[17px]">
+    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden text-sm">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto gap-4 mb-10 no-print">

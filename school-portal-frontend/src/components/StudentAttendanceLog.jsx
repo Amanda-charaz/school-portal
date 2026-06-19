@@ -145,7 +145,7 @@ const StudentAttendanceLog = ({ theme }) => {
                           color: style.text,
                           padding: '6px 16px',
                           borderRadius: '12px',
-                          fontSize: '11px',
+                          fontSize: '0.6875rem',
                           fontWeight: '900',
                           textTransform: 'uppercase',
                           border: `1px solid ${style.text}20`

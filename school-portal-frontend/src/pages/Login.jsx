@@ -143,7 +143,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => { setIsForgotMode(true); setError(""); setMessage(""); }}
-                style={{ background: 'none', border: 'none', color: theme.accent, fontSize: '12px', cursor: 'pointer', fontWeight: '600' }}
+                style={{ background: 'none', border: 'none', color: theme.accent, fontSize: '0.75rem', cursor: 'pointer', fontWeight: '600' }}
               >
                 Forgot Password?
               </button>
@@ -161,7 +161,7 @@ const Login = () => {
           />
           <label
             htmlFor="rememberMe"
-            style={{ fontSize: '13px', color: theme.subText, cursor: 'pointer' }}
+            style={{ fontSize: '0.75rem', color: theme.subText, cursor: 'pointer' }}
           >
             Remember Me
           </label>
@@ -180,7 +180,7 @@ const Login = () => {
             <ArrowLeft size={16} /> Back to Login
           </button>
         ) : (
-          <p style={{ marginTop: "20px", fontSize: "12px", color: theme.subText }}>
+          <p style={{ marginTop: "20px", fontSize: "0.75rem", color: theme.subText }}>
             Contact Admin if you forgot your ID.
           </p>
         )}
@@ -226,25 +226,25 @@ const getResponsiveStyles = (width) => {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      fontSize: isMobile ? "20px" : "24px"
+      fontSize: "1.5rem"
     },
     logoText: { textAlign: "center" },
-    universityName: { fontSize: isMobile ? "16px" : "18px", fontWeight: "bold", color: "#111827", lineHeight: "1.2" },
-    universitySubtext: { fontSize: isMobile ? "12px" : "13px", color: "#6b7280", lineHeight: "1.2" },
-    title: { fontSize: isMobile ? "22px" : "26px", fontWeight: "700", color: "#111827", marginBottom: "24px" },
+    universityName: { fontSize: "1.125rem", fontWeight: "bold", color: "#111827", lineHeight: "1.2" },
+    universitySubtext: { fontSize: "0.75rem", color: "#6b7280", lineHeight: "1.2" },
+    title: { fontSize: "1.5rem", fontWeight: "700", color: "#111827", marginBottom: "24px" },
     input: { 
       width: "100%", 
       padding: "12px 14px", 
       borderRadius: "6px", 
       border: "1px solid #d1d5db", 
       boxSizing: "border-box", 
-      fontSize: isMobile ? "19px" : "17px", 
+      fontSize: "1rem", 
       backgroundColor: "#f9fafb" 
     },
-    button: { width: "100%", padding: "12px", backgroundColor: "#003DA5", color: "white", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer", fontSize: "15px" },
-    error: { color: "#ef4444", marginBottom: "16px", fontSize: "13px", fontWeight: "500" },
-    success: { color: "#10b981", marginBottom: "16px", fontSize: "13px", fontWeight: "500" },
-    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "13px", marginTop: "20px", margin: "20px auto 0", color: "#6b7280" },
+    button: { width: "100%", padding: "12px", backgroundColor: "#003DA5", color: "white", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer", fontSize: "0.875rem" },
+    error: { color: "#ef4444", marginBottom: "16px", fontSize: "0.75rem", fontWeight: "500" },
+    success: { color: "#10b981", marginBottom: "16px", fontSize: "0.75rem", fontWeight: "500" },
+    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "0.75rem", marginTop: "20px", margin: "20px auto 0", color: "#6b7280" },
   };
 };
 

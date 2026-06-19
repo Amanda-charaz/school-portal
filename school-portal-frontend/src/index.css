@@ -2,39 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ── Base Typography ── */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+      'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: white;
+    color: #111827;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: #020617;
+    color: white;
+  }
+
+  /* Headings */
+  h1 { font-size: 1.5rem; font-weight: 900; line-height: 1.2; }
+  h2 { font-size: 1.25rem; font-weight: 700; line-height: 1.3; }
+  h3 { font-size: 1.125rem; font-weight: 700; line-height: 1.3; }
+  h4 { font-size: 1rem; font-weight: 600; line-height: 1.4; }
+
+  /* Form elements inherit font */
+  input,
+  select,
+  textarea,
+  button {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  /* Tables */
+  th {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    font-size: 0.875rem;
+  }
 }
 
-/* Fullscreen Layout */
-html,
-body,
-#root {
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden;
-  font-family: Inter, sans-serif;
-}
-
-/* Light Mode */
-body {
-  background-color: white;
-  color: #111827;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
-
-/* Dark Mode */
-.dark body {
-  background-color: #020617;
-  color: white;
-}
-
-/* Mobile-friendly scrollbar hiding */
+/* ── Utility Scrollbar Hiding ── */
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -44,26 +73,20 @@ body {
   display: none;
 }
 
-/* Improved overflow handling for mobile */
 .scroll-smooth {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Ensure font sizes are readable on mobile */
+/* ── Mobile: prevent iOS zoom on inputs ── */
 @media (max-width: 640px) {
-  body {
-    font-size: 16px;
-  }
-
   input,
   select,
-  textarea,
-  button {
+  textarea {
     font-size: 16px;
   }
 }
 
-/* Safe area insets for devices with notches */
+/* ── Safe area insets for notch devices ── */
 @supports (padding: max(0px)) {
   body {
     padding-left: max(0px, env(safe-area-inset-left));
