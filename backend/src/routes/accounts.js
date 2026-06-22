@@ -1,27 +1,22 @@
 import express from 'express';
 import * as accountsController from '../controllers/accountsController.js';
-import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import { protect, adminOnly, studentOnly } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// 🔒 Secure the entire router - only authenticated Admins should access finances
+// 🔒 All routes require authentication
 router.use(protect);
-router.use(adminOnly);
 
-// @route   GET /accounts/summary
-// @desc    Get all transactions for the financial overview
-router.get('/summary', accountsController.getAccountsSummary);
+// Student self-service routes
+router.get('/my-transactions', studentOnly, accountsController.getMyTransactions);
 
-// @route   POST /accounts/transaction
-// @desc    Log a new income (tuition) or school expense
-router.post('/transaction', accountsController.addTransaction);
-
-// @route   GET /accounts/outstanding-balance
-// @desc    Calculate the total outstanding tuition balance for all students
-router.get('/outstanding-balance', accountsController.getOutstandingBalance);
-
-// @route   GET /accounts/receipt/:id
-// @desc    Generate PDF receipt for a transaction
+// Receipt route accessible to both admin and the owning student (controller handles auth check)
 router.get('/receipt/:id', accountsController.generateReceiptPDF);
+
+// Admin-only financial management routes
+router.get('/summary', adminOnly, accountsController.getAccountsSummary);
+router.post('/transaction', adminOnly, accountsController.addTransaction);
+router.get('/outstanding-balance', adminOnly, accountsController.getOutstandingBalance);
+router.delete('/transaction/:id', adminOnly, accountsController.deleteTransaction);
 
 export default router;
