@@ -161,6 +161,47 @@ export const getMyResults = async (req, res) => {
     }
 };
 
+export const getMyAttendance = async (req, res) => {
+    try {
+        const studentId = new mongoose.Types.ObjectId(req.user.id);
+
+        // Fetch all individual attendance records for the student
+        const records = await Attendance.find({ student_id: studentId })
+            .sort({ date: -1 });
+
+        // Use an aggregation pipeline to calculate the summary stats
+        const summaryAgg = await Attendance.aggregate([
+            { $match: { student_id: studentId } },
+            {
+                $group: {
+                    _id: null,
+                    present: { $sum: { $cond: [{ $eq: ["$status", "Present"] }, 1, 0] } },
+                    absent: { $sum: { $cond: [{ $eq: ["$status", "Absent"] }, 1, 0] } },
+                    late: { $sum: { $cond: [{ $eq: ["$status", "Late"] }, 1, 0] } },
+                    total_days: { $sum: 1 }
+                }
+            }
+        ]);
+
+        const summary = summaryAgg[0] || { present: 0, absent: 0, late: 0, total_days: 0 };
+        const attendanceRate = summary.total_days > 0
+            ? (((summary.present + summary.late) / summary.total_days) * 100).toFixed(1)
+            : "0.0";
+
+        res.json({
+            summary: {
+                ...summary,
+                attendance_rate: `${attendanceRate}%`
+            },
+            records: records
+        });
+
+    } catch (err) {
+        console.error("Get My Attendance Error:", err.message);
+        res.status(500).json({ message: "Server Error fetching attendance", error: err.message });
+    }
+};
+
 // Teachers can view their assigned students, admins can view all
 export const getStudentsByTeacher = async (req, res) => {
     const teacherId = req.user.id;
