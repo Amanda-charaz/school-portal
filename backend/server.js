@@ -21,11 +21,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/result", resultRoutes);
-app.use("/api/attendance", attendanceRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/fees", feeRoutes);
 app.use("/api/student", studentRoutes);
+app.use("/api/attendance", attendanceRoutes);
 app.use("/api/files", fileRoutes);
 app.use('/api/accounts', accountsRoutes);
 
