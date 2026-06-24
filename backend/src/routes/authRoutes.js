@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, changePassword, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { login, changePassword, forgotPassword, resetPassword, getCurrentUser } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -7,6 +7,10 @@ const router = express.Router();
 // @route   POST /api/auth/login
 // @desc    Login user
 router.post('/login', login);
+
+// @route   GET /api/auth/me
+// @desc    Get current user's info
+router.get('/me', protect, getCurrentUser);
 
 // @route   PUT /api/auth/change-password
 // @desc    Allows any authenticated user to update their own password

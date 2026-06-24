@@ -14,7 +14,10 @@ import studentRoutes from "./src/routes/studentRoutes.js";
 import fileRoutes from "./src/routes/fileRoutes.js";
 import accountsRoutes from './src/routes/accounts.js';
 
+console.log("Step 1: Loading dotenv...");
 dotenv.config();
+console.log("Step 2: Dotenv loaded. PORT:", process.env.PORT);
+console.log("Step 3: Creating express app...");
 const app = express();
 
 app.use(cors());
@@ -43,14 +46,19 @@ app.use((err, req, res, _next) => {
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
+console.log("Step 4: About to connect to database with URI:", MONGO_URI);
 
 // Fire up our resilient database connection wrapper
 connectToDatabase(MONGO_URI).then(async () => {
+  console.log("Step 5: Connected to database successfully!");
   // Admin account repair/initialization
   try {
+    console.log("Step 6: Checking if admin exists...");
     const adminExists = await User.findOne({ email: "admin@test.com" });
+    console.log("Step 7: Admin exists:", !!adminExists);
 
     if (!adminExists) {
+      console.log("Step 8: Creating admin account...");
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash("admin123", salt);
 
@@ -68,6 +76,7 @@ connectToDatabase(MONGO_URI).then(async () => {
     console.error("❌ Admin repair failed:", err.message);
   }
 
+  console.log("Step 9: Starting server on port", PORT);
   app.listen(PORT, () => {
     console.log(`🚀 Server is flying high on port ${PORT}`);
   });

@@ -127,7 +127,22 @@ export const getAllResults = async (req, res) => {
     try {
         const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
         let query = {};
-        // Teachers and Admins can now see all institutional results
+        const { class: classFilter, term, year } = req.query;
+
+        // Apply filters if provided
+        if (term) query.term = term;
+        if (year) query.year = Number(year);
+
+        // If we have a class filter, first find students in that class
+        let studentIds;
+        if (classFilter) {
+          const classStudents = await User.find({ 
+            role: 'student', 
+            assigned_class: classFilter 
+          }).select('_id');
+          studentIds = classStudents.map(s => s._id);
+          query.student = { $in: studentIds };
+        }
 
         const results = await Result.find(query).populate('student', 'full_name school_id assigned_class');
         res.json(results);

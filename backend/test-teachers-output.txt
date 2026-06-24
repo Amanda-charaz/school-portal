@@ -1,0 +1,35 @@
+﻿Connecting to MongoDB...
+Connected successfully!
+
+--- Checking all teachers ---
+Teacher: teacher (T101)
+Assigned subjects: ["Mathematics","Physics","English"]
+------------------------------
+Teacher: uh (8)
+Assigned subjects: []
+------------------------------
+Teacher: nj (T3)
+Assigned subjects: ["Shona","Principles of Accounts"]
+------------------------------
+Teacher: Amanda (T4)
+Assigned subjects: ["Heritage Studies","Business Studies","English Language"]
+------------------------------
+Teacher: c (T5)
+Assigned subjects: ["Mathematics"]
+------------------------------
+
+--- All users ---
+Total users: 12
+admin - System Admin (undefined): subjects=[]
+student - Alima Charamanda (S101): subjects=[]
+teacher - teacher (T101): subjects=["Mathematics","Physics","English"]
+admin - ad (A101): subjects=[]
+student - r (): subjects=[]
+teacher - uh (8): subjects=[]
+teacher - nj (T3): subjects=["Shona","Principles of Accounts"]
+student - g (S4): subjects=[]
+student - Ali (S5): subjects=[]
+teacher - Amanda (T4): subjects=["Heritage Studies","Business Studies","English Language"]
+student - Tara (S6): subjects=[]
+teacher - c (T5): subjects=["Mathematics"]
+Disconnected from DB

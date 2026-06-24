@@ -4,7 +4,8 @@ import { subjectOptions } from "../utils/academicUtils";
 import { UserPlus, RefreshCw, BookOpen, Sparkles, X, UserX } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
-const UserManagement = ({ theme }) => {
+const UserManagement = () => {
+  const { theme } = useTheme();
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState("");

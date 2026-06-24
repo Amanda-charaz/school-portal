@@ -1,0 +1,46 @@
+﻿db.js: Loading connectToDatabase function...
+Step 1: Loading dotenv...
+Step 2: Dotenv loaded. PORT: 3000
+Step 3: Creating express app...
+Step 4: About to connect to database with URI: mongodb+srv://alimacharamanda_db_user:charaz0911@cluster.wbdthfn.mongodb.net/school_portal?retryWrites=true&w=majority&appName=Cluster
+db.js: connectToDatabase called with URI: URI provided
+db.js: About to attempt MongoDB connection...
+db.js: Trying mongoose.connect...
+Γ£à MongoDB Connected Successfully to the Cloud Cluster!
+Step 5: Connected to database successfully!
+Step 6: Checking if admin exists...
+Step 7: Admin exists: true
+≡ƒöæ Admin Login ΓåÆ admin@test.com / admin123
+Step 9: Starting server on port 3000
+node : node:events:497
+At line:1 char:18
++ & { cd backend ; node server.js 2>&1 | Out-File -FilePath backend-log ...
++                  ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (node:events:497:String) [], Remot 
+   eException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1904:16)
+    at listenInCluster (node:net:1961:12)
+    at Server.listen (node:net:2063:7)
+    at Function.listen 
+(D:\school-portal\backend\node_modules\express\lib\application.js:635:24)
+    at file:///D:/school-portal/backend/server.js:80:7
+    at process.processTicksAndRejections 
+(node:internal/process/task_queues:95:5)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1940:8)
+    at process.processTicksAndRejections 
+(node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+Node.js v20.17.0

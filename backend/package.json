@@ -1,5 +1,9 @@
 {
   "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "seed": "node seed.js"
+  },
   "dependencies": {
     "@humanwhocodes/retry": "^0.3.1",
     "bcryptjs": "^2.4.3",

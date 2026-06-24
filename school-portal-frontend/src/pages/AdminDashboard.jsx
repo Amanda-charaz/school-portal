@@ -64,8 +64,18 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    const user = getUserInfo();
-    setUserInfo(user);
+    const loadFreshUserInfo = async () => {
+      try {
+        const response = await api.get("/auth/me");
+        setUserInfo(response.data);
+        localStorage.setItem('user', JSON.stringify(response.data));
+      } catch (err) {
+        console.error("Failed to fetch user info", err);
+        setUserInfo(getUserInfo());
+      }
+    };
+
+    loadFreshUserInfo();
     fetchAuditLogs();
     fetchSystemLogs();
 

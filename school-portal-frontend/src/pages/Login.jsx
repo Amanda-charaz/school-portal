@@ -116,6 +116,7 @@ const Login = () => {
           style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
+          autoComplete="username"
           required
         />
 
@@ -128,6 +129,7 @@ const Login = () => {
                 style={{ ...styles.input, backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder, paddingRight: '40px' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
                 required
               />
               <button

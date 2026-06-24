@@ -127,38 +127,46 @@ export const createUser = async (req, res) => {
 // Update user (admin only)
 export const updateUser = async (req, res) => {
   try {
+    console.log("Update user request params:", req.params);
+    console.log("Update user request body:", req.body);
     const { full_name, email, role, school_id, assigned_subjects, assigned_class } = req.body;
-    const user = await User.findById(req.params.id);
+    const userId = req.params.id;
 
-    if (!user) {
+    // Check if user exists first
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update fields
-    if (full_name) user.full_name = full_name;
-    if (email) user.email = email;
-    if (role) user.role = role;
-    if (school_id) user.school_id = school_id;
-
-    // Handle assigned_class updates for both students and teachers (as form teachers)
-    if (assigned_class !== undefined) {
-      user.assigned_class = assigned_class;
-      // 🔄 Keep Student profile in sync if the user is a student
-      if (user.role === 'student') {
-        // This ensures the separate Student profile (if it exists) is also updated.
-        await Student.updateOne({ user: user._id }, { current_class: assigned_class || "Unassigned" });
-      }
-    }
-    
+    // Prepare update data
+    const updateData = {};
+    if (full_name) updateData.full_name = full_name;
+    if (email) updateData.email = email;
+    if (role) updateData.role = role;
+    if (school_id) updateData.school_id = school_id;
+    if (assigned_class !== undefined) updateData.assigned_class = assigned_class;
     if (assigned_subjects !== undefined) {
-      user.assigned_subjects = Array.isArray(assigned_subjects) 
+      updateData.assigned_subjects = Array.isArray(assigned_subjects) 
         ? assigned_subjects 
         : assigned_subjects.split(',').map(s => s.trim()).filter(Boolean);
     }
 
-    await user.save();
-    res.json({ message: "User updated successfully", user });
+    // Handle Student profile sync if needed
+    if (assigned_class !== undefined && existingUser.role === 'student') {
+      await Student.updateOne({ user: userId }, { current_class: assigned_class || "Unassigned" });
+    }
+
+    // Find and update user, returning the updated document
+    const updatedUser = await User.findByIdAndUpdate(
+      userId, 
+      updateData, 
+      { new: true, runValidators: true }
+    ).select('-password -raw_password_view');
+
+    console.log("User updated successfully:", updatedUser);
+    res.json({ message: "User updated successfully", user: updatedUser });
   } catch (err) {
+    console.error("Update user error:", err);
     res.status(400).json({ message: err.message });
   }
 };
@@ -220,11 +228,18 @@ export const resetUserPassword = async (req, res) => {
 export const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
+    console.log("getUsersByRole called with role:", role);
     const users = await User.find({ role: role.toLowerCase() }) // Query MongoDB using the string enum role values
       .select('-password -raw_password_view') // Keep hashed keys secure
       .sort({ createdAt: -1 });
+    console.log("Found users:", users);
+    console.log("User assigned_subjects:");
+    users.forEach(user => {
+      console.log(`${user.full_name}:`, user.assigned_subjects);
+    });
     res.status(200).json(users);
   } catch (err) {
+    console.error("getUsersByRole error:", err);
     res.status(500).json({ message: "Error filtering user records", error: err.message });
   }
 };

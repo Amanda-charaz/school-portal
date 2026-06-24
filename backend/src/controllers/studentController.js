@@ -175,34 +175,6 @@ export const getMyResults = async (req, res) => {
     }
 };
 
-// Teachers can view their assigned students, admins can view all
-export const getStudentsByTeacher = async (req, res) => {
-    const teacherId = req.user.id;
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
-
-    try {
-        let query = {};
-
-        if (userRole === 'admin') {
-            // Admin can see all students
-            query.role = 'student';
-        } else if (userRole === 'teacher') {
-            const teacher = await User.findById(teacherId);
-            if (!teacher || !teacher.assigned_class) return res.json([]);
-            const classList = teacher.assigned_class.split(',').map(c => c.trim());
-            query = { role: 'student', assigned_class: { $in: classList } };
-        } else {
-            return res.status(403).json({ message: "Not authorized to view students" });
-        }
-
-        const students = await User.find(query).select('-password');
-        res.json(students);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server Error fetching assigned students", error: err.message });
-    }
-};
-
 export const getMyAttendance = async (req, res) => {
     try {
       const studentId = req.user.id;
@@ -226,5 +198,18 @@ export const getMyAttendance = async (req, res) => {
       res.json(records);
     } catch (err) {
       res.status(500).json({ message: "Error fetching your attendance history", error: err.message });
+    }
+  };
+
+  // Get all distinct classes
+  export const getAllClasses = async (req, res) => {
+    try {
+      const classes = await User.distinct('assigned_class', { 
+        role: 'student', 
+        assigned_class: { $ne: null, $ne: '' } 
+      });
+      res.json(classes.sort());
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching classes", error: err.message });
     }
   };

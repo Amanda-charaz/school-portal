@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import api from "../api/axios";
 import { subjectOptions } from "../utils/academicUtils";
 import { Edit, Trash2, BookOpen, X } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
-const TeacherSubjectManagement = ({ theme }) => {
+const TeacherSubjectManagement = () => {
+  const { theme } = useTheme();
   const [teachers, setTeachers] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -18,6 +20,7 @@ const TeacherSubjectManagement = ({ theme }) => {
     setLoading(true);
     try {
       const response = await api.get("/admin/users/role/teacher");
+      console.log("Fetched teachers data:", response.data);
       setTeachers(response.data);
     } catch (err) {
       setMessage("❌ Failed to load teachers: " + (err.response?.data?.message || "Server error"));
@@ -47,10 +50,12 @@ const TeacherSubjectManagement = ({ theme }) => {
 
   const handleSaveSubjects = async () => {
     if (!selectedTeacher) return;
+    console.log("Saving subjects:", editFormData.assigned_subjects);
     try {
-      await api.put(`/admin/users/${selectedTeacher._id}`, {
+      const response = await api.put(`/admin/users/${selectedTeacher._id}`, {
         assigned_subjects: editFormData.assigned_subjects
       });
+      console.log("Update response:", response.data);
       setMessage("✅ Subjects updated successfully!");
       setTimeout(() => {
         setSelectedTeacher(null);
@@ -58,6 +63,7 @@ const TeacherSubjectManagement = ({ theme }) => {
         fetchTeachers();
       }, 1500);
     } catch (err) {
+      console.error("Save error:", err);
       setMessage("❌ " + (err.response?.data?.message || "Failed to update subjects"));
     }
   };

@@ -17,7 +17,7 @@ const TeacherDashboard = () => {
     const loadFreshUserInfo = async () => {
       try {
         // Fetch latest data from server
-        const response = await api.get('/student/profile');
+        const response = await api.get('/auth/me');
         setUserInfo(response.data);
         
         // Update local storage so other parts of the app have the new data

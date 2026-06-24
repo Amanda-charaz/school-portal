@@ -334,3 +334,35 @@ export const exportAttendanceCSV = async (req, res) => {
     res.status(500).json({ message: "Error exporting CSV", error: err.message });
   }
 };
+
+/**
+ * @desc    Get attendance records for the logged-in student
+ * @route   GET /api/attendance/my-attendance
+ * @access  Student
+ */
+export const getMyAttendance = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { startDate, endDate } = req.query;
+    let filter = { student_id: userId };
+
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setUTCHours(0, 0, 0, 0);
+        filter.date.$gte = start;
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setUTCHours(23, 59, 59, 999);
+        filter.date.$lte = end;
+      }
+    }
+
+    const data = await Attendance.find(filter).sort({ date: -1 });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching your attendance", error: err.message });
+  }
+};

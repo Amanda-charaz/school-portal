@@ -57,7 +57,9 @@ export const login = async (req, res) => {
         email: user.email,
         role: user.role,
         role_id: user.role_id,
-        school_id: user.school_id
+        school_id: user.school_id,
+        assigned_subjects: user.assigned_subjects || [],
+        assigned_class: user.assigned_class || null
       }
     });
   } catch (err) {
@@ -187,5 +189,32 @@ export const resetPassword = async (req, res) => {
     res.json({ message: "Password has been reset. you can now sign in." });
   } catch (err) {
     res.status(500).json({ message: "Error resetting password", error: err.message });
+  }
+};
+
+/**
+ * @desc    Get current user's profile
+ * @route   GET /api/auth/me
+ * @access  Private (All Roles)
+ */
+export const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      id: user._id,
+      full_name: user.full_name,
+      email: user.email,
+      role: user.role,
+      role_id: user.role_id,
+      school_id: user.school_id,
+      assigned_subjects: user.assigned_subjects || [],
+      assigned_class: user.assigned_class || null
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to get user info", error: err.message });
   }
 };

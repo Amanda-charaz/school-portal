@@ -18,7 +18,9 @@ import {
   Edit2,
   X,
   Trash2,
-  Eye
+  Eye,
+  ArrowUpCircle,
+  Download
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -33,6 +35,11 @@ const Result = ({ userInfo }) => {
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [transcriptSearchTerm, setTranscriptSearchTerm] = useState(''); // New state for modal search
+  // Filter state variables
+  const [filterClass, setFilterClass] = useState('');
+  const [filterTerm, setFilterTerm] = useState('');
+  const [filterYear, setFilterYear] = useState('');
+  const [availableClasses, setAvailableClasses] = useState([]);
   const { theme } = useTheme();
   const transcriptModalRef = React.useRef(null); // Ref for the scrollable modal content
   const [viewReportStudent, setViewReportStudent] = useState(null);
@@ -45,30 +52,57 @@ const Result = ({ userInfo }) => {
     year: new Date().getFullYear().toString() // Default to current year
   });
 
-  useEffect(() => {
-    // Use passed userInfo prop if available, otherwise fallback to storage
-    const info = userInfo || getUserInfo();
-    
-    // Ensure subjects are handled as an array even if stored as a string
-    const subjectsArray = Array.isArray(info.assigned_subjects)
-      ? info.assigned_subjects
-      : (typeof info.assigned_subjects === 'string' 
-          ? info.assigned_subjects.split(',').map(s => s.trim()).filter(Boolean)
-          : []);
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await api.get('/auth/me');
+      const info = response.data;
+      
+      // Update localStorage with the latest user info
+      localStorage.setItem('user', JSON.stringify(info));
 
-    setTeacherSubjects({
-      subjects: subjectsArray,
-      role: String(info.role || "").toLowerCase()
-    });
+      // Ensure subjects are handled as an array even if stored as a string
+      const subjectsArray = Array.isArray(info.assigned_subjects)
+        ? info.assigned_subjects
+        : (typeof info.assigned_subjects === 'string' 
+            ? info.assigned_subjects.split(',').map(s => s.trim()).filter(Boolean)
+            : []);
 
-    // Auto-select the first subject if none is selected yet
-    if (subjectsArray.length > 0 && !formData.subject) {
-      setFormData(prev => ({ ...prev, subject: subjectsArray[0] }));
+      setTeacherSubjects({
+        subjects: subjectsArray,
+        role: String(info.role || "").toLowerCase()
+      });
+
+      // Auto-select the first subject if none is selected yet
+      if (subjectsArray.length > 0 && !formData.subject) {
+        setFormData(prev => ({ ...prev, subject: subjectsArray[0] }));
+      }
+    } catch (err) {
+      console.error("Failed to fetch current user info:", err);
+      // Fallback to local user info if API fails
+      const info = userInfo || getUserInfo();
+      const subjectsArray = Array.isArray(info.assigned_subjects)
+        ? info.assigned_subjects
+        : (typeof info.assigned_subjects === 'string' 
+            ? info.assigned_subjects.split(',').map(s => s.trim()).filter(Boolean)
+            : []);
+      
+      setTeacherSubjects({
+        subjects: subjectsArray,
+        role: String(info.role || "").toLowerCase()
+      });
     }
+  };
 
+  useEffect(() => {
+    fetchCurrentUser();
     fetchResults();
     fetchTeacherStudents();
+    fetchClasses();
   }, [userInfo]);
+
+  useEffect(() => {
+    fetchResults();
+  }, [filterClass, filterTerm, filterYear]);
 
   const fetchTeacherStudents = async () => {
     try {
@@ -83,14 +117,29 @@ const Result = ({ userInfo }) => {
   const fetchResults = async () => {
     setLoading(true);
     try {
+      // Build query params for filtering
+      const params = new URLSearchParams();
+      if (filterClass) params.append('class', filterClass);
+      if (filterTerm) params.append('term', filterTerm);
+      if (filterYear) params.append('year', filterYear);
+
       // Teachers fetch results via /api/result/all (filtered to their class in controller)
-      const response = await api.get('/result/all');
+      const response = await api.get(`/result/all?${params.toString()}`);
       setResults(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error("Failed to load records:", err);
       setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to load results.' });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchClasses = async () => {
+    try {
+      const response = await api.get('/student/classes');
+      setAvailableClasses(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error("Failed to load classes:", err);
     }
   };
 
@@ -340,6 +389,51 @@ const Result = ({ userInfo }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-lg border outline-none text-xs"
+                style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
+              />
+            </div>
+          </div>
+
+          {/* Filters Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase opacity-60">Class</label>
+              <select 
+                value={filterClass}
+                onChange={(e) => setFilterClass(e.target.value)}
+                className="w-full p-3 rounded-xl border outline-none text-sm"
+                style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
+              >
+                <option value="">All Classes</option>
+                {availableClasses.map((cls) => (
+                  <option key={cls} value={cls}>{cls}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase opacity-60">Term</label>
+              <select 
+                value={filterTerm}
+                onChange={(e) => setFilterTerm(e.target.value)}
+                className="w-full p-3 rounded-xl border outline-none text-sm"
+                style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
+              >
+                <option value="">All Terms</option>
+                <option value="1">First Term (Jan – Apr)</option>
+                <option value="2">Second Term (May – Aug)</option>
+                <option value="3">Third Term (Sep – Dec)</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase opacity-60">Year</label>
+              <input 
+                type="number" 
+                min="2000" 
+                max={new Date().getFullYear() + 5} 
+                placeholder="All Years"
+                value={filterYear}
+                onChange={(e) => setFilterYear(e.target.value)}
+                className="w-full p-3 rounded-xl border outline-none text-sm"
                 style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
               />
             </div>
