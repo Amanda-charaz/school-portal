@@ -97,8 +97,11 @@ const Result = ({ userInfo }) => {
     fetchCurrentUser();
     fetchResults();
     fetchTeacherStudents();
-    fetchClasses();
-  }, [userInfo]);
+    // Only fetch classes if we're an admin or teacher
+    if (teacherInfo.role === 'admin' || teacherInfo.role === 'teacher') {
+      fetchClasses();
+    }
+  }, [userInfo, teacherInfo.role]);
 
   useEffect(() => {
     fetchResults();
@@ -140,6 +143,8 @@ const Result = ({ userInfo }) => {
       setAvailableClasses(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error("Failed to load classes:", err);
+      // Don't set error message, just log it - we can fall back to empty array
+      setAvailableClasses([]);
     }
   };
 
