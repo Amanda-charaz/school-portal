@@ -205,9 +205,9 @@ export const getMyAttendance = async (req, res) => {
   export const getAllClasses = async (req, res) => {
     try {
       const classes = await User.distinct('assigned_class', { 
-        role: 'student', 
         assigned_class: { $ne: null, $ne: '' } 
       });
+      // Sort the classes alphabetically
       res.json(classes.sort());
     } catch (err) {
       res.status(500).json({ message: "Error fetching classes", error: err.message });
