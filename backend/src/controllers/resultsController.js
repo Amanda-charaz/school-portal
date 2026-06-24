@@ -1,28 +1,17 @@
 import Result from '../models/Result.js';
 import User from '../models/User.js';
 import AuditLog from '../models/AuditLog.js';
-
-// Helper function to auto-calculate grade
-const calculateGrade = (score) => {
-  const num = Number(score);
-  if (num >= 80) return "A";
-  if (num >= 70) return "B";
-  if (num >= 60) return "C";
-  if (num >= 50) return "D";
-  if (num >= 40) return "E";
-  return "U";
-};
+import { calculateGrade } from '../utils/grades.js';
+import { isTeacherAssignedToSubject } from '../utils/permissions.js';
 
 export const addResult = async (req, res) => {
   try {
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
-
-    // Only teachers and admins can add results
-    if (!['teacher', 'admin'].includes(userRole)) {
-      return res.status(403).json({ message: "Only teachers and admins can submit results" });
-    }
-
     const { student_id, subject, score, grade, term, year } = req.body;
+
+    // Validate required fields
+    if (!student_id || !subject || !score || !term) {
+      return res.status(400).json({ message: "student_id, subject, score, and term are required." });
+    }
 
     // Validate score range
     const numericScore = Number(score);
@@ -35,23 +24,6 @@ export const addResult = async (req, res) => {
 
     if (!user) {
         return res.status(404).json({ message: "Student not found with that ID" });
-    }
-
-    // Teachers can only submit results for subjects they are assigned to
-    if (userRole === 'teacher') {
-      const teacher = await User.findById(req.user.id);
-      // Case-insensitive check for assigned subjects
-      const teacherSubjects = Array.isArray(teacher.assigned_subjects) 
-        ? teacher.assigned_subjects 
-        : (typeof teacher.assigned_subjects === 'string' 
-            ? teacher.assigned_subjects.split(',').map(s => s.trim()) 
-            : []);
-
-      const normalizedSubject = (subject || "").trim().toLowerCase();
-      const isAssigned = teacherSubjects.some(s => s.trim().toLowerCase() === normalizedSubject);
-      if (!isAssigned) {
-        return res.status(403).json({ message: `Access denied. You are not assigned to teach ${subject || 'this subject'}.` });
-      }
     }
 
     const finalYear = Number(year) || new Date().getFullYear();
@@ -108,27 +80,11 @@ export const updateResult = async (req, res) => {
   try {
     const { id } = req.params;
     const { score, subject, term, year } = req.body;
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
 
     const result = await Result.findById(id);
     if (!result) return res.status(404).json({ message: "Result not found" });
 
     const oldScore = result.score;
-
-    // Permission Check
-    if (userRole === 'teacher') {
-      const teacher = await User.findById(req.user.id);
-      const teacherSubjects = Array.isArray(teacher.assigned_subjects) 
-        ? teacher.assigned_subjects 
-        : (typeof teacher.assigned_subjects === 'string' 
-            ? teacher.assigned_subjects.split(',').map(s => s.trim()) 
-            : []);
-
-      const isAssigned = teacherSubjects.some(s => s.trim().toLowerCase() === result.subject.toLowerCase());
-      if (!isAssigned) {
-        return res.status(403).json({ message: "You are not authorized to edit this subject's results." });
-      }
-    }
 
     // Validate score if provided
     if (score !== undefined) {
@@ -247,27 +203,9 @@ export const getLeaderboard = async (req, res) => {
 export const deleteResult = async (req, res) => {
   try {
     const { id } = req.params;
-    const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
 
     const result = await Result.findById(id).populate('student', 'full_name school_id');
     if (!result) return res.status(404).json({ message: "Result not found" });
-
-    // Permission Check
-    if (userRole === 'teacher') {
-      const teacher = await User.findById(req.user.id);
-      const teacherSubjects = Array.isArray(teacher.assigned_subjects) 
-        ? teacher.assigned_subjects 
-        : (typeof teacher.assigned_subjects === 'string' 
-            ? teacher.assigned_subjects.split(',').map(s => s.trim()) 
-            : []);
-
-      const isAssigned = teacherSubjects.some(s => s.trim().toLowerCase() === result.subject.toLowerCase());
-      if (!isAssigned) {
-        return res.status(403).json({ message: "You are not authorized to delete results for this subject." });
-      }
-    } else if (userRole !== 'admin') {
-      return res.status(403).json({ message: "Access denied." });
-    }
 
     // Prepare audit details before deletion to record the state of the grade being removed
     const auditDetails = {

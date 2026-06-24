@@ -1,16 +1,24 @@
 import express from 'express';
-import { getStudentProfile, getStudentDashboard, getMyResults, getMyAttendance, getStudentsByTeacher } from '../controllers/studentController.js';
+import {
+  getStudentProfile,
+  getStudentDashboard,
+  getMyAttendance,
+  getStudentTeachers,
+} from '../controllers/studentController.js';
 import { protect, studentOnly, teacherOrAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Student specific routes
+// @route   GET /api/student/profile
 router.get('/profile', protect, studentOnly, getStudentProfile);
-router.get('/dashboard', protect, studentOnly, getStudentDashboard);
-router.get('/results', protect, studentOnly, getMyResults);
-router.get('/my-attendance', protect, studentOnly, getMyAttendance);
 
-// Shared/Staff routes
-router.get('/teacher/students', protect, teacherOrAdmin, getStudentsByTeacher);
+// @route   GET /api/student/dashboard
+router.get('/dashboard', protect, studentOnly, getStudentDashboard);
+
+// @route   GET /api/student/my-teachers
+router.get('/my-teachers', protect, studentOnly, getStudentTeachers);
+
+// @route   GET /api/student/my-attendance
+router.get('/my-attendance', protect, studentOnly, getMyAttendance);
 
 export default router;

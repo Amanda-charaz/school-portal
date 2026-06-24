@@ -95,37 +95,6 @@ export const getAllAttendance = async (req, res) => {
 };
 
 /**
- * @desc    Get own attendance history
- * @route   GET /api/attendance/my-attendance
- * @access  Student
- */
-export const getMyAttendance = async (req, res) => {
-  try {
-    const studentId = req.user.id;
-    const { startDate, endDate } = req.query;
-    let filter = { student_id: studentId };
-
-    if (startDate || endDate) {
-      filter.date = {};
-      if (startDate) {
-        const start = startOfDay(new Date(startDate));
-        filter.date.$gte = start;
-      }
-      if (endDate) {
-        const end = new Date(new Date(endDate).setUTCHours(23, 59, 59, 999));
-        filter.date.$lte = end;
-      }
-    }
-
-    const records = await Attendance.find(filter)
-      .sort({ date: -1 });
-    res.json(records);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching your attendance history", error: err.message });
-  }
-};
-
-/**
  * @desc    Export student's attendance trend as a PDF report
  * @route   GET /api/attendance/export-report
  * @access  Student

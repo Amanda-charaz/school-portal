@@ -1,9 +1,7 @@
-import Result from '../models/Result.js';
 import User from '../models/User.js';
 import Student from '../models/Student.js';
 import Class from '../models/Class.js';
-import AuditLog from '../models/AuditLog.js'; // Import the new AuditLog model
-import bcrypt from 'bcryptjs'; // Keep bcrypt for hashing
+import AuditLog from '../models/AuditLog.js';
 import { validatePasswordComplexity } from '../utils/index.js';
 
 // Get all audit logs
@@ -120,15 +118,6 @@ export const createUser = async (req, res) => {
 
     const savedUser = await newUser.save();
 
-    // 4. Automatically create Student profile if role is student
-    if (role === 'student') {
-      await Student.create({
-        user: savedUser._id,
-        school_id: savedUser.school_id,
-        current_class: assigned_class || "Unassigned"
-      });
-    }
-
     res.status(201).json({ message: "User created successfully", user: savedUser });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -150,10 +139,13 @@ export const updateUser = async (req, res) => {
     if (email) user.email = email;
     if (role) user.role = role;
     if (school_id) user.school_id = school_id;
+
+    // Handle assigned_class updates for both students and teachers (as form teachers)
     if (assigned_class !== undefined) {
       user.assigned_class = assigned_class;
       // 🔄 Keep Student profile in sync if the user is a student
       if (user.role === 'student') {
+        // This ensures the separate Student profile (if it exists) is also updated.
         await Student.updateOne({ user: user._id }, { current_class: assigned_class || "Unassigned" });
       }
     }
@@ -180,7 +172,7 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // 1. If user is a student, delete their associated profile record
+    // If the user is a student, also delete their associated Student profile record.
     if (user.role === 'student') {
       await Student.deleteOne({ user: user._id });
     }

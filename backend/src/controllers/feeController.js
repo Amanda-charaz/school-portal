@@ -147,9 +147,9 @@ export const getStudentFees = async (req, res) => {
  */
 export const getMyFees = async (req, res) => {
   try {
-    // Normalize ID to ensure it matches the ObjectId stored in the database
-    const studentId = mongoose.Types.ObjectId.isValid(req.user.id) 
-      ? new mongoose.Types.ObjectId(req.user.id) 
+    // Ensure ID is treated as a valid ObjectId for the query
+    const studentId = mongoose.Types.ObjectId.isValid(req.user.id)
+      ? new mongoose.Types.ObjectId(req.user.id)
       : req.user.id;
 
     const fees = await Fee.find({ student_id: studentId })

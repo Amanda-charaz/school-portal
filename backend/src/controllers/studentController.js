@@ -2,16 +2,8 @@ import User from '../models/User.js';
 import Result from '../models/Result.js';
 import Attendance from '../models/Attendance.js';
 import Fee from '../models/Fee.js';
+import { calculateGrade } from '../utils/grades.js';
 import mongoose from 'mongoose';
-
-const calculateGrade = (score) => {
-    if (score >= 80) return "A";
-    if (score >= 70) return "B";
-    if (score >= 60) return "C";
-    if (score >= 50) return "D";
-    if (score >= 40) return "E";
-    return "U";
-};
 
 // Get student's own profile (read-only)
 export const getStudentProfile = async (req, res) => {
@@ -34,6 +26,28 @@ export const getStudentProfile = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({ message: "Failed to fetch profile", error: err.message });
+    }
+};
+
+// Get teachers for the logged-in student's class
+export const getStudentTeachers = async (req, res) => {
+    try {
+        const student = await User.findById(req.user.id);
+        if (!student || !student.assigned_class) {
+            return res.status(404).json({ message: "Student or assigned class not found." });
+        }
+
+        // Find teachers assigned to the same class as the student
+        const teachers = await User.find({
+            role: 'teacher',
+            assigned_class: { $in: student.assigned_class.split(',').map(c => c.trim()) }
+        }).select('full_name email assigned_subjects');
+
+        res.json(teachers);
+
+    } catch (err) {
+        console.error("Error fetching student's teachers:", err.message);
+        res.status(500).json({ message: "Server Error fetching teachers", error: err.message });
     }
 };
 
@@ -161,66 +175,56 @@ export const getMyResults = async (req, res) => {
     }
 };
 
-export const getMyAttendance = async (req, res) => {
-    try {
-        const studentId = new mongoose.Types.ObjectId(req.user.id);
-
-        // Fetch all individual attendance records for the student
-        const records = await Attendance.find({ student_id: studentId })
-            .sort({ date: -1 });
-
-        // Use an aggregation pipeline to calculate the summary stats
-        const summaryAgg = await Attendance.aggregate([
-            { $match: { student_id: studentId } },
-            {
-                $group: {
-                    _id: null,
-                    present: { $sum: { $cond: [{ $eq: ["$status", "Present"] }, 1, 0] } },
-                    absent: { $sum: { $cond: [{ $eq: ["$status", "Absent"] }, 1, 0] } },
-                    late: { $sum: { $cond: [{ $eq: ["$status", "Late"] }, 1, 0] } },
-                    total_days: { $sum: 1 }
-                }
-            }
-        ]);
-
-        const summary = summaryAgg[0] || { present: 0, absent: 0, late: 0, total_days: 0 };
-        const attendanceRate = summary.total_days > 0
-            ? (((summary.present + summary.late) / summary.total_days) * 100).toFixed(1)
-            : "0.0";
-
-        res.json({
-            summary: {
-                ...summary,
-                attendance_rate: `${attendanceRate}%`
-            },
-            records: records
-        });
-
-    } catch (err) {
-        console.error("Get My Attendance Error:", err.message);
-        res.status(500).json({ message: "Server Error fetching attendance", error: err.message });
-    }
-};
-
 // Teachers can view their assigned students, admins can view all
 export const getStudentsByTeacher = async (req, res) => {
     const teacherId = req.user.id;
     const userRole = String(req.user.role || req.user.role_id || "").toLowerCase();
 
     try {
-        let query;
+        let query = {};
 
-        if (userRole === 'admin' || userRole === 'teacher') {
-            // Admins and Teachers now see all students for comprehensive selection and reporting
-            query = User.find({ role: 'student' }).select('-password');
+        if (userRole === 'admin') {
+            // Admin can see all students
+            query.role = 'student';
+        } else if (userRole === 'teacher') {
+            const teacher = await User.findById(teacherId);
+            if (!teacher || !teacher.assigned_class) return res.json([]);
+            const classList = teacher.assigned_class.split(',').map(c => c.trim());
+            query = { role: 'student', assigned_class: { $in: classList } };
         } else {
             return res.status(403).json({ message: "Not authorized to view students" });
         }
 
-        const students = await query;
+        const students = await User.find(query).select('-password');
         res.json(students);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server Error fetching assigned students", error: err.message });
     }
 };
+
+export const getMyAttendance = async (req, res) => {
+    try {
+      const studentId = req.user.id;
+      const { startDate, endDate } = req.query;
+      let filter = { student_id: studentId };
+  
+      if (startDate || endDate) {
+        filter.date = {};
+        if (startDate) {
+          const start = new Date(new Date(startDate).setUTCHours(0, 0, 0, 0));
+          filter.date.$gte = start;
+        }
+        if (endDate) {
+          const end = new Date(new Date(endDate).setUTCHours(23, 59, 59, 999));
+          filter.date.$lte = end;
+        }
+      }
+  
+      const records = await Attendance.find(filter)
+        .sort({ date: -1 });
+      res.json(records);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching your attendance history", error: err.message });
+    }
+  };
