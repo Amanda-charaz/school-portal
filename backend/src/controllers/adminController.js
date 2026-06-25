@@ -83,7 +83,10 @@ export const createUser = async (req, res) => {
     // 2. Auto-generate school_id and shorthand email
     const school_id = `${prefix}${nextIdNumber}`;
     const email = `${school_id.toLowerCase()}@s.com`;
-    const defaultPassword = "school1234"; // Default password that meets complexity requirements
+    // SECURITY: Generate a more secure, random default password for each user.
+    // This is a simple implementation. For higher security, consider a more robust
+    // random string generator.
+    const defaultPassword = `sch_${Math.random().toString(36).slice(-8)}`;
 
     // Validate default password complexity
     const complexityError = validatePasswordComplexity(defaultPassword);
@@ -112,7 +115,6 @@ export const createUser = async (req, res) => {
       school_id,
       assigned_class: assigned_class || null,
       assigned_subjects: role === 'teacher' ? subjectsArray : [],
-      raw_password_view: defaultPassword,
       mustResetPassword: true
     });
 
@@ -127,8 +129,6 @@ export const createUser = async (req, res) => {
 // Update user (admin only)
 export const updateUser = async (req, res) => {
   try {
-    console.log("Update user request params:", req.params);
-    console.log("Update user request body:", req.body);
     const { full_name, email, role, school_id, assigned_subjects, assigned_class } = req.body;
     const userId = req.params.id;
 
@@ -163,10 +163,8 @@ export const updateUser = async (req, res) => {
       { new: true, runValidators: true }
     ).select('-password -raw_password_view');
 
-    console.log("User updated successfully:", updatedUser);
     res.json({ message: "User updated successfully", user: updatedUser });
   } catch (err) {
-    console.error("Update user error:", err);
     res.status(400).json({ message: err.message });
   }
 };
@@ -228,18 +226,11 @@ export const resetUserPassword = async (req, res) => {
 export const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
-    console.log("getUsersByRole called with role:", role);
     const users = await User.find({ role: role.toLowerCase() }) // Query MongoDB using the string enum role values
       .select('-password -raw_password_view') // Keep hashed keys secure
       .sort({ createdAt: -1 });
-    console.log("Found users:", users);
-    console.log("User assigned_subjects:");
-    users.forEach(user => {
-      console.log(`${user.full_name}:`, user.assigned_subjects);
-    });
     res.status(200).json(users);
   } catch (err) {
-    console.error("getUsersByRole error:", err);
     res.status(500).json({ message: "Error filtering user records", error: err.message });
   }
 };

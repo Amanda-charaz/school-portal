@@ -148,8 +148,7 @@ export const forgotPassword = async (req, res) => {
     // In a real production app, you would use Nodemailer here to send the email.
     // For now, we return it in the message so you can test the flow.
     res.json({ 
-      message: "An email with reset instructions has been sent.",
-      debug_token: resetToken // REMOVE THIS IN PRODUCTION
+      message: "An email with reset instructions has been sent."
     });
   } catch (err) {
     res.status(500).json({ message: "Error processing request", error: err.message });
