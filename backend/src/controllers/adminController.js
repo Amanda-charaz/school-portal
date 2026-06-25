@@ -44,7 +44,7 @@ export const getSystemLogs = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
-      .select('-password -raw_password_view') // Keep hashed keys secure
+      .select('-password') // Keep hashed password secure
       .sort({ createdAt: -1 });
     res.status(200).json(users);
   } catch (err) {
@@ -227,7 +227,7 @@ export const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
     const users = await User.find({ role: role.toLowerCase() }) // Query MongoDB using the string enum role values
-      .select('-password -raw_password_view') // Keep hashed keys secure
+      .select('-password') // Keep hashed password secure
       .sort({ createdAt: -1 });
     res.status(200).json(users);
   } catch (err) {

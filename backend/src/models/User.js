@@ -3,17 +3,16 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
   full_name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, lowercase: true },
-  password: { type: String, required: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  password: { type: String, required: true, select: false },
   role: {
     type: String,
     required: true,
     enum: ['student', 'teacher', 'admin']
   },
-  school_id: { type: String, unique: true }, // Auto-generated (e.g., S1, T1)
-    assigned_class: { type: String },          // For students and form teachers
+  school_id: { type: String, required: true, unique: true }, // Auto-generated (e.g., S1, T1)
+  assigned_class: { type: String, default: null }, // For students and form teachers
   assigned_subjects: [{ type: String }],     // For teachers
-    raw_password_view: { type: String },        // Temporary password view for admin
   resetPasswordToken: String,
   resetPasswordExpires: Date
 }, {
