@@ -76,10 +76,11 @@ connectToDatabase(MONGO_URI).then(async () => {
     console.error("❌ Admin repair failed:", err.message);
   }
 
-  console.log("Step 9: Starting server on port", PORT);
-  app.listen(PORT, () => {
-    console.log(`🚀 Server is flying high on port ${PORT}`);
-  });
+  console.log("Step 9: Starting server on port", PORT, "(all interfaces)");
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server is flying high on port ${PORT} (all interfaces)`);
+      console.log(`   Local: http://localhost:${PORT}`);
+    });
 }).catch((err) => {
   console.error("❌ Failed to start server:", err.message);
   process.exit(1);
