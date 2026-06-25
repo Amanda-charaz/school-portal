@@ -20,7 +20,24 @@ console.log("Step 2: Dotenv loaded. PORT:", process.env.PORT);
 console.log("Step 3: Creating express app...");
 const app = express();
 
-app.use(cors());
+// --- Secure CORS Configuration for Render ---
+// This is critical for allowing your Vercel frontend to communicate with your Render backend.
+const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman) and from your whitelisted frontend.
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // This is essential for sending cookies or authorization headers.
+};
+
+app.use(cors(corsOptions));
+// --- End CORS Configuration ---
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
