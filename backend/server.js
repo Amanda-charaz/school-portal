@@ -22,14 +22,20 @@ const app = express();
 
 // --- Secure CORS Configuration for Render ---
 // This is critical for allowing your Vercel frontend to communicate with your Render backend.
-const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+const allowedOrigins = [
+  'http://localhost:3000', // Default for local frontend dev
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [])
+];
+
+console.log("Allowed CORS origins:", allowedOrigins);
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or Postman) and from your whitelisted frontend.
+    // Allow requests with no origin (like Postman, mobile apps) and from whitelisted origins.
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.error(`CORS Error: The origin "${origin}" is not allowed.`);
       callback(new Error('Not allowed by CORS'));
     }
   },
