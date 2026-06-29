@@ -118,7 +118,7 @@ const StudentResultsView = () => {
                           padding: '4px 12px',
                           borderRadius: '8px',
                           fontWeight: '900',
-                          fontSize: '11px',
+                          fontSize: '0.6875rem',
                           border: `1px solid ${gradeColor}30`,
                           display: 'inline-block',
                           textAlign: 'center',

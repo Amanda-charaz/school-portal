@@ -72,7 +72,7 @@ const ResetPassword = () => {
         <h2 style={{ ...styles.title, color: theme.text, marginTop: "30px" }}>
           Create New Password
         </h2>
-        <p style={{ color: theme.subText, fontSize: "13px", marginBottom: "25px" }}>
+        <p style={{ color: theme.subText, fontSize: "0.75rem", marginBottom: "25px" }}>
           Please enter and confirm your new secure password.
         </p>
 
@@ -157,21 +157,21 @@ const getResponsiveStyles = (width) => {
       justifyContent: "center"
     },
     logoText: { textAlign: "left" },
-    universityName: { fontSize: "18px", fontWeight: "bold", lineHeight: "1.2" },
-    universitySubtext: { fontSize: "13px", color: "#6b7280", lineHeight: "1.2" },
-    title: { fontSize: isMobile ? "22px" : "26px", fontWeight: "700", marginBottom: "10px" },
+    universityName: { fontSize: "1.125rem", fontWeight: "bold", lineHeight: "1.2" },
+    universitySubtext: { fontSize: "0.75rem", color: "#6b7280", lineHeight: "1.2" },
+    title: { fontSize: "1.5rem", fontWeight: "700", marginBottom: "10px" },
     input: {
       width: "100%", 
       padding: "12px 14px", 
       borderRadius: "6px", 
       border: "1px solid #d1d5db", 
       boxSizing: "border-box",
-      fontSize: "16px" // Body Text & Data
+      fontSize: "1rem"
     },
-    button: { width: "100%", padding: "12px", color: "white", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer", fontSize: "15px" },
-    error: { color: "#ef4444", marginBottom: "16px", fontSize: "13px", fontWeight: "500", backgroundColor: "#fee2e2", padding: "10px", borderRadius: "6px" },
-    success: { color: "#065f46", marginBottom: "16px", fontSize: "13px", fontWeight: "500", backgroundColor: "#ecfdf5", padding: "10px", borderRadius: "6px" },
-    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "13px", marginTop: "20px", margin: "20px auto 0" },
+    button: { width: "100%", padding: "12px", color: "white", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer", fontSize: "0.875rem" },
+    error: { color: "#ef4444", marginBottom: "16px", fontSize: "0.75rem", fontWeight: "500", backgroundColor: "#fee2e2", padding: "10px", borderRadius: "6px" },
+    success: { color: "#065f46", marginBottom: "16px", fontSize: "0.75rem", fontWeight: "500", backgroundColor: "#ecfdf5", padding: "10px", borderRadius: "6px" },
+    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "0.75rem", marginTop: "20px", margin: "20px auto 0" },
   };
 };
 

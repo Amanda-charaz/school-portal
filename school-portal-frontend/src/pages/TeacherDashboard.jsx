@@ -46,8 +46,8 @@ const TeacherDashboard = () => {
       display: "flex", 
       alignItems: "center", 
       gap: "8px", 
-      fontWeight: "700",
-      fontSize: "16px",
+      fontWeight: "600",
+      fontSize: "14px",
       transition: "0.2s",
       flexShrink: 0,
       whiteSpace: "nowrap"
@@ -55,7 +55,7 @@ const TeacherDashboard = () => {
   };
 
   return (
-    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden text-[19px] lg:text-[17px]">
+    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden text-sm">
       
       {/* Header Container */}
       <div className="flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto gap-4 mb-10">
@@ -65,7 +65,7 @@ const TeacherDashboard = () => {
         </h1>
         
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 mr-1">{userInfo.full_name}</span>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-1">{userInfo.full_name}</span>
           
           {/* Dark Mode Switcher */}
           <button 
@@ -78,7 +78,7 @@ const TeacherDashboard = () => {
           {/* Logout Action */}
           <button 
             onClick={handleLogout} 
-            className="bg-red-50 hover:bg-red-100 text-school-red dark:bg-school-red-dark/20 dark:hover:bg-school-red-dark/40 dark:text-school-red-light px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-xs shadow-sm"
+            className="bg-red-50 hover:bg-red-100 text-school-red dark:bg-school-red-dark/20 dark:hover:bg-school-red-dark/40 dark:text-school-red-light px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-sm shadow-sm"
           >
             <LogOut size={16} /> 
             <span>Logout</span>
@@ -92,7 +92,7 @@ const TeacherDashboard = () => {
           onClick={() => setActiveTab("overview")}
           style={{
             ...styles.tabButton,
-            fontSize: "18px", color: activeTab === "overview" ? theme.accent : theme.subText,
+            color: activeTab === "overview" ? theme.accent : theme.subText,
             borderBottom: activeTab === "overview" ? `3px solid ${theme.accent}` : "none",
             transform: activeTab === "overview" ? 'translateY(1px)' : 'none'
           }}
@@ -105,7 +105,7 @@ const TeacherDashboard = () => {
           onClick={() => setActiveTab("attendance")}
           style={{
             ...styles.tabButton,
-            fontSize: "18px", color: activeTab === "attendance" ? theme.accent : theme.subText,
+            color: activeTab === "attendance" ? theme.accent : theme.subText,
             borderBottom: activeTab === "attendance" ? `3px solid ${theme.accent}` : "none",
             transform: activeTab === "attendance" ? 'translateY(1px)' : 'none'
           }}
@@ -118,7 +118,7 @@ const TeacherDashboard = () => {
           onClick={() => setActiveTab("results")}
           style={{
             ...styles.tabButton,
-            fontSize: "18px", color: activeTab === "results" ? theme.accent : theme.subText,
+            color: activeTab === "results" ? theme.accent : theme.subText,
             borderBottom: activeTab === "results" ? `3px solid ${theme.accent}` : "none",
             transform: activeTab === "results" ? 'translateY(1px)' : 'none'
           }}
@@ -131,7 +131,7 @@ const TeacherDashboard = () => {
           onClick={() => setActiveTab("settings")}
           style={{
             ...styles.tabButton,
-            fontSize: "18px", color: activeTab === "settings" ? theme.accent : theme.subText,
+            color: activeTab === "settings" ? theme.accent : theme.subText,
             borderBottom: activeTab === "settings" ? `3px solid ${theme.accent}` : "none",
             transform: activeTab === "settings" ? 'translateY(1px)' : 'none'
           }}

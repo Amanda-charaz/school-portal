@@ -24,13 +24,13 @@ const Register = () => {
     };
 
     return (
-        <div style={{ padding: '40px', fontFamily: "'Inter', sans-serif" }}>
-            <h2 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '20px' }}>Create New Student Account</h2>
+        <div style={{ padding: '40px' }}>
+            <h2 style={{ marginBottom: '20px' }}>Create New Student Account</h2>
             <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', gap: '10px' }}>
-                <input type="text" placeholder="Full Name" value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} required style={{ padding: '10px', fontSize: '16px', borderRadius: '5px', border: '1px solid #ccc' }} />
-                <input type="email" placeholder="Email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required style={{ padding: '10px', fontSize: '16px', borderRadius: '5px', border: '1px solid #ccc' }} />
-                <input type="password" placeholder="Password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required style={{ padding: '10px', fontSize: '16px', borderRadius: '5px', border: '1px solid #ccc' }} />
-                <button type="submit" style={{ backgroundColor: '#4f46e5', color: 'white', padding: '12px', border: 'none', borderRadius: '5px', fontSize: '16px', fontWeight: 'bold' }}>
+                <input type="text" placeholder="Full Name" value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} required style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px', border: '1px solid #ccc' }} />
+                <input type="email" placeholder="Email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px', border: '1px solid #ccc' }} />
+                <input type="password" placeholder="Password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required style={{ padding: '10px', fontSize: '1rem', borderRadius: '5px', border: '1px solid #ccc' }} />
+                <button type="submit" style={{ backgroundColor: '#4f46e5', color: 'white', padding: '12px', border: 'none', borderRadius: '5px', fontSize: '0.875rem', fontWeight: 'bold' }}>
                     Register Student
                 </button>
             </form>

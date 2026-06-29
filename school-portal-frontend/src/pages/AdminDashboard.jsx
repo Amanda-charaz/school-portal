@@ -105,7 +105,7 @@ const AdminDashboard = () => {
             <Shield size={28} color={theme.accent} /> Admin Portal
           </h1>
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ fontSize: "14px", color: theme.subText }}>{userInfo.full_name}</span>
+            <span className="text-sm font-medium" style={{ color: theme.subText }}>{userInfo.full_name}</span>
             <button onClick={toggleTheme} className="p-2.5 rounded-xl border transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700/50 shadow-sm">
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -270,7 +270,7 @@ const AdminDashboard = () => {
                             borderRadius: '4px'
                           }}>{log.grade}</span>
                         </td>
-                        <td style={{ ...styles.td, color: theme.subText, fontSize: "12px" }}>
+                        <td style={{ ...styles.td, color: theme.subText }}>
                           {new Date(log.updatedAt).toLocaleDateString('en-GB', { 
                             day: '2-digit', 
                             month: 'short', 
@@ -324,16 +324,15 @@ const AdminDashboard = () => {
                     filteredSystemLogs.map((log) => (
                       <tr key={log._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
                         <td style={{ ...styles.td, color: theme.text, fontWeight: "bold" }}>
-                          <span style={{ fontSize: "11px", textTransform: "uppercase", padding: "4px 8px", borderRadius: "12px", backgroundColor: theme.inputBg }}>{log.actionType}</span>
+                          <span className="text-xs uppercase" style={{ padding: "4px 8px", borderRadius: "12px", backgroundColor: theme.inputBg }}>{log.actionType}</span>
                         </td>
-                        <td style={{ ...styles.td, color: theme.text }}>{log.performedBy?.full_name} <span style={{fontSize: '12px', color: theme.subText}}>({log.performedBy?.school_id})</span></td>
+                        <td style={{ ...styles.td, color: theme.text }}>{log.performedBy?.full_name} <span className="text-xs" style={{color: theme.subText}}>({log.performedBy?.school_id})</span></td>
                         <td style={{ ...styles.td, color: theme.text }}>{log.targetUser ? `${log.targetUser.full_name} (${log.targetUser.school_id})` : "N/A"}</td>
                         <td 
                           onClick={() => setSelectedLog(log)}
                           style={{ 
                             ...styles.td, 
                             color: theme.accent, 
-                            fontSize: "12px", 
                             cursor: 'pointer',
                             fontWeight: '600'
                           }}
@@ -342,7 +341,7 @@ const AdminDashboard = () => {
                             <Eye size={14} /> View Details
                           </div>
                         </td>
-                        <td style={{ ...styles.td, color: theme.subText, fontSize: "12px" }}>
+                        <td style={{ ...styles.td, color: theme.subText }}>
                           {new Date(log.timestamp).toLocaleString('en-GB', {
                             day: '2-digit',
                             month: 'short',
@@ -368,7 +367,7 @@ const AdminDashboard = () => {
         ) : (
           <div style={{ ...styles.card, backgroundColor: theme.card, width: '100%' }}>
             <h2 style={{ ...styles.subtitle, color: theme.text }}>System Settings</h2>
-            <div style={{ color: theme.subText, fontSize: "14px" }}>
+            <div style={{ color: theme.subText }}>
               <p><strong>Database:</strong> MongoDB</p>
               <p><strong>API Server:</strong> http://localhost:3000</p>
               <p><strong>Theme:</strong> {darkMode ? 'Dark' : 'Light'}</p>
@@ -384,7 +383,7 @@ const AdminDashboard = () => {
         <div style={styles.overlay}>
           <div style={{ ...styles.modal, backgroundColor: theme.card, width: '100%', maxWidth: '600px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ margin: 0, color: theme.text, fontSize: "18px", fontWeight: "900" }}>Action Details: {selectedLog.actionType}</h3>
+              <h3 style={{ margin: 0, color: theme.text }}>Action Details: {selectedLog.actionType}</h3>
               <button onClick={() => setSelectedLog(null)} style={styles.iconBtn}><X size={20} color={theme.text} /></button>
             </div>
             <pre style={{ 
@@ -393,9 +392,9 @@ const AdminDashboard = () => {
               padding: '15px', 
               borderRadius: '8px', 
               overflowX: 'auto',
-              fontSize: '12px',
+              fontSize: '0.75rem',
               border: `1px solid ${theme.inputBorder}`,
-              fontFamily: 'monospace'
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
             }}>
               {JSON.stringify(selectedLog.details, null, 2)}
             </pre>
@@ -437,9 +436,9 @@ const getResponsiveStyles = (width) => {
       transition: "0.2s",
       flexShrink: 0,
       whiteSpace: "nowrap",
-      fontSize: isMobile ? "12px" : "14px"
+      fontSize: "14px"
       },
-      title: { display: "flex", alignItems: "center", gap: "10px", fontSize: isMobile ? "18px" : "24px" },
+      title: { display: "flex", alignItems: "center", gap: "10px" },
     mainLayout: {
       display: "flex",
       flexDirection: isTablet && !isMobile ? "row" : "column",
@@ -449,15 +448,15 @@ const getResponsiveStyles = (width) => {
       flexWrap: "wrap"
       },
       card: { padding: isMobile ? "16px" : "25px", borderRadius: "16px", boxShadow: "0 4px 6px rgba(0,0,0,0.1)", transition: "all 0.3s ease", flex: isTablet && !isMobile ? "1 1 calc(50% - 15px)" : "1" },
-    subtitle: { marginBottom: "20px", fontSize: "18px" },
+    subtitle: { marginBottom: "20px" },
     inputGroup: { marginBottom: "15px" },
-    label: { display: "block", marginBottom: "5px", fontSize: "13px", fontWeight: "600" },
-    input: { width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid", boxSizing: "border-box", fontSize: "16px" },
+    label: { display: "block", marginBottom: "5px", fontSize: "0.75rem", fontWeight: "600" },
+    input: { width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid", boxSizing: "border-box" },
     button: { width: "100%", padding: "12px", backgroundColor: "#6366f1", color: "white", border: "none", borderRadius: "8px", fontWeight: "bold", cursor: "pointer", marginTop: "10px" },
     themeBtn: { padding: "10px", borderRadius: "8px", border: "1px solid", cursor: "pointer" },
-    logoutBtn: { backgroundColor: "#fee2e2", color: "#B22222", border: "none", padding: "10px 16px", borderRadius: "8px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontWeight: "bold", fontSize: isMobile ? "12px" : "14px" },
-    th: { padding: isMobile ? "8px 12px" : "12px 16px", textAlign: "left", fontSize: isMobile ? "10px" : "11px", textTransform: "uppercase", letterSpacing: "0.05em" },
-    td: { padding: isMobile ? "12px 16px" : "16px 24px", fontSize: isMobile ? "12px" : "14px" },
+    logoutBtn: { backgroundColor: "#fee2e2", color: "#B22222", border: "none", padding: "10px 16px", borderRadius: "8px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontWeight: "bold" },
+    th: { padding: isMobile ? "8px 12px" : "12px 16px", textAlign: "left" },
+    td: { padding: isMobile ? "12px 16px" : "16px 24px" },
     overlay: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "16px" },
     modal: { padding: isMobile ? "20px" : "30px", borderRadius: "16px", maxHeight: "90vh", overflowY: "auto" },
     iconBtn: { background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center" },
