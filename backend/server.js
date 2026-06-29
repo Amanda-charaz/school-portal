@@ -23,22 +23,22 @@ const app = express();
 // --- Secure CORS Configuration for Render ---
 // This is critical for allowing your Vercel frontend to communicate with your Render backend.
 // --- Robust CORS Configuration for Production Deployment ---
+// --- Hardcoded CORS Configuration ---
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:5173', // Added your local frontend dev port just in case!
+  'http://localhost:5173',
   'https://school-portal-iota-eight.vercel.app',
-  'https://school-portal-gomtorl7u-amanda-charazs-projects.vercel.app'
+  'https://school-portal-pda3y7f5e-amanda-charazs-projects.vercel.app'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, or postman)
+    // Allow requests with no origin (like Postman or mobile)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       console.log(`❌ Blocked Origin: ${origin}`);
-      return callback(new Error(msg), false);
+      return callback(new Error('CORS Policy Block'), false);
     }
     return callback(null, true);
   },
@@ -46,7 +46,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-// --- End CORS Configuration ---
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
