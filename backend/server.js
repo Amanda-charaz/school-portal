@@ -28,7 +28,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
   'https://school-portal-iota-eight.vercel.app',
-  'https://school-portal-pda3y7f5e-amanda-charazs-projects.vercel.app'
+  'https://school-portal-pda3y7f5e-amanda-charazs-projects.vercel.app',
+  'https://school-portal-6ti7lni34-amanda-charazs-projects.vercel.app' // Added new Vercel preview URL
 ];
 
 app.use(cors({
