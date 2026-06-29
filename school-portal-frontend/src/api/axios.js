@@ -1,16 +1,18 @@
 import axios from "axios";
 
+// Automatically switch between production Render and local development
+const productionDb = "https://school-portal-xqp8.onrender.com/api";
+const localDb = "http://localhost:3000/api";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
+  baseURL: window.location.hostname.includes("vercel.app") ? productionDb : localDb,
 });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
 
