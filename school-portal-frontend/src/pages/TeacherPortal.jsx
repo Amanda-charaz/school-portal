@@ -45,11 +45,11 @@ const TeacherPortal = ({ setOpen }) => {
     <div className="w-full space-y-8 animate-in fade-in duration-700">
       {/* Welcome Banner */}
       <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700/50 relative overflow-hidden transition-all">
-        <div className="relative z-10 text-[22px]">
-          <h2 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white mb-2">
+        <div className="relative z-10">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2 leading-snug">
           Welcome back to the Faculty Portal
           </h2>
-          <p className="text-base text-gray-500 dark:text-gray-400 font-medium max-w-lg">
+          <p className="text-base text-gray-500 dark:text-gray-400 font-normal max-w-lg leading-relaxed">
           Select a module below to manage your assigned students and academic records.
           </p>
         </div>
@@ -68,9 +68,9 @@ const TeacherPortal = ({ setOpen }) => {
             <div className={`p-4 rounded-xl transition-colors ${item.bgColor} ${item.color}`}>
               {item.icon}
             </div>
-            <div className="flex-1 text-lg">
-              <h4 className="font-black text-gray-900 dark:text-white tracking-tight text-lg">{item.title}</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 font-bold leading-relaxed">{item.desc}</p>
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-900 dark:text-white tracking-tight text-base leading-snug">{item.title}</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-normal leading-relaxed">{item.desc}</p>
             </div>
             <ChevronRight size={18} className="text-gray-300 dark:text-gray-600 group-hover:translate-x-1 transition-transform" />
           </div>

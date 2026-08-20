@@ -61,13 +61,13 @@ const ProfileSettings = () => {
             <ShieldCheck size={32} />
           </div>
           <div>
-            <h2 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white">Account Security</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Update your password to keep your account safe.</p>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white leading-snug">Account Security</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-normal leading-relaxed">Update your password to keep your account safe.</p>
           </div>
         </div>
 
         {message.text && (
-          <div className={`p-4 rounded-xl text-xs font-black uppercase tracking-widest mb-6 border ${
+          <div className={`p-4 rounded-xl text-sm font-semibold mb-6 border ${
             message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'
           }`}>
             {message.text}
@@ -76,7 +76,7 @@ const ProfileSettings = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest opacity-50" style={{ color: theme?.subText }}>Current Password</label>
+            <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ color: theme?.subText, lineHeight: '1.4' }}>Current Password</label>
             <div className="relative">
               <input
                 type={showPasswords.current ? "text" : "password"}
@@ -84,7 +84,7 @@ const ProfileSettings = () => {
                 value={passwordData.currentPassword}
                 onChange={handleChange}
                 required
-                className="w-full p-3 pl-10 rounded-2xl border outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm"
+                className="w-full p-3 pl-10 rounded-2xl border outline-none focus:ring-2 focus:ring-indigo-500 font-normal text-sm"
                 style={{ backgroundColor: theme?.inputBg, borderColor: theme?.inputBorder, color: theme?.text }}
                 placeholder="••••••••"
               />
@@ -96,7 +96,7 @@ const ProfileSettings = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest opacity-50" style={{ color: theme?.subText }}>New Password</label>
+            <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ color: theme?.subText, lineHeight: '1.4' }}>New Password</label>
             <div className="relative">
               <input
                 type={showPasswords.new ? "text" : "password"}
@@ -104,7 +104,7 @@ const ProfileSettings = () => {
                 value={passwordData.newPassword}
                 onChange={handleChange}
                 required
-                className="w-full p-3 pl-10 rounded-2xl border outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm"
+                className="w-full p-3 pl-10 rounded-2xl border outline-none focus:ring-2 focus:ring-indigo-500 font-normal text-sm"
                 style={{ backgroundColor: theme?.inputBg, borderColor: theme?.inputBorder, color: theme?.text }}
                 placeholder="••••••••"
               />
@@ -116,7 +116,7 @@ const ProfileSettings = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest opacity-50" style={{ color: theme?.subText }}>Confirm New Password</label>
+            <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ color: theme?.subText, lineHeight: '1.4' }}>Confirm New Password</label>
             <div className="relative">
               <input
                 type={showPasswords.confirm ? "text" : "password"}
@@ -124,7 +124,7 @@ const ProfileSettings = () => {
                 value={passwordData.confirmPassword}
                 onChange={handleChange}
                 required
-                className="w-full p-3 pl-10 rounded-2xl border outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-sm"
+                className="w-full p-3 pl-10 rounded-2xl border outline-none focus:ring-2 focus:ring-indigo-500 font-normal text-sm"
                 style={{ backgroundColor: theme?.inputBg, borderColor: theme?.inputBorder, color: theme?.text }}
                 placeholder="••••••••"
               />
@@ -138,7 +138,7 @@ const ProfileSettings = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg hover:bg-indigo-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-semibold text-sm shadow-lg hover:bg-indigo-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
             style={{ backgroundColor: theme?.accent }}
           >
             <Save size={18} />

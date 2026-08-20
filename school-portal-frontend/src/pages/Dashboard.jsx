@@ -63,7 +63,7 @@ const Dashboard = () => {
         </header>
 
         <section className="mb-8">
-          <h2 className="text-[22px] font-bold text-gray-900 dark:text-white mb-4">My Academic Results</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">My Academic Results</h2>
           <div style={styles.grid}>
             {error ? (
               <p className="text-red-500" style={{ fontSize: "14px" }}>{error}</p>

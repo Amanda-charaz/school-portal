@@ -163,7 +163,7 @@ const Login = () => {
           />
           <label
             htmlFor="rememberMe"
-            style={{ fontSize: '13px', color: theme.subText, cursor: 'pointer' }}
+            style={{ fontSize: '14px', color: theme.subText, cursor: 'pointer', lineHeight: '1.5' }}
           >
             Remember Me
           </label>
@@ -182,7 +182,7 @@ const Login = () => {
             <ArrowLeft size={16} /> Back to Login
           </button>
         ) : (
-          <p style={{ marginTop: "20px", fontSize: "12px", color: theme.subText }}>
+          <p style={{ marginTop: "20px", fontSize: "12px", color: theme.subText, lineHeight: "1.4" }}>
             Contact Admin if you forgot your ID.
           </p>
         )}
@@ -231,22 +231,23 @@ const getResponsiveStyles = (width) => {
       fontSize: isMobile ? "20px" : "24px"
     },
     logoText: { textAlign: "center" },
-    universityName: { fontSize: isMobile ? "16px" : "18px", fontWeight: "bold", color: "#111827", lineHeight: "1.2" },
-    universitySubtext: { fontSize: isMobile ? "12px" : "13px", color: "#6b7280", lineHeight: "1.2" },
-    title: { fontSize: isMobile ? "22px" : "26px", fontWeight: "700", color: "#111827", marginBottom: "24px" },
+    universityName: { fontSize: isMobile ? "16px" : "18px", fontWeight: "700", color: "#111827", lineHeight: "1.4" },
+    universitySubtext: { fontSize: "12px", color: "#6b7280", lineHeight: "1.4" },
+    title: { fontSize: isMobile ? "20px" : "24px", fontWeight: "700", color: "#111827", marginBottom: "24px", lineHeight: "1.3" },
     input: { 
       width: "100%", 
       padding: "12px 14px", 
       borderRadius: "6px", 
       border: "1px solid #d1d5db", 
       boxSizing: "border-box", 
-      fontSize: isMobile ? "19px" : "17px", 
+      fontSize: "14px", 
+      lineHeight: "1.5",
       backgroundColor: "#f9fafb" 
     },
-    button: { width: "100%", padding: "12px", backgroundColor: "#003DA5", color: "white", border: "none", borderRadius: "6px", fontWeight: "700", cursor: "pointer", fontSize: "15px" },
-    error: { color: "#ef4444", marginBottom: "16px", fontSize: "13px", fontWeight: "500" },
-    success: { color: "#10b981", marginBottom: "16px", fontSize: "13px", fontWeight: "500" },
-    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "13px", marginTop: "20px", margin: "20px auto 0", color: "#6b7280" },
+    button: { width: "100%", padding: "12px", backgroundColor: "#003DA5", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer", fontSize: "14px", lineHeight: "1.4" },
+    error: { color: "#ef4444", marginBottom: "16px", fontSize: "14px", fontWeight: "400", lineHeight: "1.5" },
+    success: { color: "#10b981", marginBottom: "16px", fontSize: "14px", fontWeight: "400", lineHeight: "1.5" },
+    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "14px", marginTop: "20px", margin: "20px auto 0", color: "#6b7280", lineHeight: "1.4" },
   };
 };
 

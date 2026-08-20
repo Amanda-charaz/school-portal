@@ -115,16 +115,16 @@ const StudentAttendanceLog = () => {
         ) : records.length === 0 ? (
           <div className="py-20 text-center space-y-4 opacity-40">
             <FileText size={64} className="mx-auto" strokeWidth={1} />
-            <p className="text-sm font-bold uppercase tracking-widest">{error || "No records found for this period"}</p>
+            <p className="text-sm font-bold uppercase tracking-wide">{error || "No records found for this period"}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr style={{ borderBottom: `2px solid ${theme.inputBorder}` }}>
-                  <th className="p-4 text-xs font-black uppercase opacity-50">Log Date</th>
-                  <th className="p-4 text-xs font-black uppercase opacity-50">Class/Group</th>
-                  <th className="p-4 text-xs font-black uppercase opacity-50 text-center">Status</th>
+                  <th className="p-4 text-xs font-semibold uppercase opacity-50">Log Date</th>
+                  <th className="p-4 text-xs font-semibold uppercase opacity-50">Class/Group</th>
+                  <th className="p-4 text-xs font-semibold uppercase opacity-50 text-center">Status</th>
                 </tr>
               </thead>
               <tbody>

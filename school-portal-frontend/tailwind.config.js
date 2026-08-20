@@ -9,6 +9,32 @@ export default {
 
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
+      fontSize: {
+        'xs': '12px',
+        'sm': '14px',
+        'base': '16px',
+        'lg': '18px',
+        'xl': '20px',
+        '2xl': '24px',
+      },
+      fontWeight: {
+        'normal': '400',
+        'medium': '500',
+        'semibold': '600',
+        'bold': '700',
+      },
+      lineHeight: {
+        'tight': '1.25',
+        'snug': '1.3',
+        'normal': '1.4',
+        'relaxed': '1.5',
+      },
+      letterSpacing: {
+        'wide': '0.02em',
+      },
       colors: {
         primary: "#2563eb",
         secondary: "#7c3aed",

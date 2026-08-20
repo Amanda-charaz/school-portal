@@ -135,10 +135,10 @@ const ClassManagement = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr style={{ borderBottom: `2px solid ${theme.inputBorder}` }}>
-                <th className="p-3 text-[10px] font-bold uppercase opacity-50">Class Name</th>
-                <th className="p-3 text-[10px] font-bold uppercase opacity-50">Description</th>
-                <th className="p-3 text-[10px] font-bold uppercase opacity-50">Form Teacher</th>
-                <th className="p-3 text-[10px] font-bold uppercase opacity-50 text-right">Management</th>
+                <th className="p-3 text-xs font-bold uppercase opacity-50">Class Name</th>
+                <th className="p-3 text-xs font-bold uppercase opacity-50">Description</th>
+                <th className="p-3 text-xs font-bold uppercase opacity-50">Form Teacher</th>
+                <th className="p-3 text-xs font-bold uppercase opacity-50 text-right">Management</th>
               </tr>
             </thead>
             <tbody>
@@ -258,7 +258,7 @@ const ClassManagement = () => {
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-bold">Class Roster: {selectedClass?.name}</h3>
-                <p className="text-xs opacity-50 uppercase font-bold tracking-widest">{classMembers.length} Enrolled Members</p>
+                <p className="text-xs opacity-50 uppercase font-bold tracking-wide">{classMembers.length} Enrolled Members</p>
               </div>
               <button onClick={() => setIsMemberModalOpen(false)} className="text-gray-500 hover:text-gray-700"><X size={24} /></button>
             </div>
@@ -267,9 +267,9 @@ const ClassManagement = () => {
                 <div key={member._id} className="flex justify-between items-center p-3 rounded-xl border" style={{ borderColor: theme.inputBorder, backgroundColor: theme.inputBg }}>
                   <div>
                     <div className="text-sm font-bold">{member.full_name}</div>
-                    <div className="text-[10px] opacity-50 uppercase font-mono">{member.school_id}</div>
+                    <div className="text-xs opacity-50 uppercase font-mono">{member.school_id}</div>
                   </div>
-                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase border ${member.role === 'teacher' ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-green-50 border-green-200 text-green-600'}`}>
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full uppercase border ${member.role === 'teacher' ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-green-50 border-green-200 text-green-600'}`}>
                     {member.role}
                   </span>
                 </div>

@@ -63,7 +63,7 @@ const StudentResultsView = () => {
       <div className="p-10 rounded-xl border flex flex-col items-center gap-4 text-center" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
         <AlertTriangle size={48} color="#f59e0b" />
         <div>
-          <h3 className="font-bold text-lg" style={{ color: theme.text }}>Records Pending</h3>
+          <h3 className="font-medium text-lg" style={{ color: theme.text }}>Records Pending</h3>
           <p className="text-sm opacity-70" style={{ color: theme.subText }}>{error}</p>
         </div>
       </div>
@@ -85,7 +85,7 @@ const StudentResultsView = () => {
 
       return (
         <div key={termKey} className="p-6 rounded-2xl shadow-sm border space-y-4" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-          <h3 className="text-sm font-black uppercase tracking-widest opacity-60 flex items-center gap-2">
+          <h3 className="text-sm font-semibold uppercase tracking-wide opacity-60 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.accent }}></div>
             {termLabels[termKey]}
           </h3>
@@ -94,9 +94,9 @@ const StudentResultsView = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
-                  <th className="p-4 text-[10px] font-black uppercase tracking-widest opacity-40">Subject Name</th>
-                  <th className="p-4 text-[10px] font-black uppercase tracking-widest opacity-40 text-center">Score</th>
-                  <th className="p-4 text-[10px] font-black uppercase tracking-widest opacity-40 text-right">Grade</th>
+                  <th className="p-4 text-xs font-semibold uppercase tracking-wide opacity-40">Subject Name</th>
+                  <th className="p-4 text-xs font-semibold uppercase tracking-wide opacity-40 text-center">Score</th>
+                  <th className="p-4 text-xs font-semibold uppercase tracking-wide opacity-40 text-right">Grade</th>
                 </tr>
               </thead>
               <tbody>
@@ -107,18 +107,18 @@ const StudentResultsView = () => {
                   return (
                     <tr key={res._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
                       <td className="p-4">
-                        <div className="text-sm font-black tracking-tight">{res.subject}</div>
-                        <div className="text-[9px] opacity-40 font-bold uppercase tracking-tighter">Academic Year: {res.year}</div>
+                        <div className="text-sm font-semibold tracking-tight">{res.subject}</div>
+                        <div className="text-xs opacity-40 font-medium uppercase tracking-tight">Academic Year: {res.year}</div>
                       </td>
-                      <td className="p-4 text-center font-black text-gray-600 dark:text-gray-400">{res.score}%</td>
+                      <td className="p-4 text-center font-semibold text-gray-600 dark:text-gray-400">{res.score}%</td>
                       <td className="p-4 text-right">
                         <div style={{ 
                           backgroundColor: `${gradeColor}15`,
                           color: gradeColor,
                           padding: '4px 12px',
                           borderRadius: '8px',
-                          fontWeight: '900',
-                          fontSize: '11px',
+                          fontWeight: '700',
+                          fontSize: '12px',
                           border: `1px solid ${gradeColor}30`,
                           display: 'inline-block',
                           textAlign: 'center',
@@ -141,7 +141,7 @@ const StudentResultsView = () => {
   return (
     <div className="w-full space-y-6" style={{ color: theme.text }}>
       <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-2">
-        <h2 className="text-2xl font-black tracking-tighter flex items-center gap-3 shrink-0">
+        <h2 className="text-2xl font-semibold tracking-tight flex items-center gap-3 shrink-0">
           <Award size={28} color={theme.accent} />
           Academic Transcripts
         </h2>
@@ -163,7 +163,7 @@ const StudentResultsView = () => {
           <select 
             value={selectedTerm}
             onChange={(e) => setSelectedTerm(e.target.value)}
-            className="flex-1 sm:w-64 p-2.5 rounded-xl border text-[10px] font-black uppercase tracking-widest outline-none transition-all cursor-pointer"
+            className="flex-1 sm:w-64 p-2.5 rounded-xl border text-xs font-semibold uppercase tracking-wide outline-none transition-all cursor-pointer"
             style={{ backgroundColor: theme.card, borderColor: theme.inputBorder, color: theme.text }}
           >
             <option value="all">All Academic Terms</option>
@@ -176,13 +176,13 @@ const StudentResultsView = () => {
             <button 
               onClick={handleDownloadFullTranscript}
               disabled={results.length === 0}
-              className="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 disabled:opacity-50 whitespace-nowrap"
+              className="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-xs uppercase tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 disabled:opacity-50 whitespace-nowrap"
             >
               <Download size={16} /> Download PDF
             </button>
             <button
               onClick={() => window.print()}
-              className="w-full sm:w-auto px-6 py-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 whitespace-nowrap"
+              className="w-full sm:w-auto px-6 py-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl font-semibold text-xs uppercase tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 whitespace-nowrap"
             >
               <Printer size={16} /> Print
             </button>
@@ -191,7 +191,7 @@ const StudentResultsView = () => {
       </div>
 
       {results.length === 0 || termBlocks.length === 0 ? (
-        <div className="p-10 text-center opacity-40 font-bold italic border-2 border-dashed rounded-2xl" style={{ borderColor: theme.inputBorder }}>
+        <div className="p-10 text-center opacity-40 font-medium italic border-2 border-dashed rounded-2xl" style={{ borderColor: theme.inputBorder }}>
           {results.length === 0 
             ? "No official academic report cards generated yet." 
             : `No results matching your criteria found.`}

@@ -86,7 +86,7 @@ const StudentFeesView = () => {
   const filteredFees = fees.filter(f => selectedTerm === 'all' || String(f.term) === selectedTerm);
   const totalBalance = filteredFees.reduce((sum, record) => sum + record.balance, 0);
 
-  if (loading) return <div className="p-10 text-center animate-pulse font-black text-gray-400 uppercase tracking-widest text-xs">Syncing Financial Ledger...</div>;
+  if (loading) return <div className="p-10 text-center animate-pulse font-semibold text-gray-400 uppercase tracking-wide text-xs">Syncing Financial Ledger...</div>;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -97,7 +97,7 @@ const StudentFeesView = () => {
           <select 
             value={selectedTerm}
             onChange={(e) => setSelectedTerm(e.target.value)}
-            className="flex-1 sm:w-64 p-2.5 rounded-xl border text-[10px] font-black uppercase tracking-widest outline-none transition-all cursor-pointer"
+            className="flex-1 sm:w-64 p-2.5 rounded-xl border text-xs font-semibold uppercase tracking-wide outline-none transition-all cursor-pointer"
             style={{ backgroundColor: theme.card, borderColor: theme.inputBorder, color: theme.text }}
           >
             <option value="all">All Academic Terms</option>
@@ -115,12 +115,12 @@ const StudentFeesView = () => {
              <CreditCard size={32} />
            </div>
            <div>
-             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Aggregate Outstanding Balance</h3>
-             <div className="text-4xl font-black tracking-tighter" style={{ color: totalBalance > 0 ? '#B22222' : theme.text }}>
+             <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Aggregate Outstanding Balance</h3>
+             <div className="text-4xl font-semibold tracking-tighter" style={{ color: totalBalance > 0 ? '#B22222' : theme.text }}>
                 ${totalBalance.toLocaleString()}
              </div>
              {totalBalance > 0 && (
-               <div className="mt-2 text-xs font-black text-school-red uppercase tracking-widest animate-pulse">
+               <div className="mt-2 text-xs font-semibold text-school-red uppercase tracking-wide animate-pulse">
                  ⚠️ Outstanding Fees Detected
                </div>
              )}
@@ -129,12 +129,12 @@ const StudentFeesView = () => {
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
           {totalBalance > 0 && (
             <>
-              <div className="px-4 py-2 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+              <div className="px-4 py-2 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-wide flex items-center gap-2">
                 <AlertCircle size={16} /> Pending Payment
               </div>
               <button 
                 onClick={handleInitiatePayment}
-                className="w-full sm:w-auto px-6 py-3 bg-school-blue hover:bg-school-blue-dark text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 bg-school-blue hover:bg-school-blue-dark text-white rounded-2xl font-semibold text-xs uppercase tracking-[0.2em] shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
               >
                 <ExternalLink size={16} /> Pay Online
               </button>
@@ -145,7 +145,7 @@ const StudentFeesView = () => {
 
       {/* Fee Invoices Section */}
       <div className="p-6 rounded-2xl border shadow-sm" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-        <h3 className="text-sm font-black uppercase tracking-[0.1em] mb-6 flex items-center gap-2" style={{ color: theme.subText }}>
+        <h3 className="text-sm font-semibold uppercase tracking-[0.1em] mb-6 flex items-center gap-2" style={{ color: theme.subText }}>
           <Clock className="text-indigo-500" size={18} /> Invoices & Fees
         </h3>
         {filteredFees.length === 0 ? (
@@ -155,13 +155,13 @@ const StudentFeesView = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b" style={{ borderColor: theme.inputBorder }}>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Process Date</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Term / Breakdown</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Status</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Invoiced</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Paid</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Balance</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Actions</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400">Process Date</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400">Term / Breakdown</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400">Status</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400 text-right">Invoiced</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400 text-right">Paid</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400 text-right">Balance</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -169,16 +169,16 @@ const StudentFeesView = () => {
                   <tr key={f._id} className="border-b hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" style={{ borderColor: theme.inputBorder }}>
                     <td className="py-4 text-xs font-bold text-gray-500">{new Date(f.createdAt).toLocaleDateString()}</td>
                     <td className="py-4">
-                      <div className="text-xs font-black" style={{ color: theme.text }}>{termLabels[f.term] || `Term ${f.term}`} Tuition</div>
-                      <div className="text-[9px] text-gray-400 font-bold">
+                      <div className="text-xs font-semibold" style={{ color: theme.text }}>{termLabels[f.term] || `Term ${f.term}`} Tuition</div>
+                      <div className="text-xs text-gray-400 font-bold">
                         Base: ${f.base_amount?.toLocaleString() || '0'} | 
                         <span className="text-emerald-500"> Disc: -${f.discount?.toLocaleString() || '0'}</span> | 
                         <span className="text-school-red"> Fine: +${f.fines?.toLocaleString() || '0'}</span>
                       </div>
-                      <div className="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Due: {new Date(f.due_date).toLocaleDateString()}</div>
+                      <div className="text-xs text-gray-400 font-semibold uppercase tracking-tighter">Due: {new Date(f.due_date).toLocaleDateString()}</div>
                     </td>
                     <td className="py-4">
-                      <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter ${
+                      <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold uppercase tracking-tighter ${
                         f.status === 'Paid' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                         f.status === 'Partial' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                         'bg-red-50 text-school-red dark:bg-school-red-dark/20 dark:text-school-red-light'
@@ -188,7 +188,7 @@ const StudentFeesView = () => {
                     </td>
                     <td className="py-4 text-xs font-bold text-right" style={{ color: theme.text }}>${f.total_amount.toLocaleString()}</td>
                     <td className="py-4 text-xs font-bold text-right text-emerald-500">${f.paid_amount.toLocaleString()}</td>
-                    <td className="py-4 text-xs font-black text-right" style={{ color: f.balance > 0 ? '#B22222' : theme.text }}>
+                    <td className="py-4 text-xs font-semibold text-right" style={{ color: f.balance > 0 ? '#B22222' : theme.text }}>
                       ${f.balance.toLocaleString()}
                     </td>
                     <td className="py-4 text-right">
@@ -210,7 +210,7 @@ const StudentFeesView = () => {
 
       {/* Payment History Section */}
       <div className="p-6 rounded-2xl border shadow-sm" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-        <h3 className="text-sm font-black uppercase tracking-[0.1em] mb-6 flex items-center gap-2" style={{ color: theme.subText }}>
+        <h3 className="text-sm font-semibold uppercase tracking-[0.1em] mb-6 flex items-center gap-2" style={{ color: theme.subText }}>
           <History className="text-indigo-500" size={18} /> Payment History
         </h3>
         {transactions.length === 0 ? (
@@ -220,11 +220,11 @@ const StudentFeesView = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b" style={{ borderColor: theme.inputBorder }}>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Date</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Category</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400">Description</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Amount</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-400 text-right">Actions</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400">Date</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400">Category</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400">Description</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400 text-right">Amount</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-400 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -232,12 +232,12 @@ const StudentFeesView = () => {
                   <tr key={t._id} className="border-b hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors" style={{ borderColor: theme.inputBorder }}>
                     <td className="py-4 text-xs font-bold text-gray-500">{new Date(t.date).toLocaleDateString()}</td>
                     <td className="py-4">
-                      <span className="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter bg-gray-100 dark:bg-gray-800" style={{ color: theme.text }}>
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-semibold uppercase tracking-tighter bg-gray-100 dark:bg-gray-800" style={{ color: theme.text }}>
                         {t.category}
                       </span>
                     </td>
                     <td className="py-4 text-xs font-bold" style={{ color: theme.subText }}>{t.description || "N/A"}</td>
-                    <td className="py-4 text-xs font-black text-right text-emerald-500">
+                    <td className="py-4 text-xs font-semibold text-right text-emerald-500">
                       +${t.amount.toLocaleString()}
                     </td>
                     <td className="py-4 text-right">

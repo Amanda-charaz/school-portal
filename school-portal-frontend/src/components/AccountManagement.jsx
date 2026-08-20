@@ -144,7 +144,7 @@ const AccountManagement = () => {
     .filter(t => t.type === 'Expense')
     .reduce((sum, t) => sum + (t.amount || 0), 0);
 
-  if (loading) return <div className="p-10 text-center animate-pulse font-black text-gray-400">Loading Financial Records...</div>;
+  if (loading) return <div className="p-10 text-center animate-pulse font-semibold text-gray-400">Loading Financial Records...</div>;
 
   return (
     <div className="space-y-6">
@@ -158,7 +158,7 @@ const AccountManagement = () => {
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-2">
         <button 
           onClick={handleDownloadSummary}
-          className="w-full sm:w-auto px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
+          className="w-full sm:w-auto px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-xs uppercase tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95"
         >
           <Download size={16} /> Download {selectedTerm === 'all' ? 'Full' : 'Term'} Summary
         </button>
@@ -168,7 +168,7 @@ const AccountManagement = () => {
           <select 
             value={selectedTerm}
             onChange={(e) => setSelectedTerm(e.target.value)}
-            className="flex-1 sm:w-64 p-2.5 rounded-xl border text-[10px] font-black uppercase tracking-widest outline-none transition-all cursor-pointer"
+            className="flex-1 sm:w-64 p-2.5 rounded-xl border text-xs font-semibold uppercase tracking-wide outline-none transition-all cursor-pointer"
             style={{ backgroundColor: theme.card, borderColor: theme.inputBorder, color: theme.text }}
           >
             <option value="all">All Academic Terms</option>
@@ -182,22 +182,22 @@ const AccountManagement = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-500 mb-2">
             <TrendingUp size={16} /> Total Income
           </div>
-          <div className="text-3xl font-black" style={{ color: theme.text }}>${totalIncome.toLocaleString()}</div>
+          <div className="text-3xl font-semibold" style={{ color: theme.text }}>${totalIncome.toLocaleString()}</div>
         </div>
         <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-500 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-red-500 mb-2">
             <CreditCard size={16} /> Total Expenses
           </div>
-          <div className="text-3xl font-black" style={{ color: theme.text }}>${totalExpenses.toLocaleString()}</div>
+          <div className="text-3xl font-semibold" style={{ color: theme.text }}>${totalExpenses.toLocaleString()}</div>
         </div>
         <div className="p-6 rounded-2xl border" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-indigo-500 mb-2">
             <DollarSign size={16} /> Outstanding Fees
           </div>
-          <div className="text-3xl font-black" style={{ color: theme.text }}>${outstandingBalance.toLocaleString()}</div>
+          <div className="text-3xl font-semibold" style={{ color: theme.text }}>${outstandingBalance.toLocaleString()}</div>
         </div>
       </div>
 
@@ -206,12 +206,12 @@ const AccountManagement = () => {
         <div className="lg:w-1/3 p-6 rounded-2xl border h-fit" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
           {activeSubTab === 'transactions' ? (
             <>
-              <h3 className="text-lg font-black mb-6 flex items-center gap-2" style={{ color: theme.text }}>
+              <h3 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: theme.text }}>
                 <PlusCircle className="text-indigo-500" size={20} /> New Transaction
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Related User (Optional)</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Related User (Optional)</label>
                   <select
                     className="w-full p-2.5 rounded-xl border text-sm font-bold outline-none"
                     style={{ backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
@@ -226,7 +226,7 @@ const AccountManagement = () => {
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Type</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Type</label>
                     <select
                       className="w-full p-2.5 rounded-xl border text-sm font-bold outline-none"
                       style={{ backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
@@ -238,7 +238,7 @@ const AccountManagement = () => {
                     </select>
                   </div>
                   <div className="flex-1">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Category</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Category</label>
                     <select
                       className="w-full p-2.5 rounded-xl border text-sm font-bold outline-none"
                       style={{ backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
@@ -250,7 +250,7 @@ const AccountManagement = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Academic Term</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Academic Term</label>
                   <select
                     className="w-full p-2.5 rounded-xl border text-sm font-bold outline-none"
                     style={{ backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
@@ -261,7 +261,7 @@ const AccountManagement = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Amount ($)</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Amount ($)</label>
                   <input
                     type="number"
                     required
@@ -272,7 +272,7 @@ const AccountManagement = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Description</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Description</label>
                   <textarea
                     rows="3"
                     className="w-full p-2.5 rounded-xl border text-sm font-bold outline-none resize-none"
@@ -281,19 +281,19 @@ const AccountManagement = () => {
                     onChange={e => setFormData({ ...formData, description: e.target.value })}
                   />
                 </div>
-                <button className="w-full py-3 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-lg hover:bg-indigo-700 transition-all">
+                <button className="w-full py-3 bg-indigo-600 text-white rounded-xl font-semibold text-xs uppercase tracking-[0.2em] shadow-lg hover:bg-indigo-700 transition-all">
                   Record Transaction
                 </button>
               </form>
             </>
           ) : (
             <>
-              <h3 className="text-lg font-black mb-6 flex items-center gap-2" style={{ color: theme.text }}>
+              <h3 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: theme.text }}>
                 <CreditCard className="text-emerald-500" size={20} /> Student Term Billing
               </h3>
               <form onSubmit={handleBillingSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Select Student</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Select Student</label>
                   <select
                     required
                     className="w-full p-2.5 rounded-xl border text-sm font-bold outline-none"
@@ -309,7 +309,7 @@ const AccountManagement = () => {
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Term</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Term</label>
                     <select
                       className="w-full p-2.5 rounded-xl border text-sm font-bold outline-none"
                       style={{ backgroundColor: theme.inputBg, color: theme.text, borderColor: theme.inputBorder }}
@@ -320,7 +320,7 @@ const AccountManagement = () => {
                     </select>
                   </div>
                   <div className="flex-1">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Year</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Year</label>
                     <input
                       type="number"
                       required
@@ -332,7 +332,7 @@ const AccountManagement = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1">Base Tuition Amount ($)</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Base Tuition Amount ($)</label>
                   <input
                     type="number"
                     required
@@ -344,7 +344,7 @@ const AccountManagement = () => {
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-1">Discount ($)</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-500 mb-1">Discount ($)</label>
                     <input
                       type="number"
                       className="w-full p-2.5 rounded-xl border border-emerald-100 bg-emerald-50/10 text-sm font-bold outline-none"
@@ -354,7 +354,7 @@ const AccountManagement = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-school-red mb-1">Fines ($)</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wide text-school-red mb-1">Fines ($)</label>
                     <input
                       type="number"
                       className="w-full p-2.5 rounded-xl border border-red-100 bg-red-50/10 text-sm font-bold outline-none"
@@ -365,10 +365,10 @@ const AccountManagement = () => {
                   </div>
                 </div>
                 <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
-                   <div className="text-[10px] font-black uppercase tracking-widest text-gray-500">Calculated Total Invoice</div>
-                   <div className="text-2xl font-black" style={{ color: theme.text }}>${calculateTotalBilling().toLocaleString()}</div>
+                   <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">Calculated Total Invoice</div>
+                   <div className="text-2xl font-semibold" style={{ color: theme.text }}>${calculateTotalBilling().toLocaleString()}</div>
                 </div>
-                <button className="w-full py-3 bg-emerald-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-lg hover:bg-emerald-700 transition-all">
+                <button className="w-full py-3 bg-emerald-600 text-white rounded-xl font-semibold text-xs uppercase tracking-[0.2em] shadow-lg hover:bg-emerald-700 transition-all">
                   Generate Fee Invoice
                 </button>
               </form>
@@ -383,18 +383,18 @@ const AccountManagement = () => {
 
         {/* History Table */}
         <div className="flex-1 p-6 rounded-2xl border" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-          <h3 className="text-lg font-black mb-6 flex items-center gap-2" style={{ color: theme.text }}>
+          <h3 className="text-lg font-semibold mb-6 flex items-center gap-2" style={{ color: theme.text }}>
             <History className="text-indigo-500" size={20} /> Transaction History
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b" style={{ borderColor: theme.inputBorder }}>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-500">Date</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-500">Allocation / Window</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-500">Profile</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-500">Amount</th>
-                  <th className="py-3 text-[10px] font-black uppercase text-gray-500">Actions</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-500">Date</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-500">Allocation / Window</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-500">Profile</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-500">Amount</th>
+                  <th className="py-3 text-xs font-semibold uppercase text-gray-500">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -402,11 +402,11 @@ const AccountManagement = () => {
                   <tr key={t._id} className="border-b" style={{ borderColor: theme.inputBorder }}>
                     <td className="py-4 text-xs font-bold" style={{ color: theme.subText }}>{new Date(t.date).toLocaleDateString()}</td>
                     <td className="py-4">
-                      <div className="text-xs font-black" style={{ color: theme.text }}>{t.category}</div>
-                      <div className="text-[9px] text-gray-400 font-black uppercase tracking-tighter">{termLabels[t.term] || `Term ${t.term}`}</div>
+                      <div className="text-xs font-semibold" style={{ color: theme.text }}>{t.category}</div>
+                      <div className="text-xs text-gray-400 font-semibold uppercase tracking-tighter">{termLabels[t.term] || `Term ${t.term}`}</div>
                     </td>
-                    <td className="py-4 text-xs font-black" style={{ color: theme.text }}>{t.user?.full_name || 'General Ledger'}</td>
-                    <td className={`py-4 text-xs font-black ${t.type === 'Income' ? 'text-emerald-500' : 'text-school-red'}`}>
+                    <td className="py-4 text-xs font-semibold" style={{ color: theme.text }}>{t.user?.full_name || 'General Ledger'}</td>
+                    <td className={`py-4 text-xs font-semibold ${t.type === 'Income' ? 'text-emerald-500' : 'text-school-red'}`}>
                       {t.type === 'Income' ? '+' : '-'}${t.amount.toLocaleString()}
                     </td>
                     <td className="py-4">
@@ -435,11 +435,11 @@ const AccountManagement = () => {
             <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-school-red rounded-full flex items-center justify-center mx-auto mb-6">
               <Trash2 size={32} />
             </div>
-            <h3 className="text-xl font-black text-center mb-2" style={{ color: theme.text }}>Confirm Deletion</h3>
+            <h3 className="text-xl font-semibold text-center mb-2" style={{ color: theme.text }}>Confirm Deletion</h3>
             <p className="text-sm font-bold text-center mb-8 opacity-60" style={{ color: theme.subText }}>Are you sure you want to remove this financial record? This cannot be undone.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest border transition-all" style={{ borderColor: theme.inputBorder, color: theme.text }}>Cancel</button>
-              <button onClick={handleDelete} className="flex-1 py-3 bg-school-red hover:bg-school-red-dark text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-red-900/20">Delete</button>
+              <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide border transition-all" style={{ borderColor: theme.inputBorder, color: theme.text }}>Cancel</button>
+              <button onClick={handleDelete} className="flex-1 py-3 bg-school-red hover:bg-school-red-dark text-white rounded-2xl font-semibold text-xs uppercase tracking-wide transition-all shadow-lg shadow-red-900/20">Delete</button>
             </div>
           </div>
         </div>

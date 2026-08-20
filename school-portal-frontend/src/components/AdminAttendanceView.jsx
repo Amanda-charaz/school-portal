@@ -191,25 +191,25 @@ const AdminAttendanceView = () => {
           }
         `}
       </style>
-      <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-2 tracking-tighter">
+      <h2 className="text-3xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2 tracking-tighter">
         <BarChart2 className="text-school-blue" size={28} /> All Attendance Records
       </h2>
       {/* Analytics Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 no-print">
         <div className="p-6 rounded-2xl border flex flex-col justify-center glass animate-float" style={{ backgroundColor: theme?.inputBg, borderColor: theme?.inputBorder }}>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
             <Users size={16} className="text-blue-500" /> Total Enrollment
           </div>
-          <div className="text-3xl font-black" style={{ color: theme?.text }}>{stats.totalStudents}</div>
+          <div className="text-3xl font-semibold" style={{ color: theme?.text }}>{stats.totalStudents}</div>
         </div>
         <div className="p-6 rounded-2xl border flex flex-col justify-center glass animate-float" style={{ backgroundColor: theme?.inputBg, borderColor: theme?.inputBorder }}>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
             <CheckCircle size={16} className="text-emerald-500" /> Today's Presence Rate
           </div>
-          <div className="text-3xl font-black text-emerald-500">{stats.attendanceRate}%</div>
+          <div className="text-3xl font-semibold text-emerald-500">{stats.attendanceRate}%</div>
         </div>
         <div className="md:col-span-1 p-6 rounded-2xl border glass animate-float" style={{ backgroundColor: theme?.inputBg, borderColor: theme?.inputBorder }}>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
             <TrendingUp size={16} className="text-school-blue" /> 30-Day Snapshot
           </div>
           <div className="h-[60px] w-full">
@@ -223,7 +223,7 @@ const AdminAttendanceView = () => {
       </div>
       {/* Main Trend Chart Analysis */}
       <div className="mb-10 p-6 rounded-2xl border shadow-sm no-print" style={{ backgroundColor: theme?.inputBg, borderColor: theme?.inputBorder }}>
-        <h3 className="text-sm font-black uppercase tracking-widest text-gray-500 mb-6 flex items-center gap-2">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-6 flex items-center gap-2">
           <TrendingUp size={18} /> Detailed Attendance Trends
         </h3>
         <div className="h-[300px] w-full">
@@ -274,7 +274,7 @@ const AdminAttendanceView = () => {
       {/* Filter Options */}
       <div className="flex flex-wrap items-end gap-4 mb-6 p-4 rounded-xl shadow-sm no-print" style={{ backgroundColor: theme?.inputBg || '#f9f9f9' }}>
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+          <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
             Year:
           </label>
           <input
@@ -286,7 +286,7 @@ const AdminAttendanceView = () => {
           />
         </div>
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+          <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
             Term Window:
           </label>
           <select
@@ -302,7 +302,7 @@ const AdminAttendanceView = () => {
           </select>
         </div>
         <div>
-          <label htmlFor="filterDate" className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+          <label htmlFor="filterDate" className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
             Filter by Date:
           </label>
           <input
@@ -315,7 +315,7 @@ const AdminAttendanceView = () => {
           />
         </div>
         <div>
-          <label htmlFor="filterClass" className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
+          <label htmlFor="filterClass" className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
             Filter by Class:
           </label>
           <select
@@ -334,28 +334,28 @@ const AdminAttendanceView = () => {
         <div className="ml-auto flex gap-2">
           <button
             onClick={handleDownloadTermReport}
-            className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-widest"
+            className="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-wide"
             title="Download Term Report (PDF)"
           >
             <Download size={18} /> {selectedTerm === 'all' ? 'Annual' : 'Term'} PDF
           </button>
           <button
             onClick={handlePrint}
-            className="p-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-widest"
+            className="p-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-wide"
           >
             <Printer size={18} /> Print Report
           </button>
           <button
             onClick={handleExportCSV}
             disabled={attendanceRecords.length === 0}
-            className="p-2.5 bg-school-blue hover:bg-school-blue-dark text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-widest disabled:opacity-50"
+            className="p-2.5 bg-school-blue hover:bg-school-blue-dark text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-wide disabled:opacity-50"
           >
             <Download size={18} /> Export CSV
           </button>
         </div>
         <button
           onClick={handleClearFilters}
-          className="p-2.5 bg-school-red hover:bg-school-red-dark text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-widest"
+          className="p-2.5 bg-school-red hover:bg-school-red-dark text-white rounded-xl flex items-center gap-2 transition-colors font-bold text-xs uppercase tracking-wide"
         >
           <XCircle size={18} /> Clear Filters
         </button>

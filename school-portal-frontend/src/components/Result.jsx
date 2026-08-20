@@ -254,7 +254,7 @@ const Result = ({ userInfo }) => {
   return (
     <div className="w-full space-y-6" style={{ color: theme.text }}>
       {message.text && (
-        <div className={`p-4 rounded-2xl flex items-center gap-3 text-sm font-bold border transition-all ${
+        <div className={`p-4 rounded-2xl flex items-center gap-3 text-sm font-semibold border transition-all ${
           message.type === 'success' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'
         }`}>
           {message.type === 'success' ? <Trophy size={20} /> : <AlertCircle size={20} />}
@@ -266,7 +266,7 @@ const Result = ({ userInfo }) => {
         {/* Entry Form */}
         <div className="p-6 rounded-2xl shadow-md space-y-6 border h-fit" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-bold flex items-center gap-2">
+            <h3 className="text-lg font-semibold flex items-center gap-2 leading-snug">
               {editingId ? <Edit2 size={20} color={theme.accent} /> : <PlusCircle size={20} color={theme.accent} />}
               {editingId ? "Edit Grade" : "Record New Grade"}
             </h3>
@@ -279,7 +279,7 @@ const Result = ({ userInfo }) => {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold uppercase opacity-60">Select Student</label>
+              <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ lineHeight: '1.4' }}>Select Student</label>
               <div className="relative mb-2">
                 <Search className="absolute left-3 top-2.5 opacity-40" size={14} />
                 <input 
@@ -287,14 +287,14 @@ const Result = ({ userInfo }) => {
                   placeholder="Search name or ID..."
                   value={studentSearch}
                   onChange={(e) => setStudentSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 rounded-lg border outline-none text-xs"
+                  className="w-full pl-9 pr-4 py-2 rounded-lg border outline-none text-sm"
                   style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
                 />
               </div>
               <select 
                 value={formData.student_id}
                 onChange={(e) => setFormData({...formData, student_id: e.target.value})}
-                className="w-full p-3 rounded-xl border outline-none text-sm font-bold"
+                className="w-full p-3 rounded-xl border outline-none text-sm font-medium"
                 style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
                 required
                 disabled={!!editingId} // Prevent changing student during edit
@@ -307,11 +307,11 @@ const Result = ({ userInfo }) => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold uppercase opacity-60">O-Level Subject</label>
+              <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ lineHeight: '1.4' }}>O-Level Subject</label>
               <select 
                 value={formData.subject}
                 onChange={(e) => setFormData({...formData, subject: e.target.value})}
-                className="w-full p-3 rounded-xl border outline-none text-sm font-bold"
+                className="w-full p-3 rounded-xl border outline-none text-sm font-medium"
                 style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
               >
                 {teacherInfo.role === 'admin' ? (
@@ -325,11 +325,11 @@ const Result = ({ userInfo }) => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase opacity-60">Term</label>
+                <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ lineHeight: '1.4' }}>Term</label>
                 <select 
                   value={formData.term}
                   onChange={(e) => setFormData({...formData, term: e.target.value})}
-                  className="w-full p-3 rounded-xl border outline-none text-sm font-bold"
+                  className="w-full p-3 rounded-xl border outline-none text-sm font-medium"
                   style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
                 >
                   <option value="1">First Term (January – April)</option>
@@ -338,14 +338,14 @@ const Result = ({ userInfo }) => {
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase opacity-60">Year</label>
+                <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ lineHeight: '1.4' }}>Year</label>
                 <input 
                   type="number" 
                   min="2000" // Assuming school started after 2000
                   max={new Date().getFullYear() + 5} // Allow for future entries
                   value={formData.year}
                   onChange={(e) => setFormData({...formData, year: e.target.value})}
-                  className="w-full p-3 rounded-xl border outline-none text-sm font-bold"
+                  className="w-full p-3 rounded-xl border outline-none text-sm font-medium"
                   style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
                   required
                 />
@@ -353,8 +353,8 @@ const Result = ({ userInfo }) => {
             </div>
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-bold uppercase opacity-60">Score (%)</label>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+                <label className="text-xs font-semibold uppercase tracking-wide opacity-70" style={{ lineHeight: '1.4' }}>Score (%)</label>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300" style={{ lineHeight: '1' }}>
                   Grade Preview: {calculateGrade(formData.score)}
                 </span>
               </div>
@@ -364,7 +364,7 @@ const Result = ({ userInfo }) => {
                 min="0"
                 value={formData.score}
                 onChange={(e) => setFormData({...formData, score: e.target.value})}
-                className="w-full p-3 rounded-xl border outline-none text-sm font-bold"
+                className="w-full p-3 rounded-xl border outline-none text-sm font-medium"
                 style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
                 required
               />
@@ -372,7 +372,7 @@ const Result = ({ userInfo }) => {
 
             <button 
               type="submit"
-              className="w-full py-3 rounded-xl text-white font-bold flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 hover:opacity-90"
+              className="w-full py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 hover:opacity-90"
               style={{ backgroundColor: theme.accent }}
             >
               <Save size={18} /> {editingId ? "Update Grade" : "Commit Grade"}
@@ -383,7 +383,7 @@ const Result = ({ userInfo }) => {
         {/* Results Table */}
         <div className="lg:col-span-2 p-6 rounded-2xl shadow-md space-y-6 border" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <h3 className="text-lg font-bold flex items-center gap-2">
+            <h3 className="text-lg font-medium flex items-center gap-2">
               <ListChecks size={20} color={theme.accent} /> Recent Submissions
             </h3>
             <div className="relative flex-1 max-w-xs">
@@ -402,7 +402,7 @@ const Result = ({ userInfo }) => {
           {/* Filters Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold uppercase opacity-60">Class</label>
+              <label className="text-xs font-medium uppercase opacity-60">Class</label>
               <select 
                 value={filterClass}
                 onChange={(e) => setFilterClass(e.target.value)}
@@ -416,7 +416,7 @@ const Result = ({ userInfo }) => {
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-bold uppercase opacity-60">Term</label>
+              <label className="text-xs font-medium uppercase opacity-60">Term</label>
               <select 
                 value={filterTerm}
                 onChange={(e) => setFilterTerm(e.target.value)}
@@ -430,7 +430,7 @@ const Result = ({ userInfo }) => {
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-bold uppercase opacity-60">Year</label>
+              <label className="text-xs font-medium uppercase opacity-60">Year</label>
               <input 
                 type="number" 
                 min="2000" 
@@ -448,27 +448,27 @@ const Result = ({ userInfo }) => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr style={{ borderBottom: `2px solid ${theme.inputBorder}` }}>
-                  <th className="p-3 text-[10px] font-bold uppercase opacity-50">Student</th>
-                  <th className="p-3 text-[10px] font-bold uppercase opacity-50">Subject</th>
-                  <th className="p-3 text-[10px] font-bold uppercase opacity-50 text-center">Score</th>
-                  <th className="p-3 text-[10px] font-bold uppercase opacity-50 text-center">Grade</th>
-                  <th className="p-3 text-[10px] font-bold uppercase opacity-50 text-right">Actions</th>
+                  <th className="p-3 text-xs font-medium uppercase opacity-50">Student</th>
+                  <th className="p-3 text-xs font-medium uppercase opacity-50">Subject</th>
+                  <th className="p-3 text-xs font-medium uppercase opacity-50 text-center">Score</th>
+                  <th className="p-3 text-xs font-medium uppercase opacity-50 text-center">Grade</th>
+                  <th className="p-3 text-xs font-medium uppercase opacity-50 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredResults.map((res) => (
                   <tr key={res._id} style={{ borderBottom: `1px solid ${theme.inputBorder}` }}>
                     <td className="p-3">
-                      <div className="font-bold text-sm">{res.student?.full_name}</div>
-                      <div className="text-[10px] opacity-50 uppercase font-mono">{res.student?.school_id}</div>
+                      <div className="font-medium text-sm">{res.student?.full_name}</div>
+                      <div className="text-xs opacity-50 uppercase font-mono">{res.student?.school_id}</div>
                     </td>
                     <td className="p-3">
                       <div className="text-sm font-medium">{res.subject}</div>
-                      <div className="text-[10px] opacity-50">{termLabels[res.term] || `Term ${res.term}`}</div>
+                      <div className="text-xs opacity-50">{termLabels[res.term] || `Term ${res.term}`}</div>
                     </td>
-                    <td className="p-3 text-center font-mono font-bold text-lg">{res.score}%</td>
+                    <td className="p-3 text-center font-mono font-medium text-lg">{res.score}%</td>
                     <td className="p-3 text-center">
-                      <span className={`px-3 py-1 rounded-lg text-xs font-black border ${res.score >= 50 ? 'bg-green-50 border-green-200 text-green-600' : 'bg-red-50 border-red-200 text-red-600'}`}>
+                      <span className={`px-3 py-1 rounded-lg text-xs font-semibold border ${res.score >= 50 ? 'bg-green-50 border-green-200 text-green-600' : 'bg-red-50 border-red-200 text-red-600'}`}>
                         {res.grade}
                       </span>
                     </td>
@@ -513,20 +513,20 @@ const Result = ({ userInfo }) => {
               <Trash2 size={32} />
             </div>
             <div>
-              <h3 className="text-xl font-bold">Confirm Deletion</h3>
+              <h3 className="text-xl font-medium">Confirm Deletion</h3>
               <p className="text-sm opacity-60 mt-2">Are you sure you want to remove this record? This action cannot be undone.</p>
             </div>
             <div className="flex gap-3">
               <button 
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 py-3 rounded-xl font-bold border transition-all hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="flex-1 py-3 rounded-xl font-medium border transition-all hover:bg-gray-50 dark:hover:bg-gray-800"
                 style={{ borderColor: theme.inputBorder }}
               >
                 Cancel
               </button>
               <button 
                 onClick={handleDeleteResult}
-                className="flex-1 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
+                className="flex-1 py-3 rounded-xl font-medium text-white transition-all hover:opacity-90"
                 style={{ backgroundColor: '#dc2626' }}
               >
                 Delete
@@ -549,8 +549,8 @@ const Result = ({ userInfo }) => {
                   <BookOpen size={32} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black tracking-tight">{viewReportStudent.full_name}'s Transcript</h3>
-                  <p className="text-sm opacity-60 font-bold uppercase tracking-widest">{viewReportStudent.school_id} • {viewReportStudent.assigned_class || 'Unassigned'}</p>
+                  <h3 className="text-2xl font-semibold tracking-tight">{viewReportStudent.full_name}'s Transcript</h3>
+                  <p className="text-sm opacity-60 font-medium uppercase tracking-wide">{viewReportStudent.school_id} • {viewReportStudent.assigned_class || 'Unassigned'}</p>
                 </div>
               </div>
               <button onClick={() => { setViewReportStudent(null); setTranscriptSearchTerm(''); }} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
@@ -581,7 +581,7 @@ const Result = ({ userInfo }) => {
 
               if (matchingResults.length === 0 && transcriptSearchTerm) {
                 return (
-                  <div className="py-20 text-center opacity-40 italic font-bold">
+                  <div className="py-20 text-center opacity-40 italic font-medium">
                     No subjects or years matching "{transcriptSearchTerm}" found in this transcript.
                   </div>
                 );
@@ -593,7 +593,7 @@ const Result = ({ userInfo }) => {
 
                 return (
                   <div key={termKey} className="space-y-4">
-                    <h4 className="text-xs font-black uppercase tracking-[0.2em] opacity-40 flex items-center gap-2">
+                    <h4 className="text-xs font-semibold uppercase tracking-[0.2em] opacity-40 flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.accent }}></div>
                       {termLabels[termKey]}
                     </h4>
@@ -603,15 +603,15 @@ const Result = ({ userInfo }) => {
                         return (
                           <div key={res._id} className="p-4 rounded-2xl border flex items-center justify-between" style={{ borderColor: theme.inputBorder, backgroundColor: theme.inputBg }}>
                             <div>
-                              <div className="text-sm font-black">{res.subject}</div>
-                              <div className="text-[10px] opacity-50 font-bold uppercase">Year: {res.year}</div>
+                              <div className="text-sm font-semibold">{res.subject}</div>
+                              <div className="text-xs opacity-50 font-medium uppercase">Year: {res.year}</div>
                             </div>
                             <div className="flex items-center gap-4">
                               <div className="text-right">
-                                <div className="text-xs font-black">{res.score}%</div>
+                                <div className="text-xs font-semibold">{res.score}%</div>
                               </div>
                               <div 
-                                className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black"
+                                className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-semibold"
                                 style={{ backgroundColor: `${gradeColor}15`, color: gradeColor, border: `1px solid ${gradeColor}30` }}
                               >
                                 {res.grade}
@@ -631,20 +631,20 @@ const Result = ({ userInfo }) => {
               {transcriptModalRef.current && transcriptModalRef.current.scrollHeight > transcriptModalRef.current.clientHeight && (
                 <button
                   onClick={handleScrollToTop}
-                  className="px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm flex items-center gap-2 mr-3"
+                  className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm flex items-center gap-2 mr-3"
                 >
                   <ArrowUpCircle size={16} /> Scroll to Top
                 </button>
               )}
               <button
                 onClick={() => handleDownloadTranscript(viewReportStudent._id, viewReportStudent.full_name)}
-                className="px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-2 mr-3"
+                className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-2 mr-3"
               >
                 <Download size={16} /> Download PDF
               </button>
               <button
                 onClick={() => { setViewReportStudent(null); setTranscriptSearchTerm(''); }}
-                className="px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm"
+                className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm"
               >
                 Close Transcript
               </button>

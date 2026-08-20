@@ -60,8 +60,9 @@ const StudentDashboard = () => {
       display: "flex", 
       alignItems: "center", 
       gap: "8px", 
-      fontWeight: "700",
-      fontSize: "16px",
+      fontWeight: "500",
+      fontSize: "14px",
+      lineHeight: "1.4",
       transition: "0.2s",
       flexShrink: 0,
       whiteSpace: "nowrap"
@@ -69,17 +70,17 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden text-[19px] lg:text-[17px]">
+    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto gap-4 mb-10 no-print">
-        <h1 className="flex items-center gap-3 text-[22px] font-black tracking-tighter text-gray-900 dark:text-white">
+        <h1 className="flex items-center gap-3 text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
           <BookOpen size={28} className="text-indigo-600 dark:text-indigo-400" /> 
           Student Portal
         </h1>
         
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <span className="text-sm font-bold text-gray-500 dark:text-gray-400 mr-1">{userInfo.full_name}</span>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-1">{userInfo.full_name}</span>
           
           <button 
             onClick={toggleTheme} 
@@ -90,7 +91,7 @@ const StudentDashboard = () => {
           
           <button 
             onClick={handleLogout} 
-            className="bg-red-50 hover:bg-red-100 text-school-red dark:bg-school-red-dark/20 dark:hover:bg-school-red-dark/40 dark:text-school-red-light px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-sm shadow-sm"
+            className="bg-red-50 hover:bg-red-100 text-school-red dark:bg-school-red-dark/20 dark:hover:bg-school-red-dark/40 dark:text-school-red-light px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 font-semibold text-sm shadow-sm"
           >
             <LogOut size={16} /> 
             <span>Logout</span>
@@ -159,7 +160,7 @@ const StudentDashboard = () => {
 
       <main className="max-w-6xl mx-auto w-full min-w-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
         {loading ? (
-          <div className="p-20 text-center animate-pulse font-black text-gray-400 uppercase tracking-widest text-xs">Syncing Portal Data...</div>
+          <div className="p-20 text-center animate-pulse font-black text-gray-400 uppercase tracking-wide text-xs">Syncing Portal Data...</div>
         ) : error ? (
           <div className="p-6 text-center text-red-600 bg-red-50 dark:bg-red-950/20 rounded-2xl border border-red-100 dark:border-red-900/40 font-bold text-sm">{error}</div>
         ) : (
