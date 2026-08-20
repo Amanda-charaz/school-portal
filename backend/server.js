@@ -22,17 +22,13 @@ const app = express();
 
 // --- Secure CORS Configuration for Render ---
 // This is critical for allowing your Vercel frontend to communicate with your Render backend.
-// --- Robust CORS Configuration for Production Deployment ---
-// --- Hardcoded CORS Configuration ---
-const allowedOrigins = [
+// --- Environment-based CORS Configuration ---
+const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [
   'http://localhost:3000',
-  'http://localhost:5173',
-  'https://school-portal-iota-eight.vercel.app',
-  'https://school-portal-pda3y7f5e-amanda-charazs-projects.vercel.app',
-  'https://school-portal-6ti7lni34-amanda-charazs-projects.vercel.app' // Added new Vercel preview URL
+  'http://localhost:5173'
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like Postman or mobile)
     if (!origin) return callback(null, true);
@@ -46,7 +42,13 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
+
+app.use(cors(corsOptions));
+
+// Handle OPTIONS preflight requests
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);

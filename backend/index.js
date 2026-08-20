@@ -16,24 +16,35 @@ dotenv.config();
 
 const app = express();
 
-// --- Secure CORS Configuration ---
-// This is critical for Vercel deployment to work from other devices.
-const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+// --- Secure CORS Configuration for Render ---
+// This is critical for allowing your Vercel frontend to communicate with your Render backend.
+// --- Environment-based CORS Configuration ---
+const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like Postman or mobile)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) === -1) {
+      console.log(`❌ Blocked Origin: ${origin}`);
+      return callback(new Error('CORS Policy Block'), false);
     }
+    return callback(null, true);
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
 // --- End CORS Configuration ---
+
+// Handle OPTIONS preflight requests
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
