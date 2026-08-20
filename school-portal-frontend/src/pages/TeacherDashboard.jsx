@@ -56,75 +56,75 @@ const TeacherDashboard = () => {
   };
 
   return (
-    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden">
-      
+    <div className="px-4 sm:px-10 py-8 min-h-screen transition-colors duration-500 bg-school-beige text-school-text dark:bg-school-beige-dark dark:text-school-text-dark overflow-x-hidden">
+
       {/* Header Container */}
       <div className="flex flex-col sm:flex-row justify-between items-center max-w-6xl mx-auto gap-4 mb-10">
-        <h1 className="flex items-center gap-3 text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
-          <BookOpen size={28} className="text-indigo-600 dark:text-indigo-400" /> 
+        <h1 className="flex items-center gap-3 text-xl font-bold tracking-tight text-school-text dark:text-school-text-dark leading-tight">
+          <BookOpen size={28} className="text-school-blue dark:text-blue-400" />
           Teacher Hub
         </h1>
-        
+
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-1">{userInfo.full_name}</span>
-          
+          <span className="text-sm font-medium text-school-muted dark:text-school-muted-dark mr-1">{userInfo.full_name}</span>
+
           {/* Dark Mode Switcher */}
-          <button 
-            onClick={toggleTheme} 
-            className="p-2.5 rounded-xl border transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700/50 shadow-sm"
+          <button
+            onClick={toggleTheme}
+            className="p-2.5 rounded-xl border transition-all bg-school-cream text-school-text border-school-border hover:bg-school-beige dark:bg-school-cream-dark dark:text-school-text-dark dark:border-school-border-dark dark:hover:bg-school-beige-dark shadow-sm"
           >
             {darkMode ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} />}
           </button>
-          
+
           {/* Logout Action */}
-          <button 
-            onClick={handleLogout} 
+          <button
+            onClick={handleLogout}
             className="bg-red-50 hover:bg-red-100 text-school-red dark:bg-school-red-dark/20 dark:hover:bg-school-red-dark/40 dark:text-school-red-light px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 font-semibold text-sm shadow-sm"
           >
-            <LogOut size={16} /> 
+            <LogOut size={16} />
             <span>Logout</span>
           </button>
         </div>
       </div>
 
       {/* Tabs Layout Navigation Section */}
-      <div className="flex gap-2 max-w-6xl mx-auto mb-10 border-b border-gray-200 dark:border-gray-800 overflow-x-auto no-scrollbar scroll-smooth">
+      <div className="flex gap-2 max-w-6xl mx-auto mb-10 border-b border-school-border dark:border-school-border-dark overflow-x-auto no-scrollbar scroll-smooth">
         <button
           onClick={() => setActiveTab("overview")}
           style={{
             ...styles.tabButton,
-            fontSize: "14px", color: activeTab === "overview" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "overview" ? `3px solid ${theme.accent}` : "none",
+            fontSize: "14px", color: activeTab === "overview" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "overview" ? `3px solid ${theme.accentBlue}` : "none",
             transform: activeTab === "overview" ? 'translateY(1px)' : 'none'
           }}
         >
-          <LayoutDashboard size={18} /> 
+          <LayoutDashboard size={18} />
           Overview
         </button>
-        
+
         <button
           onClick={() => setActiveTab("attendance")}
           style={{
             ...styles.tabButton,
-            fontSize: "14px", color: activeTab === "attendance" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "attendance" ? `3px solid ${theme.accent}` : "none",
+            fontSize: "14px", color: activeTab === "attendance" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "attendance" ? `3px solid ${theme.accentBlue}` : "none",
             transform: activeTab === "attendance" ? 'translateY(1px)' : 'none'
           }}
         >
-          <ClipboardCheck size={18} /> 
+          <ClipboardCheck size={18} />
           Attendance
         </button>
-        
+
         <button
           onClick={() => setActiveTab("results")}
           style={{
             ...styles.tabButton,
-            fontSize: "14px", color: activeTab === "results" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "results" ? `3px solid ${theme.accent}` : "none",
+            fontSize: "14px", color: activeTab === "results" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "results" ? `3px solid ${theme.accentBlue}` : "none",
             transform: activeTab === "results" ? 'translateY(1px)' : 'none'
           }}
         >
-          <PlusCircle size={18} /> 
+          <PlusCircle size={18} />
           Manage Results
         </button>
 
@@ -132,12 +132,12 @@ const TeacherDashboard = () => {
           onClick={() => setActiveTab("settings")}
           style={{
             ...styles.tabButton,
-            fontSize: "14px", color: activeTab === "settings" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "settings" ? `3px solid ${theme.accent}` : "none",
+            fontSize: "14px", color: activeTab === "settings" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "settings" ? `3px solid ${theme.accentBlue}` : "none",
             transform: activeTab === "settings" ? 'translateY(1px)' : 'none'
           }}
         >
-          <Settings size={18} /> 
+          <Settings size={18} />
           Settings
         </button>
       </div>

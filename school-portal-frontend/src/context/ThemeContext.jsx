@@ -27,14 +27,17 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const theme = {
-    bg: darkMode ? "#111827" : "#f3f4f6",
-    card: darkMode ? "#1f2937" : "#ffffff",
-    text: darkMode ? "#f9fafb" : "#111827",
-    subText: darkMode ? "#9ca3af" : "#6b7280",
-    inputBg: darkMode ? "#374151" : "#ffffff",
-    inputBorder: darkMode ? "#4b5563" : "#d1d5db",
-    tableHeader: darkMode ? "#111827" : "#f8fafc",
-    accent: "#003DA5" // Brand Blue
+    bg: darkMode ? "#2A2620" : "#F5F0E6",
+    card: darkMode ? "#1F1E18" : "#FFFDF8",
+    text: darkMode ? "#E8E4DC" : "#172033",
+    subText: darkMode ? "#A8A49C" : "#6B6B63",
+    inputBg: darkMode ? "#1F1E18" : "#FFFDF8",
+    inputBorder: darkMode ? "#3D3830" : "#DDD6C8",
+    tableHeader: darkMode ? "#1F1E18" : "#FFFDF8",
+    accent: "#A52A2A", // Brand Red
+    accentBlue: "#003DA5", // Brand Blue
+    accentBlueDark: "#002F80", // Brand Blue Dark
+    accentRedDark: "#8B1E1E", // Brand Red Dark
   };
 
   return (

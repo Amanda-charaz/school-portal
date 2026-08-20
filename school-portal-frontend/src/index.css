@@ -23,8 +23,8 @@ body,
 
 /* Light Mode */
 body {
-  background-color: white;
-  color: #111827;
+  background-color: #F5F0E6;
+  color: #172033;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
@@ -32,8 +32,8 @@ body {
 
 /* Dark Mode */
 .dark body {
-  background-color: #020617;
-  color: white;
+  background-color: #2A2620;
+  color: #E8E4DC;
 }
 
 /* Mobile-friendly scrollbar hiding */

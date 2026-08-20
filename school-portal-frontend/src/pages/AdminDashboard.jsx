@@ -97,16 +97,16 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-gray-100 dark:bg-gray-900 transition-colors duration-500">
+    <div className="min-h-screen w-full flex bg-school-beige dark:bg-school-beige-dark transition-colors duration-500">
       <main className="flex-1 w-full p-4 sm:p-10 overflow-x-hidden flex flex-col">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center w-full gap-4 mb-10 no-print">
-          <h1 className="flex items-center gap-3 text-xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
-            <Shield size={28} color={theme.accent} /> Admin Portal
+          <h1 className="flex items-center gap-3 text-xl font-bold tracking-tight text-school-text dark:text-school-text-dark leading-tight">
+            <Shield size={28} color={theme.accentBlue} /> Admin Portal
           </h1>
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <span style={{ fontSize: "14px", color: theme.subText, lineHeight: "1.5" }}>{userInfo.full_name}</span>
-            <button onClick={toggleTheme} className="p-2.5 rounded-xl border transition-all bg-white text-gray-700 border-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700/50 shadow-sm">
+            <button onClick={toggleTheme} className="p-2.5 rounded-xl border transition-all bg-school-cream text-school-text border-school-border hover:bg-school-beige dark:bg-school-cream-dark dark:text-school-text-dark dark:border-school-border-dark dark:hover:bg-school-beige-dark shadow-sm">
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <button onClick={handleLogout} className="bg-red-50 hover:bg-red-100 text-school-red dark:bg-school-red-dark/20 dark:hover:bg-school-red-dark/40 dark:text-school-red-light px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 font-semibold text-sm shadow-sm">
@@ -122,13 +122,13 @@ const AdminDashboard = () => {
         )}
 
         {/* Tabs Switcher */}
-        <div className="flex gap-2 w-full mb-10 border-b border-gray-200 dark:border-gray-800 overflow-x-auto no-scrollbar scroll-smooth no-print">
+        <div className="flex gap-2 w-full mb-10 border-b border-school-border dark:border-school-border-dark overflow-x-auto no-scrollbar scroll-smooth no-print">
           <button
             onClick={() => setActiveTab("results")}
             style={{
               ...styles.tabButton,
-              color: activeTab === "results" ? theme.accent : theme.subText,
-              borderBottom: activeTab === "results" ? `3px solid ${theme.accent}` : "none"
+              color: activeTab === "results" ? theme.accentBlue : theme.subText,
+              borderBottom: activeTab === "results" ? `3px solid ${theme.accentBlue}` : "none"
             }}
           >
             <PlusCircle size={18} /> Manage Results
@@ -137,8 +137,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("users")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "users" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "users" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "users" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "users" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <Users size={18} /> Manage Users
@@ -147,8 +147,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("teachers")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "teachers" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "teachers" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "teachers" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "teachers" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <BookOpen size={18} /> Manage Teachers
@@ -157,8 +157,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("classes")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "classes" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "classes" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "classes" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "classes" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <BookOpen size={18} /> Manage Classes
@@ -167,8 +167,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("attendance")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "attendance" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "attendance" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "attendance" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "attendance" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <ClipboardCheck size={18} /> Attendance Records
@@ -177,8 +177,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("accounts")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "accounts" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "accounts" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "accounts" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "accounts" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <DollarSign size={18} /> Accounts
@@ -187,8 +187,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("audit")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "audit" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "audit" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "audit" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "audit" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <Settings size={18} /> User Actions
@@ -197,8 +197,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("system-logs")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "system-logs" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "system-logs" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "system-logs" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "system-logs" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <Activity size={18} /> System Logs
@@ -207,8 +207,8 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("settings")}
           style={{
             ...styles.tabButton,
-            color: activeTab === "settings" ? theme.accent : theme.subText,
-            borderBottom: activeTab === "settings" ? `3px solid ${theme.accent}` : "none"
+            color: activeTab === "settings" ? theme.accentBlue : theme.subText,
+            borderBottom: activeTab === "settings" ? `3px solid ${theme.accentBlue}` : "none"
           }}
         >
           <Settings size={18} /> System Settings
@@ -457,9 +457,9 @@ const getResponsiveStyles = (width) => {
     inputGroup: { marginBottom: "15px" },
     label: { display: "block", marginBottom: "5px", fontSize: "12px", fontWeight: "600", lineHeight: "1.4", letterSpacing: "0.02em" },
     input: { width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid", boxSizing: "border-box", fontSize: "14px", lineHeight: "1.5" },
-    button: { width: "100%", padding: "12px", backgroundColor: "#6366f1", color: "white", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer", marginTop: "10px", fontSize: "14px", lineHeight: "1.4" },
+    button: { width: "100%", padding: "12px", backgroundColor: "#A52A2A", color: "white", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer", marginTop: "10px", fontSize: "14px", lineHeight: "1.4" },
     themeBtn: { padding: "10px", borderRadius: "8px", border: "1px solid", cursor: "pointer" },
-    logoutBtn: { backgroundColor: "#fee2e2", color: "#B22222", border: "none", padding: "10px 16px", borderRadius: "8px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontWeight: "600", fontSize: "14px", lineHeight: "1.4" },
+    logoutBtn: { backgroundColor: "#fee2e2", color: "#A52A2A", border: "none", padding: "10px 16px", borderRadius: "8px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontWeight: "600", fontSize: "14px", lineHeight: "1.4" },
     th: { padding: isMobile ? "8px 12px" : "12px 16px", textAlign: "left", fontSize: "12px", fontWeight: "600", lineHeight: "1.4" },
     td: { padding: isMobile ? "12px 16px" : "16px 24px", fontSize: "14px", lineHeight: "1.5" },
     overlay: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "16px" },

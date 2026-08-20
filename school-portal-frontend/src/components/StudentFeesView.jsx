@@ -116,7 +116,7 @@ const StudentFeesView = () => {
            </div>
            <div>
              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">Aggregate Outstanding Balance</h3>
-             <div className="text-4xl font-semibold tracking-tighter" style={{ color: totalBalance > 0 ? '#B22222' : theme.text }}>
+             <div className="text-4xl font-semibold tracking-tighter" style={{ color: totalBalance > 0 ? '#A52A2A' : theme.text }}>
                 ${totalBalance.toLocaleString()}
              </div>
              {totalBalance > 0 && (
@@ -188,7 +188,7 @@ const StudentFeesView = () => {
                     </td>
                     <td className="py-4 text-xs font-bold text-right" style={{ color: theme.text }}>${f.total_amount.toLocaleString()}</td>
                     <td className="py-4 text-xs font-bold text-right text-emerald-500">${f.paid_amount.toLocaleString()}</td>
-                    <td className="py-4 text-xs font-semibold text-right" style={{ color: f.balance > 0 ? '#B22222' : theme.text }}>
+                    <td className="py-4 text-xs font-semibold text-right" style={{ color: f.balance > 0 ? '#A52A2A' : theme.text }}>
                       ${f.balance.toLocaleString()}
                     </td>
                     <td className="py-4 text-right">

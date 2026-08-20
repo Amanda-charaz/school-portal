@@ -58,17 +58,17 @@ const Dashboard = () => {
 
       <main style={styles.content}>
         <header style={{ ...styles.header, fontSize: "22px" }}>
-          <h1 style={{ color: "#1e293b", margin: 0, fontSize: "22px" }}>Student Dashboard</h1>
-          <p style={{ color: "#64748b", fontSize: "14px" }}>Welcome back, {userInfo.full_name}</p>
+          <h1 style={{ color: "#172033", margin: 0, fontSize: "22px" }}>Student Dashboard</h1>
+          <p style={{ color: "#6B6B63", fontSize: "14px" }}>Welcome back, {userInfo.full_name}</p>
         </header>
 
         <section className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">My Academic Results</h2>
+          <h2 className="text-xl font-bold text-school-text dark:text-school-text-dark mb-4">My Academic Results</h2>
           <div style={styles.grid}>
             {error ? (
               <p className="text-red-500" style={{ fontSize: "14px" }}>{error}</p>
             ) : loading ? (
-              <p className="text-gray-500" style={{ fontSize: "14px" }}>Loading your results...</p>
+              <p className="text-school-muted" style={{ fontSize: "14px" }}>Loading your results...</p>
             ) : results.length > 0 ? (
               results.map((result) => (
                 <div key={result._id} style={styles.card}>
@@ -88,7 +88,7 @@ const Dashboard = () => {
                 </div>
               ))
             ) : (
-              <p style={{ color: "#64748b", fontSize: "14px" }}>No results found for your account.</p>
+              <p style={{ color: "#6B6B63", fontSize: "14px" }}>No results found for your account.</p>
             )}
           </div>
         </section>
@@ -103,21 +103,21 @@ const Dashboard = () => {
 };
 
 const styles = {
-  container: { display: "flex", minHeight: "100vh", backgroundColor: "#f9fafb" },
-  sidebar: { width: "250px", backgroundColor: "#1e293b", color: "white", padding: "20px", display: "flex", flexDirection: "column", fontSize: "14px" },
-  logo: { fontSize: "24px", fontWeight: "bold", marginBottom: "20px", color: "#6366f1" },
+  container: { display: "flex", minHeight: "100vh", backgroundColor: "#F5F0E6" },
+  sidebar: { width: "250px", backgroundColor: "#003DA5", color: "white", padding: "20px", display: "flex", flexDirection: "column", fontSize: "14px" },
+  logo: { fontSize: "24px", fontWeight: "bold", marginBottom: "20px", color: "#A52A2A" },
   roleIndicator: { display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", fontWeight: "600", color: "#a5f3fc", marginBottom: "20px", padding: "8px", backgroundColor: "#0c4a6e", borderRadius: "6px" },
   navItem: { display: "flex", alignItems: "center", gap: "10px", padding: "12px", cursor: "pointer", borderRadius: "8px", marginBottom: "8px" },
   content: { flex: 1, padding: "40px" },
   header: { marginBottom: "30px" },
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" },
-  card: { backgroundColor: "white", padding: "20px", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" },
+  card: { backgroundColor: "#FFFDF8", padding: "20px", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" },
   cardHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" },
-  subjectText: { fontSize: "18px", margin: 0, color: "#1e293b", fontWeight: "600" },
-  gradeBadge: { backgroundColor: "#e0e7ff", color: "#4338ca", padding: "4px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
-  cardBody: { fontSize: "14px", color: "#4b5563", marginBottom: "15px" },
-  progressBarContainer: { height: "8px", backgroundColor: "#e5e7eb", borderRadius: "4px", overflow: "hidden" },
-  progressBar: { height: "100%", backgroundColor: "#6366f1", transition: "width 0.5s ease" },
+  subjectText: { fontSize: "18px", margin: 0, color: "#172033", fontWeight: "600" },
+  gradeBadge: { backgroundColor: "#e0e7ff", color: "#003DA5", padding: "4px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold" },
+  cardBody: { fontSize: "14px", color: "#6B6B63", marginBottom: "15px" },
+  progressBarContainer: { height: "8px", backgroundColor: "#DDD6C8", borderRadius: "4px", overflow: "hidden" },
+  progressBar: { height: "100%", backgroundColor: "#A52A2A", transition: "width 0.5s ease" },
   logoutBtn: { marginTop: "auto", display: "flex", alignItems: "center", gap: "10px", background: "none", border: "none", color: "#f87171", cursor: "pointer", padding: "12px", fontWeight: "600" },
 };
 

@@ -509,7 +509,7 @@ const Result = ({ userInfo }) => {
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4">
           <div className="p-8 rounded-2xl shadow-xl max-w-sm w-full text-center space-y-4 border" style={{ backgroundColor: theme.card, borderColor: theme.inputBorder }}>
-            <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-school-red rounded-full flex items-center justify-center mx-auto">
               <Trash2 size={32} />
             </div>
             <div>
@@ -517,17 +517,17 @@ const Result = ({ userInfo }) => {
               <p className="text-sm opacity-60 mt-2">Are you sure you want to remove this record? This action cannot be undone.</p>
             </div>
             <div className="flex gap-3">
-              <button 
+              <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 py-3 rounded-xl font-medium border transition-all hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="flex-1 py-3 rounded-xl font-medium border transition-all hover:bg-school-beige dark:hover:bg-school-beige-dark"
                 style={{ borderColor: theme.inputBorder }}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleDeleteResult}
                 className="flex-1 py-3 rounded-xl font-medium text-white transition-all hover:opacity-90"
-                style={{ backgroundColor: '#dc2626' }}
+                style={{ backgroundColor: '#A52A2A' }}
               >
                 Delete
               </button>
@@ -540,12 +540,12 @@ const Result = ({ userInfo }) => {
       {viewReportStudent && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] p-4"
              ref={transcriptModalRef}>
-          <div className="p-8 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border animate-in zoom-in-95 duration-200" 
+          <div className="p-8 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border animate-in zoom-in-95 duration-200"
                style={{ backgroundColor: theme.card, borderColor: theme.inputBorder, color: theme.text }}>
-            
+
             <div className="flex justify-between items-start mb-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600">
+                <div className="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-school-blue">
                   <BookOpen size={32} />
                 </div>
                 <div>
@@ -553,19 +553,19 @@ const Result = ({ userInfo }) => {
                   <p className="text-sm opacity-60 font-medium uppercase tracking-wide">{viewReportStudent.school_id} • {viewReportStudent.assigned_class || 'Unassigned'}</p>
                 </div>
               </div>
-              <button onClick={() => { setViewReportStudent(null); setTranscriptSearchTerm(''); }} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+              <button onClick={() => { setViewReportStudent(null); setTranscriptSearchTerm(''); }} className="p-2 hover:bg-school-beige dark:hover:bg-school-beige-dark rounded-xl transition-colors">
                 <X size={24} />
               </button>
             </div>
 
             <div className="relative mb-6">
               <Search className="absolute left-3 top-2.5 opacity-40" size={16} />
-              <input 
+              <input
                 type="text"
                 placeholder="Search subjects in transcript..."
                 value={transcriptSearchTerm}
                 onChange={(e) => setTranscriptSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-xl border outline-none text-sm" 
+                className="w-full pl-10 pr-4 py-2 rounded-xl border outline-none text-sm"
                 style={{ backgroundColor: theme.inputBg, borderColor: theme.inputBorder, color: theme.text }}
               />
             </div>
@@ -631,20 +631,20 @@ const Result = ({ userInfo }) => {
               {transcriptModalRef.current && transcriptModalRef.current.scrollHeight > transcriptModalRef.current.clientHeight && (
                 <button
                   onClick={handleScrollToTop}
-                  className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm flex items-center gap-2 mr-3"
+                  className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-school-beige dark:bg-school-beige-dark hover:opacity-80 transition-all shadow-sm flex items-center gap-2 mr-3"
                 >
                   <ArrowUpCircle size={16} /> Scroll to Top
                 </button>
               )}
               <button
                 onClick={() => handleDownloadTranscript(viewReportStudent._id, viewReportStudent.full_name)}
-                className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-sm flex items-center gap-2 mr-3"
+                className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-school-blue text-white hover:bg-school-blue-dark transition-all shadow-sm flex items-center gap-2 mr-3"
               >
                 <Download size={16} /> Download PDF
               </button>
               <button
                 onClick={() => { setViewReportStudent(null); setTranscriptSearchTerm(''); }}
-                className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-gray-100 dark:bg-gray-800 hover:opacity-80 transition-all shadow-sm"
+                className="px-8 py-3 rounded-2xl font-semibold text-xs uppercase tracking-wide bg-school-beige dark:bg-school-beige-dark hover:opacity-80 transition-all shadow-sm"
               >
                 Close Transcript
               </button>

@@ -145,7 +145,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => { setIsForgotMode(true); setError(""); setMessage(""); }}
-                style={{ background: 'none', border: 'none', color: theme.accent, fontSize: '12px', cursor: 'pointer', fontWeight: '600' }}
+                style={{ background: 'none', border: 'none', color: theme.accentBlue, fontSize: '12px', cursor: 'pointer', fontWeight: '600' }}
               >
                 Forgot Password?
               </button>
@@ -199,18 +199,18 @@ const getResponsiveStyles = (width) => {
       display: "flex",
       alignItems: "center",
       justifyContent: "center", // Base font size should be handled by global CSS or specific elements
-      backgroundColor: "#f3f4f6",
+      backgroundColor: "#F5F0E6",
       padding: isMobile ? "16px" : "0"
     },
     card: {
-      backgroundColor: "white",
+      backgroundColor: "#FFFDF8",
       padding: isMobile ? "24px" : "50px",
       borderRadius: "12px",
       boxShadow: "0 4px 6px rgba(0,0,0,0.07)",
       width: "100%",
       maxWidth: "420px",
       textAlign: "center",
-      border: "1px solid #e5e7eb"
+      border: "1px solid #DDD6C8"
     },
     logoContainer: {
       display: "flex",
@@ -231,23 +231,23 @@ const getResponsiveStyles = (width) => {
       fontSize: isMobile ? "20px" : "24px"
     },
     logoText: { textAlign: "center" },
-    universityName: { fontSize: isMobile ? "16px" : "18px", fontWeight: "700", color: "#111827", lineHeight: "1.4" },
-    universitySubtext: { fontSize: "12px", color: "#6b7280", lineHeight: "1.4" },
-    title: { fontSize: isMobile ? "20px" : "24px", fontWeight: "700", color: "#111827", marginBottom: "24px", lineHeight: "1.3" },
-    input: { 
-      width: "100%", 
-      padding: "12px 14px", 
-      borderRadius: "6px", 
-      border: "1px solid #d1d5db", 
-      boxSizing: "border-box", 
-      fontSize: "14px", 
+    universityName: { fontSize: isMobile ? "16px" : "18px", fontWeight: "700", color: "#172033", lineHeight: "1.4" },
+    universitySubtext: { fontSize: "12px", color: "#6B6B63", lineHeight: "1.4" },
+    title: { fontSize: isMobile ? "20px" : "24px", fontWeight: "700", color: "#172033", marginBottom: "24px", lineHeight: "1.3" },
+    input: {
+      width: "100%",
+      padding: "12px 14px",
+      borderRadius: "6px",
+      border: "1px solid #DDD6C8",
+      boxSizing: "border-box",
+      fontSize: "14px",
       lineHeight: "1.5",
-      backgroundColor: "#f9fafb" 
+      backgroundColor: "#FFFDF8"
     },
-    button: { width: "100%", padding: "12px", backgroundColor: "#003DA5", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer", fontSize: "14px", lineHeight: "1.4" },
+    button: { width: "100%", padding: "12px", backgroundColor: "#A52A2A", color: "white", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer", fontSize: "14px", lineHeight: "1.4" },
     error: { color: "#ef4444", marginBottom: "16px", fontSize: "14px", fontWeight: "400", lineHeight: "1.5" },
     success: { color: "#10b981", marginBottom: "16px", fontSize: "14px", fontWeight: "400", lineHeight: "1.5" },
-    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "14px", marginTop: "20px", margin: "20px auto 0", color: "#6b7280", lineHeight: "1.4" },
+    backBtn: { display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", fontSize: "14px", marginTop: "20px", margin: "20px auto 0", color: "#6B6B63", lineHeight: "1.4" },
   };
 };
 

@@ -83,10 +83,10 @@ const UserManagement = () => {
 
   return (
     <div className="w-full space-y-6 animate-in fade-in duration-500">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700/50">
+      <div className="bg-school-cream dark:bg-school-cream-dark p-8 rounded-3xl shadow-xl border border-school-border dark:border-school-border-dark">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white leading-snug">System Account Controls</h2>
-          <button 
+          <h2 className="text-2xl font-bold tracking-tight text-school-text dark:text-school-text-dark leading-snug">System Account Controls</h2>
+          <button
             className="flex items-center gap-2 px-6 py-3 rounded-2xl text-white font-semibold text-sm shadow-lg transition-all active:scale-95 hover:opacity-90"
             style={{ backgroundColor: theme.accent }}
             onClick={() => setIsModalOpen(true)}
@@ -101,9 +101,9 @@ const UserManagement = () => {
             key={role}
             onClick={() => setFilterRole(role)}
             className={`px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wide transition-all border ${
-              filterRole === role 
-                ? "bg-indigo-600 text-white border-indigo-600 shadow-md" 
-                : "bg-gray-50 dark:bg-gray-900 text-gray-500 border-gray-200 dark:border-gray-700 hover:border-indigo-400"
+              filterRole === role
+                ? "bg-school-blue text-white border-school-blue shadow-md"
+                : "bg-school-beige dark:bg-school-beige-dark text-school-muted border-school-border dark:border-school-border-dark hover:border-school-blue"
             }`}
           >
             {role}s
@@ -111,30 +111,30 @@ const UserManagement = () => {
         ))}
       </div>
 
-        <div className="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-inner bg-gray-50/30 dark:bg-gray-900/10">
+        <div className="border border-school-border dark:border-school-border-dark rounded-2xl overflow-hidden shadow-inner bg-school-beige/30 dark:bg-school-beige-dark/10">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700/60">
+            <table className="min-w-full divide-y divide-school-border dark:divide-school-border-dark">
+              <thead className="bg-school-beige dark:bg-school-beige-dark">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">System ID</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">User Profile</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">Auth Identifier</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">Assignment</th>
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-400 uppercase tracking-wide">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-school-muted uppercase tracking-wide">System ID</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-school-muted uppercase tracking-wide">User Profile</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-school-muted uppercase tracking-wide">Auth Identifier</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-school-muted uppercase tracking-wide">Assignment</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-school-muted uppercase tracking-wide">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-school-cream dark:bg-school-cream-dark divide-y divide-school-border dark:divide-school-border-dark">
                 {users.map((user) => (
-                  <tr key={user._id} className={`hover:bg-gray-50/70 dark:hover:bg-gray-700/30 transition-colors ${user.active === false ? 'opacity-50 grayscale bg-gray-50/50' : ''}`}>
-                    <td className="px-6 py-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400 font-mono tracking-tight">{user.school_id}</td>
+                  <tr key={user._id} className={`hover:bg-school-beige/70 dark:hover:bg-school-beige-dark/30 transition-colors ${user.active === false ? 'opacity-50 grayscale bg-school-beige/50' : ''}`}>
+                    <td className="px-6 py-4 text-sm font-semibold text-school-blue dark:text-blue-400 font-mono tracking-tight">{user.school_id}</td>
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-sm text-gray-900 dark:text-white tracking-tight">{user.full_name}</div>
+                      <div className="font-semibold text-sm text-school-text dark:text-school-text-dark tracking-tight">{user.full_name}</div>
                       <div className="inline-block mt-1 px-2 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wide text-white shadow-sm" style={{ backgroundColor: user.active === false ? "#64748b" : (user.role === "admin" ? "#ef4444" : user.role === "teacher" ? "#3b82f6" : "#10b981") }}>
                         {user.active === false ? "Deactivated" : user.role}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs font-medium text-gray-500 dark:text-gray-400 lowercase">{user.email}</td>
-                    <td className="px-6 py-4 text-xs font-medium text-gray-600 dark:text-gray-300 max-w-[150px] truncate">
+                    <td className="px-6 py-4 text-xs font-medium text-school-muted dark:text-school-muted-dark lowercase">{user.email}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-school-muted dark:text-school-muted-dark max-w-[150px] truncate">
                       {user.role === "teacher" ? user.assigned_subjects?.join(", ") || "None" : user.assigned_class || "N/A"}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -159,16 +159,16 @@ const UserManagement = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[2000] p-4 animate-in fade-in duration-300">
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl w-full max-w-lg space-y-6 border border-gray-100 dark:border-gray-700/50 max-h-[90vh] overflow-y-auto">
+          <div className="bg-school-cream dark:bg-school-cream-dark p-8 rounded-3xl shadow-2xl w-full max-w-lg space-y-6 border border-school-border dark:border-school-border-dark max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Provision New Account</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white"><X size={24} /></button>
+              <h3 className="text-xl font-semibold tracking-tight text-school-text dark:text-school-text-dark">Provision New Account</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-school-muted hover:text-school-text dark:hover:text-school-text-dark"><X size={24} /></button>
             </div>
             {message && <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wide text-center">{message}</div>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1">
                 <label className="text-xs font-semibold uppercase tracking-wide opacity-50">Full Legal Name</label>
-                <input className="w-full p-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-sm text-gray-900 dark:text-white" type="text" required value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} placeholder="e.g., Alima Charamanda" />
+                <input className="w-full p-3 rounded-2xl border border-school-border dark:border-school-border-dark bg-school-beige dark:bg-school-beige-dark outline-none focus:ring-2 focus:ring-school-blue font-medium text-sm text-school-text dark:text-school-text-dark" type="text" required value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} placeholder="e.g., Alima Charamanda" />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-semibold uppercase tracking-wide opacity-50">Privilege Level</label>
